@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Registro de Ventas de Stickers</title>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
+  <style>
+    body {
+      background-color: #f4f4f4;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 2rem;
+      display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
+    align-items: stretch;
+    }
+
+    h1 {
+      margin-bottom: 1rem;
+    }
+
+    #contador {
+      font-size: 4rem;
+      margin: 1rem 0;
+      font-weight: bold;
+      border: 2px solid black;
+    }
+
+    .btn {
+      padding: 1rem 2rem;
+      margin: 0.5rem;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.1s;
+    }
+
+   
+
+    .btn-sumar1 { background-color: #0a74da; color: white; }
+    .btn-sumar10 { background-color: #1687ef; color: white; }
+    .btn-sumar25 { background-color: #84ba36; color: white; }
+    .btn-sumarPlantilla { background-color: #d59d3d; color: white; }
+    .btn-restar { background-color: #ccc; color: black; }
+    .btn-borrar { background-color: #ff4c4c; color: white; }
+    .btn-aceptar { background-color: #000; color: white; }
+
+    #descargarExcel {
+      margin-top: 1.5rem;
+      background-color: #555;
+      color: white;
+    }
+
+    .contenedor{
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    footer{
+        margin: 10%;
+    }
+    
+  </style>
+</head>
+<body>
+    <p id="fecha"></p>
+  <h1>Registro de Ventas de Stickers</h1>
+  <div id="contador">0</div> 
+  <div class="contenedor">
+<button class="btn btn-restar" onclick="sumar(-1)">-1</button>
+  <button class="btn btn-sumar1" onclick="sumar(1)">+1</button>
+  <button class="btn btn-sumar10" onclick="sumar(10)">+10</button>
+  <button class="btn btn-sumar25" onclick="sumar(25)">+25</button>
+  <button class="btn btn-sumarPlantilla" onclick="sumar(6)">Plantilla</button>
+  <div class="contenedorNumerico">
+      <button class="btn btn-borrar" onclick="borrarContador()">BORRAR</button>
+  <button class="btn btn-aceptar" onclick="registrarVenta()">Aceptar</button>
+  </div>
+
+
+  </div>
+  
+  <br />
+  <button id="descargarExcel" class="btn" onclick="descargarExcel()">Descargar Excel</button>
+
+<footer>
+    Todos los derechos reservados Disruptive©
+</footer>
+
+  <script>
+    let cantidad = 0;
+    let ventas = [];
+
+    function actualizarContador() {
+      document.getElementById("contador").innerText = cantidad;
+    }
+
+    function sumar(valor) {
+      cantidad = Math.max(0, cantidad + valor);
+      actualizarContador();
+    }
+
+    function borrarContador() {
+      cantidad = 0;
+      actualizarContador();
+    }
+
+    function calcularPrecioUnitario(cant) {
+      if (cant >= 25) return 200;
+      if (cant >= 10) return 250;
+      return 300;
+    }
+
+    function registrarVenta() {
+      if (cantidad === 0) return alert("No se puede registrar 0 stickers.");
+
+      const precioUnitario = calcularPrecioUnitario(cantidad);
+      const total = cantidad * precioUnitario;
+      const fecha = new Date().toLocaleString();
+
+      ventas.push({
+        Fecha: fecha,
+        Cantidad: cantidad,
+        "Precio Unitario": precioUnitario,
+        Total: total
+      });
+
+      alert(`Venta registrada: ${cantidad} stickers - $${total}`);
+      borrarContador();
+
+    }
+
+    function descargarExcel() {
+      if (ventas.length === 0) {
+        alert("No hay ventas registradas.");
+        return;
+      }
+
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.json_to_sheet(ventas);
+      XLSX.utils.book_append_sheet(wb, ws, "Ventas");
+
+      XLSX.writeFile(wb, "ventas_stickers.xlsx");
+    }
+    const fecha = new Date().toLocaleDateString("es-AR", {
+  weekday: "long",
+  year: "numeric",
+  month: "long",
+  day: "numeric"
+});
+    document.getElementById("fecha").innerHTML = "Hoy es: " + fecha;
+  </script>
+</body>
+</html>

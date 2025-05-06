@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Registro de Ventas de Stickers</title>
+  <style>
+    body {
+      background-color: #f4f4f4;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 2rem;
+      display: flex;
+      justify-content: center;
+      align-content: center;
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    h1 {
+      margin-bottom: 1rem;
+    }
+
+    #contador {
+      font-size: 4rem;
+      margin: 1rem 0;
+      font-weight: bold;
+    }
+
+    .btn {
+      padding: 1rem 2rem;
+      margin: 0.5rem;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.1s;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+    }
+
+    .btn-sumar1 { background-color: #0a74da; color: white; }
+    .btn-sumar10 { background-color: #1687ef; color: white; }
+    .btn-sumar25 { background-color: #84ba36; color: white; }
+    .btn-restar { background-color: #ccc; color: black; }
+    .btn-borrar { background-color: #ff4c4c; color: white; }
+    .btn-aceptar { background-color: #000; color: white; }
+
+    .contenedor {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      border: 2px solid black;
+      padding: 1rem;
+      margin-top: 1rem;
+      border-radius: 10px;
+    }
+
+    footer {
+      margin: 10%;
+    }
+  </style>
+</head>
+<body>
+  <p id="fecha"></p>
+  <h1>Registro de Ventas de Stickers</h1>
+  <div id="contador">0</div>
+
+  <div class="contenedor">
+    <button class="btn btn-restar" onclick="sumar(-1)">-1</button>
+    <button class="btn btn-sumar1" onclick="sumar(1)">+1</button>
+    <button class="btn btn-sumar10" onclick="sumar(10)">+10</button>
+    <button class="btn btn-sumar25" onclick="sumar(25)">+25</button>
+    <button class="btn btn-borrar" onclick="borrarContador()">BORRAR</button>
+    <button class="btn btn-aceptar" onclick="registrarVenta()">Aceptar</button>
+  </div>
+
+  <footer>
+    Todos los derechos reservados Disruptive©
+  </footer>
+
+  <script>
+    let cantidad = 0;
+
+    function actualizarContador() {
+      document.getElementById("contador").innerText = cantidad;
+    }
+
+    function sumar(valor) {
+      cantidad = Math.max(0, cantidad + valor);
+      actualizarContador();
+    }
+
+    function borrarContador() {
+      cantidad = 0;
+      actualizarContador();
+    }
+
+    function calcularPrecioUnitario(cant) {
+      if (cant >= 25) return 200;
+      if (cant >= 10) return 250;
+      return 300;
+    }
+
+    function registrarVenta() {
+      if (cantidad === 0) {
+        alert("No se puede registrar 0 stickers.");
+        return;
+      }
+
+      const precioUnitario = calcularPrecioUnitario(cantidad);
+      const total = cantidad * precioUnitario;
+
+      fetch("https://script.google.com/macros/s/AKfycbzjtla3aY5BpwFzby4lWW6kw4_dOfz4zdJFbnyVYpSmYmDdy0RSW6megMwSV8G6jK46lA/exec", {
+  method: "POST",
+  mode: "no-cors", // Esto es lo nuevo
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    cantidad: cantidad,
+    precioUnitario: precioUnitario,
+    total: total
+  })
+})
+.then(() => {
+  alert("Venta registrada correctamente.");
+  borrarContador();
+})
+.catch(error => {
+  alert("Error al registrar la venta.");
+  console.error("Error:", error);
+});
+    }
+
+    // Mostrar solo fecha sin hora
+    const fecha = new Date().toLocaleDateString("es-AR", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    });
+    document.getElementById("fecha").innerHTML = "Hoy es: " + fecha;
+  </script>
+</body>
+</html>
