@@ -37,9 +37,22 @@
       font-family: "bebas-neue", sans-serif;
       font-weight: 400;
       font-style: normal;
+    }
+    #suma {
+      font-size: 4rem;
+      margin: 1rem 0;
+      font-weight: bold;
+      font-family: "bebas-neue", sans-serif;
+      font-weight: 400;
+      font-style: normal;
+      color: #2cad20;
+    }
+    .contador1{
       border: 2px solid rgb(255, 255, 255);
       border-radius: 10px;
       margin: 1%;
+      display: flex;
+      justify-content: space-around;
     }
 
     .btn {
@@ -113,8 +126,10 @@
    <img class="logoDisruptive" src="LOGOsin fondo.png" alt="">
   </div>
    <h1>Ventas de Stickers</h1>
-  <div id="contador">0</div>
-
+   <div class="contador1">  
+    <div id="contador">0</div>
+    <div id="suma">0</div>
+  </div>
   <div class="contenedor">
     <div class="del1al10">
       <button class="btn btn-restar" onclick="sumar(-1)">-1</button>
@@ -179,7 +194,7 @@
 })
 
 .then(() => {
-  alert("Venta registrada correctamente.");
+  alert("Venta registrada correctamente. Total a pagar = $" + total);
   borrarContador();
 })
 
@@ -197,6 +212,26 @@
       day: "numeric"
     });
     document.getElementById("fecha").innerHTML = fecha;
+
+    function actualizarSuma() {
+  const precioUnitario = calcularPrecioUnitario(cantidad);
+  const total = cantidad * precioUnitario;
+  document.getElementById("suma").innerText = "$" + total;
+}
+
+function sumar(valor) {
+  cantidad = Math.max(0, cantidad + valor);
+  actualizarContador();
+  actualizarSuma();
+}
+
+function borrarContador() {
+  cantidad = 0;
+  actualizarContador();
+  actualizarSuma();
+}
+
+
   </script>
 </body>
 </html>
