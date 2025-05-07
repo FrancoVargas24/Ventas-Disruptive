@@ -10,7 +10,6 @@
     body {
       background-color: rgb(22, 22, 22);
       background-image: url(123123.png);
-      font-family: Arial, sans-serif;
       text-align: center;
       padding: 1rem;
       display: flex;
@@ -48,18 +47,21 @@
       border-radius: 10px;
       cursor: pointer;
       transition: 0.1s;
+      width: -webkit-fill-available;
+      font-family: "montserrat", sans-serif;
+      font-weight: 550;
+      font-style: normal;
+      letter-spacing: 2px;
+      text-transform: uppercase;
     }
 
-    .btn:hover {
-      transform: scale(1.05);
-    }
-
-    .btn-sumar1 { background-color: #0a74da; color: white; }
-    .btn-sumar10 { background-color: #1687ef; color: white; }
-    .btn-sumar25 { background-color: #84ba36; color: white; }
+    .btn-sumar1 { background-color: #284d70; color: white; }
+    .btn-sumar10 { background-color: #2a6fb0; color: white; }
+    .btn-sumar25 { background-color: #628a29; color: white; }
+    .btn-sumarCombo { background-color: #938c0e; color: white; }
     .btn-restar { background-color: #ccc; color: black; }
-    .btn-borrar { background-color: #ff4c4c; color: white; }
-    .btn-aceptar { background-color: #222222; color: white; }
+    .btn-borrar { background-color: #e55353; color: white; }
+    .btn-aceptar { background-color: #1b8917; color: white; }
 
     .contenedor {
       display: flex;
@@ -78,7 +80,8 @@
     }
 
     .logoDisruptive{
-      width: 30%;
+      width: 150px;
+    height: 150px;
     }
     .contenedore{
       display: flex;
@@ -89,9 +92,18 @@
       font-family: "montserrat", sans-serif;
       font-weight: 400;
       font-style: normal;
-      font-size: x-large;
+      font-size: 30px;
       text-transform: uppercase;
     }
+    .del1al10{
+      display: flex;
+    justify-content: space-around;
+    }
+    .combos{
+      display: flex;
+      justify-content: space-around;
+    }
+
   </style>
 </head>
 <body>
@@ -103,12 +115,17 @@
   <div id="contador">0</div>
 
   <div class="contenedor">
-    <button class="btn btn-restar" onclick="sumar(-1)">-1</button>
-    <button class="btn btn-sumar1" onclick="sumar(1)">+1</button>
-    <button class="btn btn-sumar10" onclick="sumar(10)">+10</button>
+    <div class="del1al10">
+      <button class="btn btn-restar" onclick="sumar(-1)">-1</button>
+      <button class="btn btn-sumar1" onclick="sumar(1)">+1</button>
+    </div>
+<div class="combos">
+      <button class="btn btn-sumar10" onclick="sumar(10)">+10</button>
     <button class="btn btn-sumar25" onclick="sumar(25)">+25</button>
-    <button class="btn btn-borrar" onclick="borrarContador()">BORRAR</button>
-    <button class="btn btn-aceptar" onclick="registrarVenta()">Aceptar</button>
+</div>
+  <button class="btn btn-sumarCombo" onclick="sumar(6)">Plantilla</button>
+  <button class="btn btn-borrar" onclick="borrarContador()">BORRAR</button>
+    <button class="btn btn-aceptar" onclick="registrarVenta()">Registrar Venta</button>
   </div>
 
   <footer>
@@ -159,10 +176,12 @@
     total: total
   })
 })
+
 .then(() => {
   alert("Venta registrada correctamente.");
   borrarContador();
 })
+
 .catch(error => {
   alert("Error al registrar la venta.");
   console.error("Error:", error);
