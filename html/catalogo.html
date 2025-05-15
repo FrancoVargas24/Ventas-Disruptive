@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://use.typekit.net/mdk5yrn.css">
+  <link rel="stylesheet" href="https://use.typekit.net/mdk5yrn.css">
+  <link rel="stylesheet" href="/style.css">
+  <title>Registro de Ventas de Stickers</title>
+</head>
+
+<body>
+  <div class="contenedore">
+    <p id="fecha"></p>
+    <img class="logoDisruptive" src="/img/LOGO + sombra.png" alt="Abrir menú" id="abrirMenu">
+  </div>
+
+  <div id="sidebar" class="sidebar oculto">
+    <a href="/index.html" class="menu-link">
+      <span>Inicio</span>
+    </a>
+    <a href="/html/catalogo.html" class="menu-link">
+      <span>Catalogo</span>
+    </a>
+    <a href="/html/calculadora.html" class="menu-link">
+      <span>Calculadora</span>
+    </a>
+    <a href="/html/ventasFeria.html" class="menu-link">
+      <span>Ventas Feria</span>
+    </a>
+    <img class="logoDisruptive" src="/img/LOGO + sombra.png">
+  </div>
+  
+
+  </div>
+  <h1>Calculadora</h1>
+  </div>
+
+//aca va la magia
+
+  <footer>
+    Todos los derechos reservados Disruptive©
+  </footer>
+
+  <script>
+    // Abrir el menú al tocar el logo
+    document.getElementById("abrirMenu").addEventListener("click", function () {
+      document.getElementById("sidebar").classList.add("visible");
+    });
+
+    // Cerrar el menú
+    function cerrarMenu() {
+      document.getElementById("sidebar").classList.remove("visible");
+    }
+
+    document.addEventListener("click", function (event) {
+      const sidebar = document.getElementById("sidebar");
+      const logo = document.getElementById("abrirMenu");
+
+      if (
+        sidebar.classList.contains("visible") &&
+        !sidebar.contains(event.target) &&
+        event.target !== logo
+      ) {
+        cerrarMenu();
+      }
+    });
+    // Mostrar solo fecha sin hora
+    const fecha = new Date().toLocaleDateString("es-AR", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    });
+    document.getElementById("fecha").innerHTML = fecha;
+  </script>
+</body>
+
+</html>

@@ -5,150 +5,86 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="stylesheet" href="https://use.typekit.net/mdk5yrn.css">
   <link rel="stylesheet" href="https://use.typekit.net/mdk5yrn.css">
+  <link rel="stylesheet" href="style.css">
   <title>Registro de Ventas de Stickers</title>
-  <style>
-    body {
-      background-color: rgb(22, 22, 22);
-      background-image: url(123123.png);
-      text-align: center;
-      padding: 1rem;
-      display: flex;
-      justify-content: center;
-      align-content: center;
-      flex-direction: column;
-      align-items: stretch;
-      color: white;
-    }
-    
-    h1 {
-      margin-bottom: 1rem;
-      font-family: "bebas-neue", sans-serif;
-      font-weight: 400;
-      font-style: normal;
-      font-size: 250%;
-      margin-block-end: 5px;
-    margin-block-start: 5px;
-    }
-
-    #contador {
-      font-size: 4rem;
-      margin: 1rem 0;
-      font-weight: bold;
-      font-family: "bebas-neue", sans-serif;
-      font-weight: 400;
-      font-style: normal;
-    }
-    #suma {
-      font-size: 4rem;
-      margin: 1rem 0;
-      font-weight: bold;
-      font-family: "bebas-neue", sans-serif;
-      font-weight: 400;
-      font-style: normal;
-      color: #2cad20;
-    }
-    .contador1{
-      border: 2px solid rgb(255, 255, 255);
-      border-radius: 10px;
-      margin: 1%;
-      display: flex;
-      justify-content: space-around;
-    }
-
-    .btn {
-      padding: 1rem 2rem;
-      margin: 0.5rem;
-      font-size: 1.2rem;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: 0.1s;
-      width: -webkit-fill-available;
-      font-family: "montserrat", sans-serif;
-      font-weight: 550;
-      font-style: normal;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
-
-    .btn-sumar1 { background-color: #284d70; color: white; }
-    .btn-sumar10 { background-color: #2a6fb0; color: white; }
-    .btn-sumar25 { background-color: #628a29; color: white; }
-    .btn-sumarCombo { background-color: #938c0e; color: white; }
-    .btn-restar { background-color: #ccc; color: black; }
-    .btn-borrar { background-color: #e55353; color: white; }
-    .btn-aceptar { background-color: #1b8917; color: white; }
-
-    .contenedor {
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
-      margin-top: 1rem;
-      margin-bottom: 1rem;
-    }
-
-    footer {
-      font-family: "montserrat", sans-serif;
-      font-weight: 400;
-      font-style: normal;
-    }
-
-    .logoDisruptive{
-      width: 150px;
-    height: 150px;
-    }
-    .contenedore{
-      display: flex;
-      justify-content: space-evenly;
-      flex-direction: row-reverse;
-    }
-    #fecha{
-      font-family: "montserrat", sans-serif;
-      font-weight: 400;
-      font-style: normal;
-      font-size: 26px;
-      text-transform: uppercase;
-    }
-    .del1al10{
-      display: flex;
-    justify-content: space-around;
-    }
-    .combos{
-      display: flex;
-      justify-content: space-around;
-    }
-
-  </style>
 </head>
 <body>
-    <div class="contenedore">
-      <p id="fecha"></p>
-   <img class="logoDisruptive" src="LOGOsin fondo.png" alt="">
+  <div class="contenedore">
+    <p id="fecha"></p>
+    <img class="logoDisruptive" src="/img/LOGO + sombra.png" alt="Abrir menú" id="abrirMenu">
   </div>
-   <h1>Ventas de Stickers</h1>
-   <div class="contador1">  
-    <div id="contador">0</div>
-    <div id="suma">0</div>
+  
+  <div id="sidebar" class="sidebar oculto">
+    <a href="index.html" class="menu-link">
+      <span>Inicio</span>
+    </a>
+    <a href="/html/catalogo.html" class="menu-link">
+      <span>Catalogo</span>
+    </a>
+    <a href="/html/calculadora.html" class="menu-link">
+      <span>Calculadora</span>
+    </a>
+    <a href="/html/ventasFeria.html" class="menu-link">
+      <span>Ventas Feria</span>
+    </a>
+    <img class="logoDisruptive" src="/img/LOGO + sombra.png">
   </div>
+  
+  <h1>Disruptive Stickers</h1>
+  
   <div class="contenedor">
-    <div class="del1al10">
-      <button class="btn btn-restar" onclick="sumar(-1)">-1</button>
-      <button class="btn btn-sumar1" onclick="sumar(1)">+1</button>
-    </div>
-<div class="combos">
-      <button class="btn btn-sumar10" onclick="sumar(10)">+10</button>
-    <button class="btn btn-sumar25" onclick="sumar(25)">+25</button>
-</div>
-  <button class="btn btn-sumarCombo" onclick="sumar(6)">Plantilla</button>
-  <button class="btn btn-borrar" onclick="borrarContador()">BORRAR</button>
-    <button class="btn btn-aceptar" onclick="registrarVenta()">Registrar Venta</button>
+    <a href="/html/catalogo.html" class="menu-home">
+      <span>Catalogo</span>
+    </a>
+    <a href="/html/calculadora.html" class="menu-home">
+      <span>Calculadora</span>
+    </a>
+    <a href="/html/ventasFeria.html" class="menu-home">
+      <span>Ventas Feria</span>
+    </a>
   </div>
+
 
   <footer>
     Todos los derechos reservados Disruptive©
   </footer>
 
-  <script>
+  <script>   
+// Abrir el menú al tocar el logo
+document.getElementById("abrirMenu").addEventListener("click", function () {
+  document.getElementById("sidebar").classList.add("visible");
+});
+
+// Cerrar el menú
+function cerrarMenu() {
+  document.getElementById("sidebar").classList.remove("visible");
+}
+
+document.addEventListener("click", function (event) {
+  const sidebar = document.getElementById("sidebar");
+  const logo = document.getElementById("abrirMenu");
+
+  if (
+    sidebar.classList.contains("visible") &&
+    !sidebar.contains(event.target) &&
+    event.target !== logo
+  ) {
+    cerrarMenu();
+  }
+});
+
+
+    // Mostrar solo fecha sin hora
+    const fecha = new Date().toLocaleDateString("es-AR", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    });
+    document.getElementById("fecha").innerHTML = fecha;
+
+
+
     let cantidad = 0;
 
     function actualizarContador() {
@@ -182,7 +118,7 @@
 
       fetch("https://script.google.com/macros/s/AKfycbzjtla3aY5BpwFzby4lWW6kw4_dOfz4zdJFbnyVYpSmYmDdy0RSW6megMwSV8G6jK46lA/exec", {
   method: "POST",
-  mode: "no-cors", // Esto es lo nuevo
+  mode: "no-cors",
   headers: {
     "Content-Type": "application/json"
   },
@@ -194,7 +130,6 @@
 })
 
 .then(() => {
-  alert("Venta registrada correctamente. Total a pagar = $" + total);
   borrarContador();
 })
 
@@ -203,15 +138,6 @@
   console.error("Error:", error);
 });
     }
-
-    // Mostrar solo fecha sin hora
-    const fecha = new Date().toLocaleDateString("es-AR", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric"
-    });
-    document.getElementById("fecha").innerHTML = fecha;
 
     function actualizarSuma() {
   const precioUnitario = calcularPrecioUnitario(cantidad);
@@ -230,8 +156,6 @@ function borrarContador() {
   actualizarContador();
   actualizarSuma();
 }
-
-
   </script>
 </body>
 </html>

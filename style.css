@@ -1,0 +1,222 @@
+body {
+    background-color: rgb(22, 22, 22);
+    background-image: url(/img/123123.png);
+    text-align: center;
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
+    align-items: stretch;
+    color: white;
+  }
+  
+  h1 {
+    margin-bottom: 1rem;
+    font-family: "bebas-neue", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 250%;
+    margin-block-end: 5px;
+  margin-block-start: 5px;
+  }
+
+  #contador {
+    font-size: 4rem;
+    margin: 1rem 0;
+    font-weight: bold;
+    font-family: "bebas-neue", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+  }
+  #suma {
+    font-size: 4rem;
+    margin: 1rem 0;
+    font-weight: bold;
+    font-family: "bebas-neue", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    color: #2cad20;
+  }
+  .contador1{
+    border: 2px solid rgb(255, 255, 255);
+    border-radius: 10px;
+    margin: 1%;
+    display: flex;
+    justify-content: space-around;
+  }
+
+  .btn {
+    padding: 1rem 2rem;
+    margin: 0.5rem;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.1s;
+    width: -webkit-fill-available;
+    font-family: "montserrat", sans-serif;
+    font-weight: 550;
+    font-style: normal;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .btn-sumar1 { background-color: #284d70; color: white; }
+  .btn-sumar10 { background-color: #2a6fb0; color: white; }
+  .btn-sumar25 { background-color: #628a29; color: white; }
+  .btn-sumarCombo { background-color: #938c0e; color: white; }
+  .btn-restar { background-color: #ccc; color: black; }
+  .btn-borrar { background-color: #e55353; color: white; }
+  .btn-aceptar { background-color: #1b8917; color: white; }
+
+  .contenedor {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  footer {
+    font-family: "montserrat", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+  }
+
+  .logoDisruptive{
+    width: 150px;
+  height: 150px;
+  }
+  .contenedore{
+    display: flex;
+    justify-content: space-evenly;
+    flex-direction: row-reverse;
+  }
+  #fecha{
+    font-family: "montserrat", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 26px;
+    text-transform: uppercase;
+  }
+  .del1al10{
+    display: flex;
+  justify-content: space-around;
+  }
+  .combos{
+    display: flex;
+    justify-content: space-around;
+  }
+
+  .sidebar {
+    height: 100%;
+    width: 218px;
+    position: fixed;
+    top: 0;
+    left: -260px;
+    background-color: rgba(22, 22, 22, 0.906);
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    transition: 0.1s ease;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar button{
+    background-color: #ffffffe2;
+    color: rgb(0, 0, 0);
+    border: none;
+    margin: 10px 0;
+    padding: 12px;
+    border-radius: 5px;
+    font-size: 19px;
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .sidebar.visible {
+    left: 0;
+  }
+  .sidebar .logoDisruptive {
+    margin: 15%;
+}
+ 
+
+.menu-link {
+    background-color: #ffffffd4;
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 5px;
+    font-size: 19px;
+    font-family: "montserrat", sans-serif;
+    font-weight: 550;
+    font-style: normal;
+    letter-spacing: 1px;
+    transition: background-color 0.2s;
+  }
+
+  .menu-home {
+    background-color: #ffffff;
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 5px;
+    font-size: 21px;
+    font-family: "montserrat", sans-serif;
+    font-weight: 550;
+    font-style: normal;
+    letter-spacing: 1px;
+    transition: background-color 0.2s;
+  }
+  .menu-home:hover {
+    background-color: #444444;
+    color: rgb(255, 255, 255);
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 5px;
+    font-size: 21px;
+    font-family: "montserrat", sans-serif;
+    font-weight: 550;
+    font-style: normal;
+    letter-spacing: 1px;
+    transition: background-color 0.2s;
+  }
+
+  .menu-link:hover {
+    background-color: #dddddd;
+    color: black;
+  }
+  
+  
+  @media (max-width: 600px) {
+    .sidebar {
+      width: 39%;
+    }
+  }
+  
+.svg{
+    width: 35px;
+}
+
+button{
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+a{
+    text-decoration: none;
+    color: black; 
+}

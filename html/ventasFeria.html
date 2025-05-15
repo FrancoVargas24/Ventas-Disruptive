@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://use.typekit.net/mdk5yrn.css">
+  <link rel="stylesheet" href="https://use.typekit.net/mdk5yrn.css">
+  <link rel="stylesheet" href="/style.css">
+  <title>Registro de Ventas de Stickers</title>
+</head>
+
+<body>
+  <div class="contenedore">
+    <p id="fecha"></p>
+    <img class="logoDisruptive" src="/img/LOGO + sombra.png" alt="Abrir menú" id="abrirMenu">
+  </div>
+
+  <div id="sidebar" class="sidebar oculto">
+    <a href="/index.html" class="menu-link">
+      <span>Inicio</span>
+    </a>
+    <a href="/html/catalogo.html" class="menu-link">
+      <span>Catalogo</span>
+    </a>
+    <a href="/html/calculadora.html" class="menu-link">
+      <span>Calculadora</span>
+    </a>
+    <a href="/html/ventasFeria.html" class="menu-link">
+      <span>Ventas Feria</span>
+    </a>
+    <img class="logoDisruptive" src="/img/LOGO + sombra.png">
+  </div>
+  
+
+  </div>
+  <h1>Ventas de Stickers</h1>
+  <div class="contador1">
+    <div id="contador">0</div>
+    <div id="suma">0</div>
+  </div>
+  <div class="contenedor">
+    <div class="del1al10">
+      <button class="btn btn-restar" onclick="sumar(-1)">-1</button>
+      <button class="btn btn-sumar1" onclick="sumar(1)">+1</button>
+    </div>
+    <div class="combos">
+      <button class="btn btn-sumar10" onclick="sumar(10)">+10</button>
+      <button class="btn btn-sumar25" onclick="sumar(25)">+25</button>
+    </div>
+    <button class="btn btn-sumarCombo" onclick="sumar(6)">Plantilla</button>
+    <button class="btn btn-borrar" onclick="borrarContador()">BORRAR</button>
+    <button class="btn btn-aceptar" onclick="registrarVenta()">Registrar Venta</button>
+  </div>
+
+  <footer>
+    Todos los derechos reservados Disruptive©
+  </footer>
+
+  <script>
+    // Abrir el menú al tocar el logo
+    document.getElementById("abrirMenu").addEventListener("click", function () {
+      document.getElementById("sidebar").classList.add("visible");
+    });
+
+    // Cerrar el menú
+    function cerrarMenu() {
+      document.getElementById("sidebar").classList.remove("visible");
+    }
+
+    document.addEventListener("click", function (event) {
+      const sidebar = document.getElementById("sidebar");
+      const logo = document.getElementById("abrirMenu");
+
+      if (
+        sidebar.classList.contains("visible") &&
+        !sidebar.contains(event.target) &&
+        event.target !== logo
+      ) {
+        cerrarMenu();
+      }
+    });
+
+
+    // Mostrar solo fecha sin hora
+    const fecha = new Date().toLocaleDateString("es-AR", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    });
+    document.getElementById("fecha").innerHTML = fecha;
+
+
+
+    let cantidad = 0;
+
+    function actualizarContador() {
+      document.getElementById("contador").innerText = cantidad;
+    }
+
+    function sumar(valor) {
+      cantidad = Math.max(0, cantidad + valor);
+      actualizarContador();
+    }
+
+    function borrarContador() {
+      cantidad = 0;
+      actualizarContador();
+    }
+
+    function calcularPrecioUnitario(cant) {
+      if (cant >= 25) return 200;
+      if (cant >= 10) return 250;
+      return 300;
+    }
+
+    function registrarVenta() {
+      if (cantidad === 0) {
+        alert("No se puede registrar 0 stickers.");
+        return;
+      }
+
+      const precioUnitario = calcularPrecioUnitario(cantidad);
+      const total = cantidad * precioUnitario;
+
+      fetch("https://script.google.com/macros/s/AKfycbzjtla3aY5BpwFzby4lWW6kw4_dOfz4zdJFbnyVYpSmYmDdy0RSW6megMwSV8G6jK46lA/exec", {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          cantidad: cantidad,
+          precioUnitario: precioUnitario,
+          total: total
+        })
+      })
+
+        .then(() => {
+          borrarContador();
+        })
+
+        .catch(error => {
+          alert("Error al registrar la venta.");
+          console.error("Error:", error);
+        });
+    }
+
+    function actualizarSuma() {
+      const precioUnitario = calcularPrecioUnitario(cantidad);
+      const total = cantidad * precioUnitario;
+      document.getElementById("suma").innerText = "$" + total;
+    }
+
+    function sumar(valor) {
+      cantidad = Math.max(0, cantidad + valor);
+      actualizarContador();
+      actualizarSuma();
+    }
+
+    function borrarContador() {
+      cantidad = 0;
+      actualizarContador();
+      actualizarSuma();
+    }
+  </script>
+</body>
+
+</html>
