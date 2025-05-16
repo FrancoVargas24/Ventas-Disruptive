@@ -31,50 +31,97 @@
     </a>
     <img class="logoDisruptive" src="/img/LOGO + sombra.png">
   </div>
-  
 
-  </div>
-  <h1>Calculadora</h1>
-  </div>
+  <h1>Calculadora de personalizados</h1>
 
-//aca va la magia
+  <div class="contenedor">
+    <label for="cantidad">Cantidad de Stickers</label>
+    <input type="number" id="cantidad" placeholder="Cantidad requerida">
 
-  <footer>
-    Todos los derechos reservados Disruptive©
-  </footer>
+    <label for="dimensiones">Dimensiones:</label>
+    <div class="contenedore">
+      <input type="number" id="ancho" placeholder="Ancho en centímetros">
+      <input type="number" id="alto" placeholder="Alto en centímetros">
+    </div>
 
-  <script>
-    // Abrir el menú al tocar el logo
-    document.getElementById("abrirMenu").addEventListener("click", function () {
-      document.getElementById("sidebar").classList.add("visible");
-    });
+    <br>
+    <button class="btn btn-aceptar" onclick="calcularTotal()">Calcular Total</button>
 
-    // Cerrar el menú
-    function cerrarMenu() {
-      document.getElementById("sidebar").classList.remove("visible");
-    }
+    <div class="contador1">
+      <div id="contador">Total: $0</div>
+    </div>
+<br>  
+    <footer>
+      Todos los derechos reservados Disruptive©
+    </footer>
 
-    document.addEventListener("click", function (event) {
-      const sidebar = document.getElementById("sidebar");
-      const logo = document.getElementById("abrirMenu");
+    <script>
 
-      if (
-        sidebar.classList.contains("visible") &&
-        !sidebar.contains(event.target) &&
-        event.target !== logo
-      ) {
-        cerrarMenu();
+      function calcularTotal() {
+        const cantidad = parseInt(document.getElementById("cantidad").value) || 0;
+        const ancho = parseFloat(document.getElementById("ancho").value) || 0;
+        const alto = parseFloat(document.getElementById("alto").value) || 0;
+
+        if (cantidad <= 0 || ancho <= 0 || alto <= 0) {
+          alert("Completá todos los campos con valores mayores a cero.");
+          return;
+        }
+
+        let valorPorCm2 = 300;
+        if (cantidad <= 49) {
+          valorPorCm2 = 13.88889; //valor por personalizado 500 mt2
+        } if (cantidad >= 50){
+          valorPorCm2 = 8.3333334;
+        }
+
+        //const total = (ancho * alto  * valorPorCm2).toFixed(3);
+        const total = Math.ceil((ancho * alto  * valorPorCm2)*cantidad)-1;
+
+        document.getElementById("contador").innerText = `Total: $${total}`;
       }
-    });
-    // Mostrar solo fecha sin hora
-    const fecha = new Date().toLocaleDateString("es-AR", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric"
-    });
-    document.getElementById("fecha").innerHTML = fecha;
-  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+      // Abrir el menú al tocar el logo
+      document.getElementById("abrirMenu").addEventListener("click", function () {
+        document.getElementById("sidebar").classList.add("visible");
+      });
+
+      // Cerrar el menú
+      function cerrarMenu() {
+        document.getElementById("sidebar").classList.remove("visible");
+      }
+
+      document.addEventListener("click", function (event) {
+        const sidebar = document.getElementById("sidebar");
+        const logo = document.getElementById("abrirMenu");
+
+        if (
+          sidebar.classList.contains("visible") &&
+          !sidebar.contains(event.target) &&
+          event.target !== logo
+        ) {
+          cerrarMenu();
+        }
+      });
+      // Mostrar solo fecha sin hora
+      const fecha = new Date().toLocaleDateString("es-AR", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+      });
+      document.getElementById("fecha").innerHTML = fecha;
+    </script>
 </body>
 
 </html>

@@ -68,7 +68,7 @@ body {
   .btn-sumarCombo { background-color: #938c0e; color: white; }
   .btn-restar { background-color: #ccc; color: black; }
   .btn-borrar { background-color: #e55353; color: white; }
-  .btn-aceptar { background-color: #1b8917; color: white; }
+  .btn-aceptar { background-color: #1b8917; color: white;}
 
   .contenedor {
     display: flex;
@@ -219,4 +219,29 @@ button{
 a{
     text-decoration: none;
     color: black; 
+}
+
+input[type="number"] {
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+  appearance: none;
+}
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input{
+  width: 90%;
+  padding: 4%;
+  border: 1px;
+  border-radius: 6px;
+  margin: 1%;
+  font-size: 15px;
+}
+
+label{
+  margin: 2%;
+  font-family: 'montserrat';
 }
