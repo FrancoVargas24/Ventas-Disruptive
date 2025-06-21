@@ -46,7 +46,7 @@
     </div>
     <div class="combos">
       <button class="btn btn-sumar10" onclick="sumar(10)">+10</button>
-      <button class="btn btn-sumar25" onclick="sumar(25)">+25</button>
+      <button class="btn btn-sumar25" onclick="sumar(20)">+20</button>
     </div>
     <button class="btn btn-sumarCombo" onclick="sumar(6)">Plantilla</button>
     <button class="btn btn-borrar" onclick="borrarContador()">BORRAR</button>
@@ -110,7 +110,6 @@
     }
 
     function calcularPrecioUnitario(cant) {
-      if (cant >= 30) return 250;
       if (cant >= 20) return 300;
       if (cant >= 10) return 350;
       return 400;
