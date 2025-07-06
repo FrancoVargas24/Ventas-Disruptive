@@ -35,6 +35,14 @@
 
   </div>
   <h1>Ventas de Stickers</h1>
+
+  <select id="vendedor" class="btn">
+    <option value="Franco">Franco</option>
+    <option value="Bajon">Bajon</option>
+    <option value="Pablo">Pablo</option>
+    <option value="Lucho">Lucho</option>
+  </select>
+
   <div class="contador1">
     <div id="contador">0</div>
     <div id="suma">0</div>
@@ -52,6 +60,11 @@
     <button class="btn btn-borrar" onclick="borrarContador()">BORRAR</button>
     <button class="btn btn-aceptar" onclick="registrarVenta()">Registrar Venta</button>
   </div>
+
+  <p id="ultimaVenta" style="margin-top: 20px; font-family: 'montserrat', sans-serif; font-size: 16px;">
+  Última venta registrada: -
+</p>
+
 
   <footer>
     Todos los derechos reservados Disruptive©
@@ -116,36 +129,42 @@
     }
 
     function registrarVenta() {
-      if (cantidad === 0) {
-        alert("No se puede registrar 0 stickers.");
-        return;
-      }
+  if (cantidad === 0) {
+    alert("No se puede registrar 0 stickers.");
+    return;
+  }
 
-      const precioUnitario = calcularPrecioUnitario(cantidad);
-      const total = cantidad * precioUnitario;
+  const precioUnitario = calcularPrecioUnitario(cantidad);
+  const total = cantidad * precioUnitario;
+  const vendedor = document.getElementById("vendedor").value;
 
-      fetch("https://script.google.com/macros/s/AKfycbzjtla3aY5BpwFzby4lWW6kw4_dOfz4zdJFbnyVYpSmYmDdy0RSW6megMwSV8G6jK46lA/exec", {
-        method: "POST",
-        mode: "no-cors",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          cantidad: cantidad,
-          precioUnitario: precioUnitario,
-          total: total
-        })
-      })
+  // Enviar a Google Sheets
+  fetch("https://script.google.com/macros/s/AKfycbwa5RFiunXmQRrqtxG8VV91sSuEcPi5jWrDKDdZDIefB8VQXSAs2O6RJAs26hmiq6Yttw/exec", {
+    method: "POST",
+    mode: "no-cors",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      cantidad: cantidad,
+      precioUnitario: precioUnitario,
+      total: total,
+      vendedor: vendedor // ✅ OPCIONAL: registrar en Sheets
+    })
+  })
+    .then(() => {
+      // Mostrar última venta
+      document.getElementById("ultimaVenta").innerText =
+        `Última venta registrada: ${cantidad} stickers, $${total} - ${vendedor}`;
 
-        .then(() => {
-          borrarContador();
-        })
+      borrarContador();
+    })
+    .catch(error => {
+      alert("Error al registrar la venta.");
+      console.error("Error:", error);
+    });
+}
 
-        .catch(error => {
-          alert("Error al registrar la venta.");
-          console.error("Error:", error);
-        });
-    }
 
     function actualizarSuma() {
       const precioUnitario = calcularPrecioUnitario(cantidad);

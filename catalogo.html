@@ -4,39 +4,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="https://use.typekit.net/mdk5yrn.css">
-  <link rel="stylesheet" href="https://use.typekit.net/mdk5yrn.css">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://use.typekit.net/mdk5yrn.css" />
+  <link rel="stylesheet" href="style.css" />
   <title>Registro de Ventas de Stickers</title>
 </head>
 
 <body>
   <div class="contenedore">
     <p id="fecha"></p>
-    <img class="logoDisruptive" src="LOGO + sombra.png" alt="Abrir menú" id="abrirMenu">
+    <img class="logoDisruptive" src="LOGO + sombra.png" alt="Abrir menú" id="abrirMenu" />
   </div>
 
   <div id="sidebar" class="sidebar oculto">
-    <a href="index.html" class="menu-link">
-      <span>Inicio</span>
-    </a>
-    <a href="catalogo.html" class="menu-link">
-      <span>Catalogo</span>
-    </a>
-    <a href="calculadora.html" class="menu-link">
-      <span>Calculadora</span>
-    </a>
-    <a href="ventasFeria.html" class="menu-link">
-      <span>Ventas Feria</span>
-    </a>
-    <img class="logoDisruptive" src="LOGO + sombra.png">
+    <a href="index.html" class="menu-link"><span>Inicio</span></a>
+    <a href="catalogo.html" class="menu-link"><span>Catalogo</span></a>
+    <a href="calculadora.html" class="menu-link"><span>Calculadora</span></a>
+    <a href="ventasFeria.html" class="menu-link"><span>Ventas Feria</span></a>
+    <img class="logoDisruptive" src="LOGO + sombra.png" />
   </div>
 
-  </div>
-  <h1>Calculadora</h1>
-  </div>
+  <h1>Categoria</h1>
 
-//aca va la magia
+  <div id="galeria" class="contenedor-galeria"></div>
 
   <footer>
     Todos los derechos reservados Disruptive©
@@ -65,6 +54,7 @@
         cerrarMenu();
       }
     });
+
     // Mostrar solo fecha sin hora
     const fecha = new Date().toLocaleDateString("es-AR", {
       weekday: "long",
@@ -73,6 +63,60 @@
       day: "numeric"
     });
     document.getElementById("fecha").innerHTML = fecha;
+
+    // Lista de nombres de archivos de imagen (reemplazá con tus archivos reales)
+    const imagenes = [
+      "D64C9035.png",
+      "D64C900C.png",
+      "CE70C5AB.png",
+      "D64C9016.png",
+      // agregá acá todos los nombres de archivos de tu carpeta /imagenes
+    ];
+
+    let indice = 0;
+    let cargando = false;
+
+    const galeria = document.getElementById("galeria");
+
+    function cargarImagenes(cantidad = 20) {
+      if (indice >= imagenes.length) return;
+
+      for (let i = 0; i < cantidad && indice < imagenes.length; i++, indice++) {
+        const nombreArchivo = imagenes[indice];
+
+        const div = document.createElement("div");
+        div.className = "card-img";
+
+        const img = document.createElement("img");
+        // Ruta relativa a la carpeta /imagenes
+        img.src = `stickers/${nombreArchivo}`;
+        img.alt = nombreArchivo;
+
+        const nombreP = document.createElement("p");
+        nombreP.innerText = nombreArchivo;
+
+        div.appendChild(img);
+        div.appendChild(nombreP);
+        galeria.appendChild(div);
+      }
+    }
+
+    window.addEventListener("load", () => {
+      cargarImagenes(20);
+    });
+
+    window.addEventListener("scroll", () => {
+      if (
+        window.innerHeight + window.scrollY >= document.body.offsetHeight - 200 &&
+        !cargando
+      ) {
+        cargando = true;
+        setTimeout(() => {
+          cargarImagenes(20);
+          cargando = false;
+        }, 500);
+      }
+    });
   </script>
 </body>
 

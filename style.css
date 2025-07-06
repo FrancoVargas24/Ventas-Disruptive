@@ -281,3 +281,74 @@ label {
   margin: 2%;
   font-family: 'montserrat';
 }
+
+
+button {
+  width: 90%;
+  padding: 4%;
+  border: 1px;
+  border-radius: 6px;
+  margin: 1%;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.botones-materiales {
+    display: flex;
+    gap: 1px;
+    justify-content: center;
+    padding: 4%;
+}
+
+.botones-materiales button {
+  height: 60px;
+  font-size: 16px;
+}
+
+.boton-activo {
+  background-color: rgb(34, 107, 140);
+  color: #ffffff;
+}
+
+.btn-descuento {
+  background-color: #0057a3;
+  color: white;
+  font-weight: bold;
+  margin-top: 1rem;
+}
+
+
+.navIndex{
+  display: flex;
+  justify-content: center;
+}
+
+.navIndex a{  
+  height: 45px;
+  padding: 3%;
+  margin: 1%;
+}
+
+.contenedor-galeria {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.card-img {
+  width: 150px;
+  text-align: center;
+  color: white;
+  font-family: 'montserrat', sans-serif;
+}
+
+.card-img img {
+  width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 0 5px #000;
+}
+

@@ -33,9 +33,25 @@
   </div>
 
   <h1>Calculadora de personalizados</h1>
+   <div class="contenerdor">
+      <label for="material">Material:</label>
+<br>
+<div class="botones-materiales">
+  <button class="material boton-activo" onclick="setMaterial(400, this)">Blanco básico</button>
+  <button class="material" onclick="setMaterial(800, this)">Holográfico</button>
+  <button class="material" onclick="setMaterial(650, this)">Clear</button>
+  <button class="material" onclick="setMaterial(1000, this)">Especiales</button>
+</div>
 
+</div>
+
+
+
+    </div>
   <div class="contenedor">
-    <label for="cantidad">Cantidad de Stickers</label>
+
+ 
+        <label for="cantidad">Cantidad de Stickers</label>
     <input type="number" id="cantidad" placeholder="Cantidad requerida">
 
     <label for="dimensiones">Dimensiones:</label>
@@ -50,6 +66,9 @@
     <div class="contador1">
       <div id="contador">Total: $0</div>
     </div>
+
+    
+
 <br>  
     <footer>
       Todos los derechos reservados Disruptive©
@@ -57,38 +76,72 @@
 
     <script>
 
-      function calcularTotal() {
-        const cantidad = parseInt(document.getElementById("cantidad").value) || 0;
-        const ancho = parseFloat(document.getElementById("ancho").value) || 0;
-        const alto = parseFloat(document.getElementById("alto").value) || 0;
+      let valorMaterial = 0;
+      let totalActual = 0;
+      let descuentoAplicado = false;
 
-        if (cantidad <= 0 || ancho <= 0 || alto <= 0) {
-          alert("Completá todos los campos con valores mayores a cero.");
-          return;
+window.onload = function() {
+  const btnBlancoBasico = document.querySelector("button.material.boton-activo");
+  setMaterial(400, btnBlancoBasico);
+};
+
+        function setMaterial(valor, boton) {
+          valorMaterial = valor;
+        
+          // Sacar clase activa de todos los botones
+          const botones = document.querySelectorAll(".material");
+          botones.forEach(b => b.classList.remove("boton-activo"));
+        
+          // Agregar clase activa al botón clickeado
+          boton.classList.add("boton-activo");
         }
 
-        let valorPorCm2 = 300;
-        if (cantidad <= 49) {
-          valorPorCm2 = 13.88889; //valor por personalizado 500 mt2
-        } if (cantidad >= 50){
-          valorPorCm2 = 11.22;  //400
-        }
+function calcularTotal() {
+  const cantidad = parseInt(document.getElementById("cantidad").value) || 0;
+  const ancho = parseFloat(document.getElementById("ancho").value) || 0;
+  const alto = parseFloat(document.getElementById("alto").value) || 0;
 
-        //const total = (ancho * alto  * valorPorCm2).toFixed(3);
-        const total = Math.ceil((ancho * alto  * valorPorCm2)*cantidad)-1;
+  if (cantidad <= 0 || ancho <= 0 || alto <= 0 || valorMaterial <= 0) {
+    alert("Completá todos los campos y seleccioná un material.");
+    return;
+  }
 
-        document.getElementById("contador").innerText = `Total: $${total}`;
-      }
+  let cm6x6Estandar = 36;
+  let valorPorCm2 = valorMaterial / cm6x6Estandar;
 
+  if (cantidad >= 400) {
+    valorPorCm2 *= 0.65;
+  } else if (cantidad >= 200) {
+    valorPorCm2 *= 0.8;
+  } else if (cantidad >= 100) {
+    valorPorCm2 *= 0.9;
+  } else if (cantidad >= 50) {
+    valorPorCm2 *= 1;
+  } else {
+    valorPorCm2 *= 1.501;
+  }
 
+  totalActual = Math.ceil((ancho * alto * valorPorCm2) * cantidad) - 1;
+  descuentoAplicado = false; // reset si recalculan
+  document.getElementById("contador").innerText = `Total: $${totalActual}`;
+}
 
+function aplicarDescuento() {
+  if (totalActual === 0) {
+    alert("Primero calculá el total.");
+    return;
+  }
 
+  if (descuentoAplicado) {
+    alert("El descuento ya fue aplicado.");
+    return;
+  }
 
-
-
-
-
-
+  const descuento = 0.2; // 20% de descuento
+  const totalConDescuento = Math.ceil(totalActual * (1 - descuento));
+  document.getElementById("contador").innerText = `Vendedor: $${totalConDescuento}`;
+  descuentoAplicado = true;
+}
 
 
       // Abrir el menú al tocar el logo
