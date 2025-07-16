@@ -1,7 +1,6 @@
 body {
   background-color: rgb(22, 22, 22);
   background-image: url(123123.png);
-  text-align: center;
   padding: 1rem;
   display: flex;
   justify-content: center;
@@ -19,6 +18,8 @@ h1 {
   font-size: 250%;
   margin-block-end: 5px;
   margin-block-start: 5px;
+  text-align: center;
+
 }
 
 #contador {
@@ -29,6 +30,14 @@ h1 {
   font-weight: 400;
   font-style: normal;
 }
+#contadorUnd {
+  font-size: 1rem;
+  font-weight: bold;
+  font-family: "montserrat";
+  font-weight: 100;
+  font-style: normal;
+}
+
 
 #suma {
   font-size: 4rem;
@@ -45,7 +54,9 @@ h1 {
   border-radius: 10px;
   margin: 1%;
   display: flex;
-  justify-content: space-around;
+  flex-direction: column;
+    text-align: center;
+
 }
 
 .btn {
@@ -79,9 +90,24 @@ h1 {
   color: white;
 }
 
+.btn-sumarCLEAR {
+  font-weight: bold;
+  background-color: #0000003f;
+  color: rgba(255, 255, 255, 0.668);
+  border: 2px solid; 
+  border-color: rgba(37, 121, 57, 0.46);
+}
+.btn-sumarCLEAR- {
+  font-weight: bold;
+  background-color: #0000003f;
+  color: rgba(255, 255, 255, 0.668);
+  border: 2px solid; 
+  border-color: rgba(136, 53, 53, 0.306);
+}
+
 .btn-sumarCombo {
   background-color: #938c0e;
-  color: white;
+  color: rgb(255, 255, 255);
 }
 
 .btn-restar {
@@ -111,6 +137,8 @@ footer {
   font-family: "montserrat", sans-serif;
   font-weight: 400;
   font-style: normal;
+    text-align: center;
+
 }
 
 .logoDisruptive {
@@ -219,7 +247,7 @@ footer {
   align-items: center;
   justify-content: space-evenly;
   padding: 12px;
-  margin: 10px 0;
+  margin: 1%;
   border-radius: 5px;
   font-size: 21px;
   font-family: "montserrat", sans-serif;
@@ -326,8 +354,6 @@ button {
 }
 
 .navIndex a{  
-  height: 45px;
-  padding: 3%;
   margin: 1%;
 }
 
@@ -352,3 +378,51 @@ button {
   box-shadow: 0 0 5px #000;
 }
 
+.info-toggle-container {
+  margin-top: 20px;
+}
+
+.btn-info-toggle {
+  background-color: #575756;
+  color: white;
+  font-family: "montserrat", sans-serif;
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+  width: -webkit-fill-available;
+}
+
+.btn-info-toggle:hover {
+  background-color: #1e507ec9;
+}
+
+.info-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease-in-out, padding 0.3s ease;
+  background-color: rgba(255, 255, 255, 0.08);
+  color: white;
+  border-radius: 10px;
+  padding: 0 15px;
+  font-family: 'montserrat', sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.info-content.open {
+  max-height: 500px;
+  padding: 15px;
+}
+
+.info-title {
+  font-family: "bebas-neue", sans-serif;
+  font-size: 160%;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  color: #ffffff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  padding-bottom: 5px;
+}
