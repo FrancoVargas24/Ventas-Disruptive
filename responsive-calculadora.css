@@ -1,0 +1,272 @@
+
+/* ======== ESTILOS GENERALES (MOBILE FIRST) ======== */
+body {
+  background-color: rgb(22, 22, 22);
+  background-image: url(123123.png);
+  padding: 2rem;
+  justify-content: center;
+  align-content: center;
+  flex-direction: column;
+  align-items: stretch;
+  color: white;
+  font-family: "montserrat", sans-serif;
+  background-size: 100%;
+}
+
+h1 {
+  margin: 5px 0;
+  font-family: "bebas-neue", sans-serif;
+  font-size: 2rem;
+  text-align: center;
+}
+
+#contador {
+  font-size: 2.5rem;
+  margin: 1rem 0;
+  font-weight: bold;
+  font-family: "bebas-neue", sans-serif;
+}
+
+#contadorUnd {
+  font-size: 1rem;
+  font-weight: 100;
+}
+
+#suma {
+  font-size: 2.5rem;
+  margin: 1rem 0;
+  font-weight: bold;
+  color: #2cad20;
+}
+
+.contador1 {
+  border: 2px solid #fff;
+  border-radius: 10px;
+  margin: 1%;
+  text-align: center;
+  padding: 1rem;
+}
+
+.btn {
+  padding: 1rem 2rem;
+  margin: 0.5rem auto;
+  font-size: 1rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.1s;
+  width: 100%;
+  text-transform: uppercase;
+}
+
+.btn-aceptar { background-color: #1b8917; color: white; }
+
+.contenedor {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  margin: 0rem 0;
+}
+
+footer {
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.logoDisruptive {
+  width: 100px;
+  height: auto;
+}
+
+.contenedore {
+display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row-reverse;
+    align-items: center;
+}
+
+#fecha {
+  font-size: 1.1rem;
+  text-transform: uppercase;
+}
+
+.sidebar {
+  height: 100%;
+  width: 70%;
+  position: fixed;
+  top: 0;
+  left: -100%;
+  background-color: rgba(22, 22, 22, 0.95);
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  transition: 0.3s ease;
+  z-index: 1000;
+}
+
+.sidebar.visible {
+  left: 0;
+}
+
+.sidebar .logoDisruptive {
+  margin: 1rem auto;
+}
+
+.menu-link {
+  background-color: #ffffffd4;
+  color: black;
+  display: block;
+  text-align: center;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+input[type="number"],
+input {
+  width: 95%;
+  padding: 1%;
+  border-radius: 6px;
+  margin: 1%;
+  font-size: 1rem;
+  height: 2rem;
+}
+
+label {
+}
+
+.botones-materiales {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 4%;
+}
+
+.botones-materiales button {
+  font-size: 0.9rem;
+  padding: 0.5rem;
+  flex: 1 1 45%;
+  min-width: 120px;
+  border-radius: 6px;
+}
+
+.boton-activo {
+  background-color: rgb(34, 107, 140);
+  color: white;
+}
+
+.info-toggle-container {
+  margin-top: 20px;
+}
+
+.btn-info-toggle {
+  background-color: #575756;
+  color: white;
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+}
+
+.btn-info-toggle:hover {
+  background-color: #1e507ec9;
+}
+
+.info-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease-in-out, padding 0.3s ease;
+  background-color: rgba(255, 255, 255, 0.08);
+  color: white;
+  border-radius: 10px;
+  padding: 0 15px;
+  font-size: 0.9rem;
+}
+
+.info-content.open {
+  max-height: 500px;
+  padding: 15px;
+}
+  .columnas{
+
+  }
+
+/* ======== ESTILOS PARA PANTALLAS GRANDES (DESKTOP) ======== */
+@media (min-width: 768px) {
+
+  .contenedor{
+    
+  }
+
+  .columnas{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  margin: 1% auto;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+  }
+
+  #contador {
+    font-size: 3.5rem;
+  }
+
+  .btn {
+    font-size: 1.1rem;
+    width: 60%;
+  }
+
+  .contenedore {
+    justify-content: space-between;
+    
+  }
+
+  .sidebar {
+    width: 260px;
+  }
+
+  .logoDisruptive {
+    width: 150px;
+  }
+
+  .botones-materiales button {
+    font-size: 1rem;
+    min-width: 150px;
+            border-radius: 5px
+  }
+
+  input[type="number"],
+  input {
+    font-size: 1.1rem;
+    width: 95%;
+  }
+
+  .info-content {
+    font-size: 1rem;
+  }
+
+.contenedores {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        margin: 1rem auto;
+        padding: 0rem;
+        width: 60%;
+    }
+
+    .fila{
+      display: flex;
+
+    }
+
+    .info-toggle-container {
+  margin-top: 20px;
+  margin: 1%;
+}
+}
+
