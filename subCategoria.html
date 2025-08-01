@@ -3,9 +3,13 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Catálogo</title>
+    <title>Disruptive Stickers</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="LOGO + sombra.png">
     <link rel="stylesheet" href="estilos.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -15,8 +19,10 @@
         </div>
         <button class="navbar-toggle" id="navbar-toggle">&#9776;</button>
         <ul class="navbar-links" id="navbar-links">
-            <li><a href="#">Inicio</a></li>
-            <li><a href="#">Categorías</a></li>
+            <li><a href="paginaPrincipal.html">Inicio</a></li>
+            <li><a href="categorias.html">Categorías</a></li>
+            <li><a href="#info-combos">Perzonalizados</a></li>
+            <li><a href="#contacto">Contacto</a></li>
         </ul>
         <div class="navbar-user">
             <button class="carrito-btn" onclick="window.location.href='carrito.html'"><img src="carrito.png"
@@ -25,21 +31,47 @@
     </nav>
 
     <main>
-        <div class="pi" style="margin-block-end: 5%;">
-            <button style="margin: 0px 10px 0px 0;width: 30%;    height: auto;" onclick="window.history.back()"
-                class="btn-volver">← Volver</button>
 
-            <h1 id="categoria-titulo">Catálogo</h1>
+        <a style="text-decoration: none;" href="categorias.html">
+            <h2>Anime</h2>
+        </a>
+        <div class="categorias">
+            <a class="botonCategoria" href="catalogo.html?cat=imagenes"><img src="AnimerBTN.svg" alt=""></a>
+            <a class="botonCategoria" href="catalogo.html?cat=imagenes"><img src="/anime/97EF08C1.png" alt=""></a>
+            <a class="botonCategoria" href="catalogo.html?cat=imagenes"><img src="/anime/97EF08C2.png" alt=""></a>
+            <a class="botonCategoria" href="catalogo.html?cat=imagenes"><img src="/anime/97EF08C3.png" alt=""></a>
+            <a class="botonCategoria" href="catalogo.html?cat=imagenes"><img src="/anime/97EF08C4.png" alt=""></a>
+            <a class="botonCategoria" href="catalogo.html?cat=imagenes"><img src="/anime/97EF08C6.png" alt=""></a>
+            <a class="botonCategoria" href="catalogo.html?cat=imagenes"><img src="/anime/97EF08C7.png" alt=""></a>
+            <a class="botonCategoria" href="catalogo.html?cat=imagenes"><img src="/anime/97EF08CD.png" alt=""></a>
+            <a class="botonCategoria" href="catalogo.html?cat=imagenes"><img src="/anime/97EF08CE.png" alt=""></a>
+            <a class="botonCategoria" href="catalogo.html?cat=imagenes"><img src="/anime/97EF08CF.png" alt=""></a>
+            <a class="botonCategoria" href="catalogo.html?cat=imagenes"><img src="/anime/F58C43E4.png" alt=""></a>
+            <a class="botonCategoria" href="catalogo.html?cat=imagenes"><img src="/anime/F58C43E5.png" alt=""></a>
+            <a class="botonCategoria" href="catalogo.html?cat=imagenes"><img src="/anime/F58C43E6.png" alt=""></a>
+            <a class="botonCategoria" href="catalogo.html?cat=imagenes"><img src="/anime/F58C43EA.png" alt=""></a>
+            <a class="botonCategoria" href="catalogo.html?cat=imagenes"><img src="/anime/F58C43ED.png" alt=""></a>
+            <a class="botonCategoria" href="catalogo.html?cat=imagenes"><img src="/anime/F58C43FA.png" alt=""></a>
+            <a class="botonCategoria" href="catalogo.html?cat=imagenes"><img src="/anime/F58C43FB.png" alt=""></a>
+            <a class="botonCategoria" href="catalogo.html?cat=imagenes"><img src="/anime/F58C43FC.png" alt=""></a>
+            <a class="botonCategoria" href="catalogo.html?cat=imagenes"><img src="/anime/F58C43FD.png" alt=""></a>
+            <a class="botonCategoria" href="catalogo.html?cat=imagenes"><img src="/anime/F58C43FE.png" alt=""></a>
+            <a class="botonCategoria" href="catalogo.html?cat=imagenes"><img src="/anime/F58C440F.png" alt=""></a>
         </div>
 
+        <h2>Los mas vendidos</h2>
         <div class="productos-container" id="productos-container">
-            <!-- Productos se cargarán aquí -->
+            <!-- Aquí se cargan los productos automáticamente -->
         </div>
+
     </main>
+
+
 
     <div class="cart-timeline">
         <div class="cart-info">
             <span>Total: $<span id="cart-total">0</span></span>
+            <span>Seleccionados: <span id="cart-cantidad">0</span></span>
             <span>Cada uno: $<span id="cart-unitario">400</span></span>
             <span id="cart-message">Te faltan 20 para mejorar el precio!</span>
         </div>
@@ -50,6 +82,8 @@
                 alt="">Enviar pedido por WhatsApp</button>
     </div>
 
+
+
     <div id="footer-placeholder"></div>
 
     <script>
@@ -59,6 +93,7 @@
                 document.getElementById('footer-placeholder').innerHTML = data;
             })
             .catch(err => console.error('Error al cargar footer:', err));
+
 
         let lastScrollTop = 0;
         const navbar = document.querySelector('.navbar');
@@ -90,20 +125,38 @@
             lastScrollEnd = scrollTop <= 0 ? 0 : scrollTop;
         });
 
+
+
+        document.querySelector('a[href="#info-combos"]').addEventListener('click', function (e) {
+            e.preventDefault();
+            document.getElementById('info-combos').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        document.querySelector('a[href="#contacto"]').addEventListener('click', function (e) {
+            e.preventDefault();
+            document.getElementById('contacto').scrollIntoView({ behavior: 'smooth' });
+        });
+
+
         document.getElementById('navbar-toggle').onclick = function () {
             document.getElementById('navbar-links').classList.toggle('active');
         };
 
-        let carrito = {};
+        let carrito = {}; // clave = código, valor = cantidad
+
         const maxTotal = 8000;
         const precioBase = 400;
         const precioDescuento = 300;
 
+        // Cargar carrito desde localStorage
         function cargarCarritoGuardado() {
             const guardado = localStorage.getItem('carrito');
-            if (guardado) carrito = JSON.parse(guardado);
+            if (guardado) {
+                carrito = JSON.parse(guardado);
+            }
         }
 
+        // Guardar carrito en localStorage
         function guardarCarrito() {
             localStorage.setItem('carrito', JSON.stringify(carrito));
         }
@@ -115,11 +168,13 @@
 
             document.getElementById('cart-total').textContent = total;
             document.getElementById('cart-unitario').textContent = precioUnitario;
+            document.getElementById('cart-cantidad').textContent = cantidadTotal;
 
-            document.getElementById('cart-message').textContent =
-                cantidadTotal >= 20
-                    ? "¡Precio mejorado!"
-                    : `Te faltan ${20 - cantidadTotal} para mejorar el precio!`;
+            if (cantidadTotal >= 20) {
+                document.getElementById('cart-message').textContent = "¡Precio mejorado!";
+            } else {
+                document.getElementById('cart-message').textContent = "Te faltan " + (20 - cantidadTotal) + " para mejorar el precio!";
+            }
 
             document.getElementById('cart-bar').style.width = Math.min((total / maxTotal) * 100, 100) + '%';
         }
@@ -134,7 +189,9 @@
         function quitarProducto(codigo) {
             if (carrito[codigo]) {
                 carrito[codigo]--;
-                if (carrito[codigo] <= 0) delete carrito[codigo];
+                if (carrito[codigo] <= 0) {
+                    delete carrito[codigo];
+                }
             }
             guardarCarrito();
             actualizarBoton(codigo);
@@ -152,6 +209,7 @@
                 <button class="btn-sumar">+</button>
                 <button class="btn-restar">-</button>
             `;
+
                     btnContenedor.querySelector('.btn-sumar').onclick = () => agregarProducto(codigo);
                     btnContenedor.querySelector('.btn-restar').onclick = () => quitarProducto(codigo);
                 } else {
@@ -162,7 +220,7 @@
         }
 
         function enviarPorWhatsApp() {
-            const numero = '5491123935400';
+            const numero = '5491123935400'; // CAMBIAR por tu número real
             const cantidadTotal = Object.values(carrito).reduce((a, b) => a + b, 0);
             const precioUnitario = cantidadTotal >= 20 ? precioDescuento : precioBase;
             const total = cantidadTotal * precioUnitario;
@@ -175,19 +233,20 @@
             const url = `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
             window.open(url, '_blank');
         }
+        function infoenviarPorWhatsApp() {
+            const numero = '5491123935400'; // CAMBIAR por tu número real
+            const mensaje = `Hola!\n\nEstoy interesado en los combos mayoristas y precios por mayor.\n\nPor favor, envíame más información.`;
+            const url = `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
+            window.open(url, '_blank');
+        }
 
-        // --------- CARGA DINÁMICA ---------
-        const params = new URLSearchParams(window.location.search);
-        const categoria = params.get('cat') || 'imagenes';
 
-        document.getElementById('categoria-titulo').textContent = categoria.toUpperCase();
-
-        fetch(`${categoria}.json`)
+        // Cargar productos y restaurar estado del carrito
+        fetch('imagenes.json')
             .then(res => res.json())
             .then(imagenes => {
                 cargarCarritoGuardado();
                 const contenedor = document.getElementById('productos-container');
-
                 imagenes.forEach(nombre => {
                     const div = document.createElement('div');
                     div.className = 'product-card';
@@ -204,10 +263,10 @@
                     div.appendChild(btnContainer);
                     contenedor.appendChild(div);
 
-                    actualizarBoton(nombre);
+                    actualizarBoton(nombre); // Importante: actualiza el botón según el carrito
                 });
 
-                calcularTotales();
+                calcularTotales(); // Al terminar de cargar todo
             });
     </script>
 </body>

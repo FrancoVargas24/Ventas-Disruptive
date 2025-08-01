@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Tienda Online</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="estilos.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <nav class="navbar">
+    <div class="navbar-logo">
+      <a href="paginaPrincipal.html"><img src="LOGO + sombra.png" alt="Logo" /></a>
+    </div>
+    <button class="navbar-toggle" id="navbar-toggle">&#9776;</button>
+    <ul class="navbar-links" id="navbar-links">
+      <li><a href="#">Inicio</a></li>
+      <li><a href="#">Categorías</a></li>
+    </ul>
+    <div class="navbar-user">
+      <button style="margin: 0px 0 0px 0;" onclick="window.history.back()" class="btn-volver">← Volver</button>
+    </div>
+  </nav>
+
+  <main>
+    <div class="contenedor">
+      <h2 id="categoria-titulo">Carrito</h2>
+
+    </div>
+
+    <div class="productos-container">
+      <div class="productos-container" id="carrito-contenido" style="">
+      </div>
+    </div>
+    <div class="cart-timeline">
+      <div id="carrito-total" style="font-size: 130%;"></div>
+      <button class="botonWhatsApp" onclick="enviarPorWhatsApp()" style="margin-top:10px;"><img src="wp.png"
+          alt="">Enviar pedido por WhatsApp</button>
+    </div>
+    </div>
+
+
+  </main>
+  <div id="footer-placeholder"></div>
+
+  <script>
+    fetch('footer.html') // o 'componentes/footer.html' si lo tenés en una carpeta
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById('footer-placeholder').innerHTML = data;
+      })
+      .catch(err => console.error('Error al cargar footer:', err));
+
+
+
+    document.getElementById('navbar-toggle').onclick = function () {
+      document.getElementById('navbar-links').classList.toggle('active');
+    };
+
+    const precioBase = 400;
+    const precioDescuento = 300;
+    let carrito = JSON.parse(localStorage.getItem('carrito') || '{}');
+
+    function guardarCarrito() {
+      localStorage.setItem('carrito', JSON.stringify(carrito));
+    }
+
+    function calcularTotal() {
+      const cantidadTotal = Object.values(carrito).reduce((a, b) => a + b, 0);
+      const precioUnitario = cantidadTotal >= 20 ? precioDescuento : precioBase;
+      const total = cantidadTotal * precioUnitario;
+
+      document.getElementById('carrito-total').textContent =
+        `Total: $${total} (${cantidadTotal} productos, $${precioUnitario} c/u)`;
+    }
+
+    function actualizarVista() {
+      const contenedor = document.getElementById('carrito-contenido');
+      contenedor.innerHTML = '';
+
+      Object.entries(carrito).forEach(([codigo, cantidad]) => {
+        const div = document.createElement('div');
+        div.className = 'product-card';
+
+        const img = document.createElement('img');
+        img.src = 'stickers/' + codigo;
+        img.alt = codigo;
+
+        const contador = document.createElement('div');
+        contador.style.marginTop = '10px';
+
+        const cantidadSpan = document.createElement('span');
+        cantidadSpan.textContent = `Cantidad: ${cantidad}`;
+        cantidadSpan.style.display = 'block';
+        cantidadSpan.style.marginBottom = '8px';
+
+        const btnMas = document.createElement('button');
+        btnMas.textContent = '+';
+        btnMas.style.marginRight = '10px';
+        btnMas.onclick = () => {
+          carrito[codigo]++;
+          guardarCarrito();
+          actualizarVista();
+        };
+
+        const btnMenos = document.createElement('button');
+        btnMenos.textContent = '−';
+        btnMenos.onclick = () => {
+          carrito[codigo]--;
+          if (carrito[codigo] <= 0) {
+            delete carrito[codigo];
+          }
+          guardarCarrito();
+          actualizarVista();
+        };
+
+        contador.appendChild(cantidadSpan);
+        contador.appendChild(btnMas);
+        contador.appendChild(btnMenos);
+
+        div.appendChild(img);
+        div.appendChild(contador);
+        contenedor.appendChild(div);
+      });
+
+      calcularTotal();
+    }
+
+    function enviarPorWhatsApp() {
+      const numero = '5491123935400'; // tu número real
+      const cantidadTotal = Object.values(carrito).reduce((a, b) => a + b, 0);
+      const precioUnitario = cantidadTotal >= 20 ? precioDescuento : precioBase;
+      const total = cantidadTotal * precioUnitario;
+
+      const lista = Object.entries(carrito)
+        .map(([codigo, cant]) => `${codigo} x${cant}`)
+        .join(', ');
+
+      const mensaje = `Hola! Quiero pedir:\n\n${lista}\n\nCantidad total: ${cantidadTotal}\nPrecio unitario: $${precioUnitario}\nTotal: $${total}`;
+      const url = `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
+      window.open(url, '_blank');
+    }
+
+    actualizarVista();
+  </script>
+</body>
+
+</html>

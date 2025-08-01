@@ -1,7 +1,5 @@
 body {
   background-color: rgb(22, 22, 22);
-  background-image: url(123123.png);
-  padding: 1rem;
   display: flex;
   justify-content: center;
   align-content: center;
@@ -10,9 +8,15 @@ body {
   color: white;
 }
 
+.columna{
+  display: flex
+;
+    flex-direction: column;
+    align-items: center;
+}
+
 h1 {
   margin-bottom: 1rem;
-  font-family: "bebas-neue", sans-serif;
   font-weight: 400;
   font-style: normal;
   font-size: 250%;
@@ -126,11 +130,12 @@ h1 {
 }
 
 .contenedor {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    width: 41%;
 }
 
 footer {
@@ -150,6 +155,13 @@ footer {
   display: flex;
   justify-content: space-evenly;
   flex-direction: row-reverse;
+}
+
+.contenedores{
+  display: flex;
+    justify-content: center;
+    flex-direction: column;
+    width: 35%;
 }
 
 #fecha {
@@ -327,7 +339,6 @@ button {
     display: flex;
     gap: 1px;
     justify-content: center;
-    padding: 4%;
 }
 
 .botones-materiales button {
