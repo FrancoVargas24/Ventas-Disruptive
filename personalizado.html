@@ -31,10 +31,10 @@
                 <div class="contenedor">
                     <label for="material">Material:</label>
                     <div class="botones-materiales">
-                        <button class="material boton-activo" onclick="setMaterial(400, this)">Blanco básico</button>
-                        <button class="material" onclick="setMaterial(800, this)">Holográfico</button>
-                        <button class="material" onclick="setMaterial(500, this)">Clear</button>
-                        <button class="material" onclick="setMaterial(1000, this)">Especiales</button>
+                        <button style="font-size:20px;" class="material boton-activo" onclick="setMaterial(400, this)">Blanco básico</button>
+                        <button style="font-size:20px;" class="material" onclick="setMaterial(800, this)">Holográfico</button>
+                        <button style="font-size:20px;" class="material" onclick="setMaterial(500, this)">Clear</button>
+                        <button style="font-size:20px;" class="material" onclick="setMaterial(1000, this)">Especiales</button>
                     </div>
                 </div>
                 <div class="contenedor">
@@ -52,6 +52,13 @@
                     <input type="number" id="cantidad" placeholder="Cantidad requerida">
 
                     <label for="dimensiones">Dimensiones:</label>
+                    <!-- Botones rápidos medidas -->
+                    <div class="botones-materiales"
+                        style="flex-direction: row;    justify-content: space-between;     margin-block-end: 2%;">
+                        <button class="material" style="padding: 8px 25px;" onclick="setMedidas(6,6)">6x6cm</button>
+                        <button class="material" style="padding: 8px 25px;" onclick="setMedidas(5,5)">5x5cm</button>
+                        <button class="material" style="padding: 8px 25px;" onclick="setMedidas(4,4)">4x4cm</button>
+                    </div>
                     <div class="contenedore">
                         <input type="number" id="ancho" placeholder="Ancho en centímetros">
                         <input type="number" id="alto" placeholder="Alto en centímetros">
@@ -103,6 +110,10 @@
             const mensaje = `¡Hola! Quiero pedir un presupuesto personalizado:\n\n- Cantidad: ${cantidad}\n- Medidas: ${ancho}cm x ${alto}cm\n- Material: ${material}\n\n¿Me pasás los tiempos de produccion y cómo seguir?`;
             const url = `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
             window.open(url, '_blank');
+        }
+        function setMedidas(ancho, alto) {
+            document.getElementById("ancho").value = ancho;
+            document.getElementById("alto").value = alto;
         }
 
         let valorMaterial = 0;
