@@ -110,7 +110,7 @@ h3 {
     background: #28a745;
     color: #fff;
     border: none;
-    padding: 8px 11px;
+    padding: 8px 10px;
     border-radius: 5px;
     cursor: pointer;
     transition: background 0.2s;
@@ -326,7 +326,7 @@ h3 {
 
 @media (max-width: 768px) {
     .productos-container {
-        gap: 10px;
+        gap: 5px;
         display: flex;
         flex-wrap: wrap;
         flex-direction: row;
@@ -335,6 +335,10 @@ h3 {
     .product-card {
         margin: 0 0 15px 0;
         display: flex;
+    }
+
+    .productos-container span{
+        font-size: 14px;
     }
 }
 
@@ -794,5 +798,15 @@ input[type="number"] {
     .contenedore {
         flex-direction: column;
         gap: 8px;
+    }
+}
+
+.categoria-titulo {
+    margin-right: 80%;
+}
+
+@media (max-width: 768px) {
+    .categoria-titulo {
+        margin-right: 30%;
     }
 }

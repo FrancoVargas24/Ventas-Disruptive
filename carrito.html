@@ -27,8 +27,13 @@
   </nav>
 
   <main>
-    <div class="contenedor">
-      <h2 id="categoria-titulo">Carrito</h2>
+    
+    <div style="display: flex;" class="contenedor">
+      
+      <h2 class="categoria-titulo" id="categoria-titulo">Carrito</h2>
+      <button class="botonWhatsApp" onclick="vaciarCarrito()" style="margin-top:10px; background:#a83232;">
+    🗑 Vaciar carrito
+  </button>
 
     </div>
 
@@ -48,6 +53,15 @@
   <div id="footer-placeholder"></div>
 
   <script>
+ function vaciarCarrito() {
+  if (confirm("¿Está seguro que quiere vaciar todo el carrito?")) {
+    carrito = {};               // vaciar objeto
+    guardarCarrito();           // limpiar en localStorage
+    actualizarVista();          // refrescar la vista
+  }
+}
+
+
     fetch('footer.html') // o 'componentes/footer.html' si lo tenés en una carpeta
       .then(res => res.text())
       .then(data => {
