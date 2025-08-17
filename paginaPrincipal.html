@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="estilos.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet"> 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 </head>
 
@@ -286,6 +289,14 @@
 
                 calcularTotales(); // Al terminar de cargar todo
             });
+
+            // Cerrar el menú al hacer click en un link
+document.querySelectorAll('#navbar-links a').forEach(link => {
+    link.addEventListener('click', () => {
+        document.getElementById('navbar-links').classList.remove('active');
+    });
+});
+
     </script>
 
 
