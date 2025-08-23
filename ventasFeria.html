@@ -34,7 +34,7 @@
 
 
   </div>
-  <h1>Ventas de Stickers</h1>
+  <h1 style="font-family: 'bebas neue', sans-serif;">Ventas de Stickers</h1>
 
   <select id="vendedor" class="btn">
     <option value="Franco">Franco</option>
@@ -51,7 +51,7 @@
     <div id="contador">0</div>
     <div id="suma">0</div>
   </div>
-  <div class="contenedor">
+  <div  class="contenedor">
     <div class="del1al10">
       <button class="btn btn-restar" onclick="sumar(-1)">-1</button>
       <button class="btn btn-sumar1" onclick="sumar(1)">+1</button>
@@ -77,16 +77,9 @@
   </p>
 
 
-  <div id="footer-placeholder"></div>
 
   <script>
-    fetch('footer.html') // o 'componentes/footer.html' si lo tenés en una carpeta
-      .then(res => res.text())
-      .then(data => {
-        document.getElementById('footer-placeholder').innerHTML = data;
-      })
-      .catch(err => console.error('Error al cargar footer:', err));
-
+    
     // Abrir el menú al tocar el logo
     document.getElementById("abrirMenu").addEventListener("click", function () {
       document.getElementById("sidebar").classList.add("visible");
