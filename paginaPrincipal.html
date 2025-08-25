@@ -22,11 +22,10 @@
         </div>
         <button class="navbar-toggle" id="navbar-toggle">&#9776;</button>
         <ul class="navbar-links" id="navbar-links">
-            <li><a href="paginaPrincipal.html">Inicio</a></li>
-            <li><a href="categorias.html">Categorías</a></li>
+            <li><a href="subCategoria.html">Categorías</a></li>
             <li><a href="#info-combos">Perzonalizados</a></li>
             <li><a href="#">Seguridad e higiene</a></li>
-            <li><a href="#">Información</a></li>
+            <li><a href="#contacto">Contacto</a></li>
         </ul>
         <div class="navbar-user">
             <button class="carrito-btn" onclick="window.location.href='carrito.html'"><img src="carrito.png"
@@ -45,7 +44,7 @@
 
 
 
-        <a style="text-decoration: none;" href="categorias.html">
+        <a style="text-decoration: none;" href="subCategoria.html">
             <h2>Categorías</h2>
         </a>
         <div class="categorias">
@@ -54,7 +53,6 @@
             <a class="botonCategoria" href="catalogo.html?cat=imagenes"> <img  src="AnimerBTN.svg" alt=""></a>
             <a class="botonCategoria" href="catalogo.html?cat=imagenes"> <img  src="AnimerBTN.svg" alt=""></a>
             <a class="botonCategoria" href="catalogo.html?cat=imagenes"> <img  src="AnimerBTN.svg" alt=""></a>
-
         </div>
 
         <h2>Los mas vendidos</h2>
@@ -105,6 +103,11 @@
     </div>
 
     <script>
+
+         document.querySelector('a[href="#contacto"]').addEventListener('click', function (e) {
+            e.preventDefault();
+            document.getElementById('contacto').scrollIntoView({ behavior: 'smooth' });
+        });
         fetch('footer.html') // o 'componentes/footer.html' si lo tenés en una carpeta
             .then(res => res.text())
             .then(data => {

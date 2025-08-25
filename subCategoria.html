@@ -20,8 +20,6 @@
         <button class="navbar-toggle" id="navbar-toggle">&#9776;</button>
         <ul class="navbar-links" id="navbar-links">
             <li><a href="paginaPrincipal.html">Inicio</a></li>
-            <li><a href="categorias.html">Categorías</a></li>
-            <li><a href="#info-combos">Perzonalizados</a></li>
             <li><a href="#contacto">Contacto</a></li>
         </ul>
         <div class="navbar-user">
@@ -32,7 +30,7 @@
 
     <main>
 
-        <a style="text-decoration: none;" href="categorias.html">
+        <a style="text-decoration: none;" href="subCategoria.html">
             <h2>Anime</h2>
         </a>
         <div class="categorias">
@@ -58,6 +56,7 @@
             <a class="botonCategoria" href="catalogo.html?cat=imagenes"><img src="anime/F58C43FE.png" alt=""></a>
             <a class="botonCategoria" href="catalogo.html?cat=imagenes"><img src="anime/F58C440F.png" alt=""></a>
         </div>
+
 
         <h2>Los mas vendidos</h2>
         <div class="productos-container" id="productos-container">
@@ -87,6 +86,10 @@
     <div id="footer-placeholder"></div>
 
     <script>
+        document.querySelector('a[href="#contacto"]').addEventListener('click', function (e) {
+            e.preventDefault();
+            document.getElementById('contacto').scrollIntoView({ behavior: 'smooth' });
+        });
         fetch('footer.html') // o 'componentes/footer.html' si lo tenés en una carpeta
             .then(res => res.text())
             .then(data => {
@@ -132,10 +135,7 @@
             document.getElementById('info-combos').scrollIntoView({ behavior: 'smooth' });
         });
 
-        document.querySelector('a[href="#contacto"]').addEventListener('click', function (e) {
-            e.preventDefault();
-            document.getElementById('contacto').scrollIntoView({ behavior: 'smooth' });
-        });
+
 
 
         document.getElementById('navbar-toggle').onclick = function () {
@@ -242,7 +242,7 @@
 
 
         // Cargar productos y restaurar estado del carrito
-        fetch('imagenes.json')
+        fetch('masVendidos.json')
             .then(res => res.json())
             .then(imagenes => {
                 cargarCarritoGuardado();

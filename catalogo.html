@@ -15,8 +15,9 @@
         </div>
         <button class="navbar-toggle" id="navbar-toggle">&#9776;</button>
         <ul class="navbar-links" id="navbar-links">
-            <li><a href="#">Inicio</a></li>
-            <li><a href="#">Categorías</a></li>
+            <li><a href="paginaPrincipal.html">Inicio</a></li>
+            <li><a href="subCategoria.html">Categorías</a></li>
+            <li><a href="#contacto">Contacto</a></li>
         </ul>
         <div class="navbar-user">
             <button class="carrito-btn" onclick="window.location.href='carrito.html'"><img src="carrito.png"
@@ -53,6 +54,10 @@
     <div id="footer-placeholder"></div>
 
     <script>
+        document.querySelector('a[href="#contacto"]').addEventListener('click', function (e) {
+            e.preventDefault();
+            document.getElementById('contacto').scrollIntoView({ behavior: 'smooth' });
+        });
         fetch('footer.html') // o 'componentes/footer.html' si lo tenés en una carpeta
             .then(res => res.text())
             .then(data => {
