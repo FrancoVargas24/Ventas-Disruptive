@@ -28,7 +28,10 @@ h3 {
     margin: auto;
     margin-left: 20px;
     margin-top: 1%;
+    font-size: xx-large;
 }
+
+
 
 .registro-container {
     background: #ffffff;
@@ -149,7 +152,7 @@ h3 {
 }
 
 .navbar-links {
-    display: none;
+    display: flex;
     gap: 50px;
     list-style: none;
     margin: 0;
@@ -471,16 +474,16 @@ h3 {
 
     .botonCategoria {
         flex: 0 0 auto;
-        min-width: 160px;
-        max-width: 180px;
+        min-width: 154px;
+        max-width: 154px;
         margin-left: 0 !important;
+        height: 75px;
     }
 
     .botonCategoria img {
         width: 100%;
-        min-width: 160px;
-        max-width: 180px;
-        height: 95px;
+        min-width: 154px;
+        max-width: 154px;
         border-radius: 10px;
         object-fit: cover;
         display: block;
@@ -511,6 +514,9 @@ h3 {
     h2 {
         margin-top: 3%;
     }
+    .botonCategoria img {
+    height: auto;
+}
 }
 
 .botonCategoria:hover {
