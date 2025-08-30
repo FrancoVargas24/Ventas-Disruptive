@@ -5,20 +5,21 @@
     <meta charset="UTF-8">
     <title>Disruptive Stickers</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" type="image/png" href="LOGO + sombra.png">
-    <link rel="stylesheet" href="estilos.css">
+    <link rel="icon" type="image/png" href="iconos/LOGO + sombra.png">
+    <link rel="stylesheet" href="css/estilos.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <script src="script.js" defer></script>
 </head>
 
 <body>
     <nav class="navbar">
         <div class="navbar-logo">
-            <a href="paginaPrincipal.html"><img src="LOGO + sombra.png" alt="Logo" /></a>
+            <a href="paginaPrincipal.html"><img src="iconos/LOGO + sombra.png" alt="Logo" /></a>
         </div>
         <button class="navbar-toggle" id="navbar-toggle">&#9776;</button>
         <ul class="navbar-links" id="navbar-links">
@@ -28,7 +29,7 @@
             <li><a href="#contacto">Contacto</a></li>
         </ul>
         <div class="navbar-user">
-            <button class="carrito-btn" onclick="window.location.href='carrito.html'"><img src="carrito.png"
+            <button class="carrito-btn" onclick="window.location.href='carrito.html'"><img src="iconos/carrito.png"
                     alt=""></button>
         </div>
     </nav>
@@ -48,11 +49,8 @@
             <h2>Categorías</h2>
         </a>
         <div class="categorias">
-            <a class="botonCategoria" href="catalogo.html?cat=imagenes"> <img  src="AnimerBTN.svg" alt=""></a>
-            <a class="botonCategoria" href="catalogo.html?cat=imagenes"> <img  src="AnimerBTN.svg" alt=""></a>
-            <a class="botonCategoria" href="catalogo.html?cat=imagenes"> <img  src="AnimerBTN.svg" alt=""></a>
-            <a class="botonCategoria" href="catalogo.html?cat=imagenes"> <img  src="AnimerBTN.svg" alt=""></a>
-            <a class="botonCategoria" href="catalogo.html?cat=imagenes"> <img  src="AnimerBTN.svg" alt=""></a>
+            <a class="botonCategoria" href="catalogo.html?cat= "><img src="categorias/aestetic/aesthetic.png"
+                    alt=""></a>
         </div>
 
         <h2>Los mas vendidos</h2>
@@ -93,7 +91,7 @@
         <div class="cart-progress">
             <div id="cart-bar"></div>
         </div>
-        <button class="botonWhatsApp" onclick="enviarPorWhatsApp()" style="margin-top:10px;"><img src="wp.png"
+        <button class="botonWhatsApp" onclick="enviarPorWhatsApp()" style="margin-top:10px;"><img src="iconos/wp.png"
                 alt="">Enviar pedido por WhatsApp</button>
     </div>
 
@@ -103,202 +101,48 @@
     </div>
 
     <script>
-
-         document.querySelector('a[href="#contacto"]').addEventListener('click', function (e) {
+        document.querySelector('a[href="#contacto"]').addEventListener('click', function (e) {
             e.preventDefault();
             document.getElementById('contacto').scrollIntoView({ behavior: 'smooth' });
         });
-        fetch('footer.html') // o 'componentes/footer.html' si lo tenés en una carpeta
+        fetch('footer.html')
             .then(res => res.text())
             .then(data => {
                 document.getElementById('footer-placeholder').innerHTML = data;
             })
             .catch(err => console.error('Error al cargar footer:', err));
 
-
-        let lastScrollTop = 0;
-        const navbar = document.querySelector('.navbar');
-
-        window.addEventListener('scroll', function () {
-            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            if (scrollTop > lastScrollTop) {
-                // Scroll hacia abajo: ocultar navbar
-                navbar.style.top = '-100px';
-            } else {
-                // Scroll hacia arriba: mostrar navbar
-                navbar.style.top = '0';
-            }
-            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-        });
-
-        let lastScrollEnd = 100;
-        const timeLine = document.querySelector('.cart-timeline');
-
-        window.addEventListener('scroll', function () {
-            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            if (scrollTop > lastScrollEnd) {
-                // Scroll hacia abajo: ocultar timeline
-                timeLine.style.bottom = '0px';
-            } else {
-                // Scroll hacia arriba: mostrar timeline
-                timeLine.style.bottom = '-150px';
-            }
-            lastScrollEnd = scrollTop <= 0 ? 0 : scrollTop;
-        });
-
-
-        let carruselIndex = 0;
-        const carrusel = document.getElementById('carrusel');
-        const totalImgs = carrusel.children.length;
-
-        setInterval(() => {
-            carruselIndex = (carruselIndex + 1) % totalImgs;
-            carrusel.style.transform = `translateX(-${carruselIndex * 100}%)`;
-        }, 5000);
-
         document.querySelector('a[href="#info-combos"]').addEventListener('click', function (e) {
             e.preventDefault();
             document.getElementById('info-combos').scrollIntoView({ behavior: 'smooth' });
         });
-
-
         document.getElementById('navbar-toggle').onclick = function () {
             document.getElementById('navbar-links').classList.toggle('active');
         };
 
-        let carrito = {}; // clave = código, valor = cantidad
-
-        const maxTotal = 8000;
-        const precioBase = 400;
-        const precioDescuento = 300;
-
-        // Cargar carrito desde localStorage
-        function cargarCarritoGuardado() {
-            const guardado = localStorage.getItem('carrito');
-            if (guardado) {
-                carrito = JSON.parse(guardado);
-            }
-        }
-
-        // Guardar carrito en localStorage
-        function guardarCarrito() {
-            localStorage.setItem('carrito', JSON.stringify(carrito));
-        }
-
-        function calcularTotales() {
-            const cantidadTotal = Object.values(carrito).reduce((a, b) => a + b, 0);
-            const precioUnitario = cantidadTotal >= 20 ? precioDescuento : precioBase;
-            const total = cantidadTotal * precioUnitario;
-
-            document.getElementById('cart-total').textContent = total;
-            document.getElementById('cart-unitario').textContent = precioUnitario;
-            document.getElementById('cart-cantidad').textContent = cantidadTotal;
-
-            if (cantidadTotal >= 20) {
-                document.getElementById('cart-message').textContent = "¡Precio mejorado!";
-            } else {
-                document.getElementById('cart-message').textContent = "Te faltan " + (20 - cantidadTotal) + " para mejorar el precio!";
-            }
-
-            document.getElementById('cart-bar').style.width = Math.min((total / maxTotal) * 100, 100) + '%';
-        }
-
-        function agregarProducto(codigo) {
-            carrito[codigo] = (carrito[codigo] || 0) + 1;
-            guardarCarrito();
-            actualizarBoton(codigo);
-            calcularTotales();
-        }
-
-        function quitarProducto(codigo) {
-            if (carrito[codigo]) {
-                carrito[codigo]--;
-                if (carrito[codigo] <= 0) {
-                    delete carrito[codigo];
-                }
-            }
-            guardarCarrito();
-            actualizarBoton(codigo);
-            calcularTotales();
-        }
-
-        function actualizarBoton(codigo) {
-            const btnContenedor = document.querySelector(`.btn-container[data-codigo="${codigo}"]`);
-            const cantidad = carrito[codigo] || 0;
-
-            if (btnContenedor) {
-                if (cantidad > 0) {
-                    btnContenedor.innerHTML = `
-                <span>Seleccionado (${cantidad})</span>
-                <button class="btn-sumar">+</button>
-                <button class="btn-restar">-</button>
-            `;
-
-                    btnContenedor.querySelector('.btn-sumar').onclick = () => agregarProducto(codigo);
-                    btnContenedor.querySelector('.btn-restar').onclick = () => quitarProducto(codigo);
-                } else {
-                    btnContenedor.innerHTML = `<button class="btn-agregar">Agregar</button>`;
-                    btnContenedor.querySelector('.btn-agregar').onclick = () => agregarProducto(codigo);
-                }
-            }
-        }
-
-        function enviarPorWhatsApp() {
-            const numero = '5491123935400'; // CAMBIAR por tu número real
-            const cantidadTotal = Object.values(carrito).reduce((a, b) => a + b, 0);
-            const precioUnitario = cantidadTotal >= 20 ? precioDescuento : precioBase;
-            const total = cantidadTotal * precioUnitario;
-
-            const lista = Object.entries(carrito)
-                .map(([codigo, cant]) => `${codigo} x${cant}`)
-                .join(', ');
-
-            const mensaje = `Hola! Quiero pedir:\n\n${lista}\n\nCantidad total: ${cantidadTotal}\nPrecio unitario: $${precioUnitario}\nTotal: $${total}`;
-            const url = `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
-            window.open(url, '_blank');
-        }
-        function infoenviarPorWhatsApp() {
-            const numero = '5491123935400'; // CAMBIAR por tu número real
-            const mensaje = `Hola!\n\nEstoy interesado en los combos mayoristas y precios por mayor.\n\nPor favor, envíame más información.`;
-            const url = `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
-            window.open(url, '_blank');
-        }
-
-
-        // Cargar productos y restaurar estado del carrito
-        fetch('imagenes.json')
+        // --- CARGA DE PRODUCTOS ---
+        fetch('json/masVendidos.json')
             .then(res => res.json())
             .then(imagenes => {
                 cargarCarritoGuardado();
                 const contenedor = document.getElementById('productos-container');
+                if (!contenedor) return;
                 imagenes.forEach(nombre => {
                     const div = document.createElement('div');
                     div.className = 'product-card';
-
                     const img = document.createElement('img');
                     img.src = 'stickers/' + nombre;
                     img.alt = 'Producto';
-
                     const btnContainer = document.createElement('div');
                     btnContainer.className = 'btn-container';
                     btnContainer.dataset.codigo = nombre;
-
                     div.appendChild(img);
                     div.appendChild(btnContainer);
                     contenedor.appendChild(div);
-
-                    actualizarBoton(nombre); // Importante: actualiza el botón según el carrito
+                    actualizarBoton(nombre);
                 });
-
-                calcularTotales(); // Al terminar de cargar todo
+                calcularTotales();
             });
-
-            // Cerrar el menú al hacer click en un link
-document.querySelectorAll('#navbar-links a').forEach(link => {
-    link.addEventListener('click', () => {
-        document.getElementById('navbar-links').classList.remove('active');
-    });
-});
 
     </script>
 

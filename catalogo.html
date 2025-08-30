@@ -3,15 +3,23 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Catálogo</title>
+    <title>Disruptive Stickers</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="estilos.css">
+    <link rel="icon" type="image/png" href="iconos/LOGO + sombra.png">
+    <link rel="stylesheet" href="css/estilos.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <script src="script.js" defer></script>
 </head>
 
 <body>
     <nav class="navbar">
         <div class="navbar-logo">
-            <a href="paginaPrincipal.html"><img src="LOGO + sombra.png" alt="Logo" /></a>
+            <a href="paginaPrincipal.html"><img src="iconos/LOGO + sombra.png" alt="Logo" /></a>
         </div>
         <button class="navbar-toggle" id="navbar-toggle">&#9776;</button>
         <ul class="navbar-links" id="navbar-links">
@@ -20,7 +28,7 @@
             <li><a href="#contacto">Contacto</a></li>
         </ul>
         <div class="navbar-user">
-            <button class="carrito-btn" onclick="window.location.href='carrito.html'"><img src="carrito.png"
+            <button class="carrito-btn" onclick="window.location.href='carrito.html'"><img src="iconos/carrito.png"
                     alt=""></button>
         </div>
     </nav>
@@ -47,147 +55,20 @@
         <div class="cart-progress">
             <div id="cart-bar"></div>
         </div>
-        <button class="botonWhatsApp" onclick="enviarPorWhatsApp()" style="margin-top:10px;"><img src="wp.png"
+        <button class="botonWhatsApp" onclick="enviarPorWhatsApp()" style="margin-top:10px;"><img src="iconos/wp.png"
                 alt="">Enviar pedido por WhatsApp</button>
     </div>
 
     <div id="footer-placeholder"></div>
 
     <script>
-        document.querySelector('a[href="#contacto"]').addEventListener('click', function (e) {
-            e.preventDefault();
-            document.getElementById('contacto').scrollIntoView({ behavior: 'smooth' });
-        });
-        fetch('footer.html') // o 'componentes/footer.html' si lo tenés en una carpeta
-            .then(res => res.text())
-            .then(data => {
-                document.getElementById('footer-placeholder').innerHTML = data;
-            })
-            .catch(err => console.error('Error al cargar footer:', err));
-
-        let lastScrollTop = 0;
-        const navbar = document.querySelector('.navbar');
-
-        window.addEventListener('scroll', function () {
-            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            if (scrollTop > lastScrollTop) {
-                // Scroll hacia abajo: ocultar navbar
-                navbar.style.top = '-100px';
-            } else {
-                // Scroll hacia arriba: mostrar navbar
-                navbar.style.top = '0';
-            }
-            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-        });
-
-        let lastScrollEnd = 100;
-        const timeLine = document.querySelector('.cart-timeline');
-
-        window.addEventListener('scroll', function () {
-            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            if (scrollTop > lastScrollEnd) {
-                // Scroll hacia abajo: ocultar timeline
-                timeLine.style.bottom = '0px';
-            } else {
-                // Scroll hacia arriba: mostrar timeline
-                timeLine.style.bottom = '-150px';
-            }
-            lastScrollEnd = scrollTop <= 0 ? 0 : scrollTop;
-        });
-
-        document.getElementById('navbar-toggle').onclick = function () {
-            document.getElementById('navbar-links').classList.toggle('active');
-        };
-
-        let carrito = {};
-        const maxTotal = 8000;
-        const precioBase = 400;
-        const precioDescuento = 300;
-
-        function cargarCarritoGuardado() {
-            const guardado = localStorage.getItem('carrito');
-            if (guardado) carrito = JSON.parse(guardado);
-        }
-
-        function guardarCarrito() {
-            localStorage.setItem('carrito', JSON.stringify(carrito));
-        }
-
-        function calcularTotales() {
-            const cantidadTotal = Object.values(carrito).reduce((a, b) => a + b, 0);
-            const precioUnitario = cantidadTotal >= 20 ? precioDescuento : precioBase;
-            const total = cantidadTotal * precioUnitario;
-
-            document.getElementById('cart-total').textContent = total;
-            document.getElementById('cart-unitario').textContent = precioUnitario;
-
-            document.getElementById('cart-message').textContent =
-                cantidadTotal >= 20
-                    ? "¡Precio mejorado!"
-                    : `Te faltan ${20 - cantidadTotal} para mejorar el precio!`;
-
-            document.getElementById('cart-bar').style.width = Math.min((total / maxTotal) * 100, 100) + '%';
-        }
-
-        function agregarProducto(codigo) {
-            carrito[codigo] = (carrito[codigo] || 0) + 1;
-            guardarCarrito();
-            actualizarBoton(codigo);
-            calcularTotales();
-        }
-
-        function quitarProducto(codigo) {
-            if (carrito[codigo]) {
-                carrito[codigo]--;
-                if (carrito[codigo] <= 0) delete carrito[codigo];
-            }
-            guardarCarrito();
-            actualizarBoton(codigo);
-            calcularTotales();
-        }
-
-        function actualizarBoton(codigo) {
-            const btnContenedor = document.querySelector(`.btn-container[data-codigo="${codigo}"]`);
-            const cantidad = carrito[codigo] || 0;
-
-            if (btnContenedor) {
-                if (cantidad > 0) {
-                    btnContenedor.innerHTML = `
-                <span>Seleccionado (${cantidad})</span>
-                <button class="btn-sumar">+</button>
-                <button class="btn-restar">-</button>
-            `;
-                    btnContenedor.querySelector('.btn-sumar').onclick = () => agregarProducto(codigo);
-                    btnContenedor.querySelector('.btn-restar').onclick = () => quitarProducto(codigo);
-                } else {
-                    btnContenedor.innerHTML = `<button class="btn-agregar">Agregar</button>`;
-                    btnContenedor.querySelector('.btn-agregar').onclick = () => agregarProducto(codigo);
-                }
-            }
-        }
-
-        function enviarPorWhatsApp() {
-            const numero = '5491123935400';
-            const cantidadTotal = Object.values(carrito).reduce((a, b) => a + b, 0);
-            const precioUnitario = cantidadTotal >= 20 ? precioDescuento : precioBase;
-            const total = cantidadTotal * precioUnitario;
-
-            const lista = Object.entries(carrito)
-                .map(([codigo, cant]) => `${codigo} x${cant}`)
-                .join(', ');
-
-            const mensaje = `Hola! Quiero pedir:\n\n${lista}\n\nCantidad total: ${cantidadTotal}\nPrecio unitario: $${precioUnitario}\nTotal: $${total}`;
-            const url = `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
-            window.open(url, '_blank');
-        }
-
         // --------- CARGA DINÁMICA ---------
         const params = new URLSearchParams(window.location.search);
         const categoria = params.get('cat') || 'imagenes';
 
         document.getElementById('categoria-titulo').textContent = categoria.toUpperCase();
 
-        fetch(`${categoria}.json`)
+        fetch(`json/${categoria}.json`)
             .then(res => res.json())
             .then(imagenes => {
                 cargarCarritoGuardado();

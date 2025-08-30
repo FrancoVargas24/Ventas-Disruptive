@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://use.typekit.net/mdk5yrn.css">
+  <link rel="stylesheet" href="https://use.typekit.net/mdk5yrn.css">
+  <link rel="stylesheet" href="css/style.css">
+  <title>Registro de Ventas de Stickers</title>
+</head>
+
+<body>
+  <div class="contenedore">
+    <p id="fecha"></p>
+    <img class="logoDisruptive" src="iconos/LOGO + sombra.png" alt="Abrir menú" id="abrirMenu">
+  </div>
+
+  <div id="sidebar" class="sidebar oculto">
+    <a href="paginaPrincipal.html" class="menu-link">
+      <span>Inicio</span>
+    </a>
+    <a href="subCategoria.html" class="menu-link">
+      <span>Catalogo</span>
+    </a>
+    <a href="personalizado.html" class="menu-link">
+      <span>Calculadora</span>
+    </a>
+    <a href="ventasFeria.html" class="menu-link">
+      <span>Ventas Feria</span>
+    </a>
+    <img class="logoDisruptive" src="LOGO + sombra.png">
+  </div>
+
+
+  </div>
+  <h1 style="font-family: 'bebas neue', sans-serif;">BUSCADOR</h1>
+
+  <!-- Agregar dentro del <body> -->
+  <div style="margin: 30px 0;">
+    <input type="text" id="buscador" placeholder="Buscar sticker..."
+      style="padding:8px; width: 250px; font-size: 1.1em;">
+  </div>
+  <div id="resultados" style="display: flex; flex-wrap: wrap; gap: 16px;"></div>
+
+  <script>
+
+    // Abrir el menú al tocar el logo
+    document.getElementById("abrirMenu").addEventListener("click", function () {
+      document.getElementById("sidebar").classList.add("visible");
+    });
+
+    // Cerrar el menú
+    function cerrarMenu() {
+      document.getElementById("sidebar").classList.remove("visible");
+    }
+
+    document.addEventListener("click", function (event) {
+      const sidebar = document.getElementById("sidebar");
+      const logo = document.getElementById("abrirMenu");
+
+      if (
+        sidebar.classList.contains("visible") &&
+        !sidebar.contains(event.target) &&
+        event.target !== logo
+      ) {
+        cerrarMenu();
+      }
+    });
+    // ...existing code...
+    const stickersFolder = 'stickers/';
+    let listaStickers = [];
+
+    // Cargar lista de imágenes (de un JSON generado previamente)
+    fetch('json/imagenes.json')
+      .then(res => res.json())
+      .then(data => {
+        listaStickers = data;
+        mostrarResultados('');
+      });
+
+    function mostrarResultados(filtro) {
+      const resultados = document.getElementById('resultados');
+      resultados.innerHTML = '';
+      const filtroLower = filtro.trim().toLowerCase();
+
+      const filtrados = listaStickers.filter(nombre =>
+        nombre.toLowerCase().includes(filtroLower)
+      );
+
+      if (filtrados.length === 0) {
+        resultados.innerHTML = '<p>No se encontraron stickers.</p>';
+        return;
+      }
+
+      filtrados.forEach(nombre => {
+        const div = document.createElement('div');
+        div.style.textAlign = 'center';
+        div.innerHTML = `
+      <img src="${stickersFolder}${nombre}" alt="${nombre}" style="width:100px; height:auto; display:block; margin-bottom:4px;">
+        <span style="font-size:0.9em;">${nombre}</span>
+    `;
+        resultados.appendChild(div);
+      });
+    }
+
+    document.getElementById('buscador').addEventListener('input', function () {
+      mostrarResultados(this.value);
+    });
+
+  </script>
+</body>
+
+</html>
