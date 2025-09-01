@@ -35,8 +35,8 @@
 
     <main>
         <div class="pi" style="margin-block-end: 5%;">
-            <button style="margin: 0px 10px 0px 0;width: 30%;    height: auto;" onclick="window.history.back()"
-                class="btn-volver">← Volver</button>
+            <button style="margin: 0px 10px 0px 0;width: 200px;    height: auto;"
+                onclick="location.reload(); window.history.back();" class="btn-volver">← Volver</button>
 
             <h1 id="categoria-titulo">Catálogo</h1>
         </div>
@@ -95,6 +95,10 @@
 
                 calcularTotales();
             });
+
+        document.getElementById('btn-volver').onclick = function () {
+            location.reload();
+        };
     </script>
 </body>
 
