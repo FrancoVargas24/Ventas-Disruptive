@@ -31,7 +31,7 @@
     </div>
   </nav>
 
-  <main>
+  <main style="min-height: 600px;">
 
     <div style="display: flex;" class="contenedor">
 
@@ -150,15 +150,17 @@
     }
 
     function enviarPorWhatsApp() {
-      const numero = '5491123935400'; // tu número real
+      const numero = '5491123935400';
       const cantidadTotal = Object.values(carrito).reduce((a, b) => a + b, 0);
       const precioUnitario = cantidadTotal >= 20 ? precioDescuento : precioBase;
       const total = cantidadTotal * precioUnitario;
-
       const lista = Object.entries(carrito)
-        .map(([codigo, cant]) => `${codigo} x${cant}`)
+        .map(([codigo, cant]) => {
+          // Extraer solo el nombre sin carpeta ni extensión
+          const nombre = codigo.split('/').pop().replace(/\.[^/.]+$/, '');
+          return `${nombre} x${cant}`;
+        })
         .join(', ');
-
       const mensaje = `Hola! Quiero pedir:\n\n${lista}\n\nCantidad total: ${cantidadTotal}\nPrecio unitario: $${precioUnitario}\nTotal: $${total}`;
       const url = `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
       window.open(url, '_blank');

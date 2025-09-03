@@ -94,7 +94,13 @@ function enviarPorWhatsApp() {
     const cantidadTotal = Object.values(carrito).reduce((a, b) => a + b, 0);
     const precioUnitario = cantidadTotal >= 20 ? precioDescuento : precioBase;
     const total = cantidadTotal * precioUnitario;
-    const lista = Object.entries(carrito).map(([codigo, cant]) => `${codigo} x${cant}`).join(', ');
+    const lista = Object.entries(carrito)
+        .map(([codigo, cant]) => {
+            // Extraer solo el nombre sin carpeta ni extensión
+            const nombre = codigo.split('/').pop().replace(/\.[^/.]+$/, '');
+            return `${nombre} x${cant}`;
+        })
+        .join(', ');
     const mensaje = `Hola! Quiero pedir:\n\n${lista}\n\nCantidad total: ${cantidadTotal}\nPrecio unitario: $${precioUnitario}\nTotal: $${total}`;
     const url = `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
     window.open(url, '_blank');
