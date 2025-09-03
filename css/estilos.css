@@ -148,7 +148,7 @@ a{
     align-items: center;
     justify-content: space-between;
     background: #1c1c1c;
-    padding: 0px 30px;
+    padding: 5px 30px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     position: sticky;
     top: 0;
@@ -639,15 +639,14 @@ footer {
 }
 
 .info-combos {
-    background: #000000cc;
+    background: #0000002e;
     border-radius: 10px;
     padding: 24px 32px;
-    margin: 30px auto;
-    max-width: 600px;
+    margin: 20px auto;
+    max-width: 1000px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
     font-family: 'Segoe UI', Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
+
     color: white;
 }
 
