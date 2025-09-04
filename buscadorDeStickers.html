@@ -11,39 +11,71 @@
 </head>
 
 <body>
-  <div class="contenedore">
-    <p id="fecha"></p>
-    <img class="logoDisruptive" src="iconos/LOGO + sombra.png" alt="Abrir menú" id="abrirMenu">
-  </div>
-
-  <div id="sidebar" class="sidebar oculto">
-    <a href="paginaPrincipal.html" class="menu-link">
-      <span>Inicio</span>
-    </a>
-    <a href="subCategoria.html" class="menu-link">
-      <span>Catalogo</span>
-    </a>
-    <a href="personalizado.html" class="menu-link">
-      <span>Calculadora</span>
-    </a>
-    <a href="ventasFeria.html" class="menu-link">
-      <span>Ventas Feria</span>
-    </a>
-    <img class="logoDisruptive" src="LOGO + sombra.png">
-  </div>
-
 
   </div>
   <h1 style="font-family: 'bebas neue', sans-serif;">BUSCADOR</h1>
 
   <!-- Agregar dentro del <body> -->
-  <div style="margin: 30px 0;">
-    <input type="text" id="buscador" placeholder="Buscar sticker..."
+  <div style="margin: 30px 0;display: flex;justify-content: center;">
+    <input type="text" id="buscador" placeholder="Codigo del sticker..."
       style="padding:8px; width: 250px; font-size: 1.1em;">
   </div>
-  <div id="resultados" style="display: flex; flex-wrap: wrap; gap: 16px;"></div>
+  <div id="resultados" style="display: flex; flex-wrap: wrap; gap: 16px;justify-content: center;"></div>
 
   <script>
+    const stickersFolder = 'stickers/';
+    let listaStickers = [];
+
+    // Cargar la lista de archivos JSON
+    fetch('json/0todos.json')
+      .then(res => res.json())
+      .then(archivos => {
+        // Para cada archivo, cargar su contenido (que es un array de nombres de imágenes)
+        const promesas = archivos.map(nombre =>
+          fetch('json/' + nombre)
+            .then(res => res.json())
+            .catch(() => []) // Si algún archivo falla, lo ignora
+        );
+        // Esperar a que todos los archivos se carguen
+        Promise.all(promesas).then(arrays => {
+          // Unir todos los arrays en uno solo
+          listaStickers = arrays.flat();
+          mostrarResultados('');
+        });
+      });
+
+    function mostrarResultados(filtro) {
+      const resultados = document.getElementById('resultados');
+      resultados.innerHTML = '';
+      const filtroLower = filtro.trim().toLowerCase();
+
+      let filtrados = listaStickers.filter(nombre =>
+        nombre.toLowerCase().includes(filtroLower)
+      );
+
+      // Si el filtro está vacío, mostrar solo los primeros 100
+      if (filtroLower === '') {
+        filtrados = filtrados.slice(0, );
+      }
+
+      if (filtrados.length === 0) {
+        resultados.innerHTML = '<p>No se encontraron stickers.</p>';
+        return;
+      }
+
+      filtrados.forEach(nombre => {
+        const div = document.createElement('div');
+        div.style.textAlign = 'center';
+        div.innerHTML = `
+      <img src="${stickersFolder}${nombre}" alt="${nombre}" style="width:100px; height:auto; display:block; margin-bottom:4px;">
+    `;
+        resultados.appendChild(div);
+      });
+    }
+
+    document.getElementById('buscador').addEventListener('input', function () {
+      mostrarResultados(this.value);
+    });
 
     // Abrir el menú al tocar el logo
     document.getElementById("abrirMenu").addEventListener("click", function () {
@@ -67,46 +99,15 @@
         cerrarMenu();
       }
     });
-    // ...existing code...
-    const stickersFolder = 'stickers/';
-    let listaStickers = [];
 
     // Cargar lista de imágenes (de un JSON generado previamente)
-    fetch('json/imagenes.json')
+    fetch('json/0todos.json')
       .then(res => res.json())
       .then(data => {
         listaStickers = data;
         mostrarResultados('');
       });
 
-    function mostrarResultados(filtro) {
-      const resultados = document.getElementById('resultados');
-      resultados.innerHTML = '';
-      const filtroLower = filtro.trim().toLowerCase();
-
-      const filtrados = listaStickers.filter(nombre =>
-        nombre.toLowerCase().includes(filtroLower)
-      );
-
-      if (filtrados.length === 0) {
-        resultados.innerHTML = '<p>No se encontraron stickers.</p>';
-        return;
-      }
-
-      filtrados.forEach(nombre => {
-        const div = document.createElement('div');
-        div.style.textAlign = 'center';
-        div.innerHTML = `
-      <img src="${stickersFolder}${nombre}" alt="${nombre}" style="width:100px; height:auto; display:block; margin-bottom:4px;">
-        <span style="font-size:0.9em;">${nombre}</span>
-    `;
-        resultados.appendChild(div);
-      });
-    }
-
-    document.getElementById('buscador').addEventListener('input', function () {
-      mostrarResultados(this.value);
-    });
 
   </script>
 </body>
