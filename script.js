@@ -90,13 +90,16 @@ function actualizarBoton(codigo) {
     }
 }
 function enviarPorWhatsApp() {
-    const numero = '5491123935400';
     const cantidadTotal = Object.values(carrito).reduce((a, b) => a + b, 0);
+    if (cantidadTotal === 0) {
+        alert('El carrito está vacío. Agregá stickers antes de enviar el pedido.');
+        return;
+    }
+    const numero = '5491123935400';
     const precioUnitario = cantidadTotal >= 20 ? precioDescuento : precioBase;
     const total = cantidadTotal * precioUnitario;
     const lista = Object.entries(carrito)
         .map(([codigo, cant]) => {
-            // Extraer solo el nombre sin carpeta ni extensión
             const nombre = codigo.split('/').pop().replace(/\.[^/.]+$/, '');
             return `${nombre} x${cant}`;
         })
