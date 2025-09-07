@@ -47,41 +47,7 @@ main {
     margin-block-end: 15px;
 }
 
-@media (max-width: 800px) {
-    .h1Titulo {
-        font-size: 35px;
-    }
-
-    .h2Titulo {
-        font-size: 13px;
-    }
-
-    .cajota {
-        
-        display: flex;
-        flex-direction: column;
-    }
-
-    .caja {
-        padding: 1px!important;
-    }
-
-    .imgQuienesSomos {
-        width: 300px !important;
-        height: auto;
-        margin-top: 20px;
-    }
-
-    .centrado {
-        display: flex;
-        justify-content: center;
-    }
-    .espacio{
-    margin-top: 90px;
-}
-}
-
-.espacio{
+.espacio {
     margin-top: 1px;
 }
 
@@ -103,6 +69,43 @@ main {
     display: flex;
     justify-content: center;
 }
+
+@media (max-width: 800px) {
+    .h1Titulo {
+        font-size: 35px;
+    }
+
+    .h2Titulo {
+        font-size: 13px;
+    }
+
+    .cajota {
+
+        display: flex;
+        flex-direction: column;
+    }
+
+    .caja {
+        padding: 1px !important;
+    }
+
+    .imgQuienesSomos {
+        width: 300px !important;
+        height: auto;
+        margin-top: 20px;
+    }
+
+    .centrado {
+        display: flex;
+        justify-content: center;
+    }
+
+    .espacio {
+        margin-top: 90px;
+    }
+}
+
+
 
 h1,
 h2,
