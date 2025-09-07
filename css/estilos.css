@@ -38,7 +38,7 @@ main {
 }
 
 .h1Titulo {
-    font-size: 60px;
+    font-size: 60px;    
 }
 
 .h2Titulo {
@@ -73,10 +73,12 @@ main {
 @media (max-width: 800px) {
     .h1Titulo {
         font-size: 35px;
+        margin-left: 0 !important;
     }
 
     .h2Titulo {
         font-size: 13px;
+        margin-left: 0 !important;
     }
 
     .cajota {
