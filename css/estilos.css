@@ -86,11 +86,11 @@ main {
     }
 
     .caja {
-        padding: 1px;
+        padding: 1px !important;
     }
 
     .imgQuienesSomos {
-        width: 300px;
+        width: 300px !important;
         height: auto;
         margin-top: 20px;
     }
