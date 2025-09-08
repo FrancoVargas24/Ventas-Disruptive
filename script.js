@@ -104,7 +104,7 @@ function enviarPorWhatsApp() {
             const nombre = codigo.split('/').pop().replace(/\.[^/.]+$/, '');
             return `${nombre} x${cant}`;
         })
-        .join(', ');
+        .join('\n');
     const mensaje = `Hola! Quiero pedir:\n\n${lista}\n\nCantidad total: ${cantidadTotal}\nPrecio unitario: $${precioUnitario}\nTotal: $${total}`;
     const url = `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
     window.open(url, '_blank');
