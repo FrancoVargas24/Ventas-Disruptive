@@ -1,4 +1,4 @@
-// --- NAVBAR Y TIMELINE ---
+ // --- NAVBAR Y TIMELINE ---
 let lastScrollTop = 0;
 let lastScrollEnd = 100;
 const navbar = document.querySelector('.navbar');

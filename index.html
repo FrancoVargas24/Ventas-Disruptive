@@ -22,7 +22,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://elfsightcdn.com/platform.js" async></script>
     <script src="script.js" defer></script>
+
 </head>
 
 <body>
@@ -38,7 +40,7 @@
         <button class="navbar-toggle" id="navbar-toggle">&#9776;</button>
         <ul class="navbar-links" id="navbar-links">
             <li><a href="subCategoria.html">Categorías</a></li>
-            <li><a href="personalizado.html">Perzonalizados</a></li>
+            <li><a href="personalizado.html">Personalizados</a></li>
             <li><a href="seguridadehigiene.html">Seguridad e higiene</a></li>
             <li><a href="#contacto">Contacto</a></li>
             <li><a href="nosotros.html">Nosotros</a></li>
@@ -86,6 +88,8 @@
         <div class="productos-container" id="productos-container">
             <!-- Aquí se cargan los productos automáticamente -->
         </div>
+
+
     </main>
 
 
@@ -103,27 +107,41 @@
         <button class="botonWhatsApp" onclick="enviarPorWhatsApp()" style="margin-top:10px;"><img src="iconos/wp.png"
                 alt="">Enviar pedido por WhatsApp</button>
     </div>
+    <section class="section-informative-banners">
+        <div class="banner-info">
+            <img src="iconos/descuento.png" alt="Descuento" class="banner-icon">
+            <span>¡Descuento cuanto más stickers sumás!</span>
+        </div>
+        
+        <div class="banner-info">
+            <img src="iconos/envio.png" alt="Envío" class="banner-icon">
+            <span>Envío a todo el país</span>
+        </div>
+        
+        <div class="banner-info">
+            <img src="iconos/calidad.png" alt="Calidad" class="banner-icon">
+            <span>La mejor calidad en vinilo</span>
+        </div>
+    </section>
 
-
-    </div>
-
-
-
-
-    <div id="footer-placeholder">
-    </div>
+    <div id="footer-placeholder"></div>
 
     <script>
         function borrarMarca() {
-            document.querySelectorAll(".go2048136271").forEach(el => el.remove());
+            document.querySelectorAll('a[href="https://elfsight.com/google-reviews-widget/?utm_source=websites&utm_medium=clients&utm_content=google-reviews&utm_term=127.0.0.1&utm_campaign=free-widget"]').forEach(el => el.remove());
         }
-
+        function borrarMarca2() {
+            document.querySelectorAll('.eapps-widget-toolbar').forEach(el => el.remove());
+        }
         // Primera limpieza después de que cargue
         document.addEventListener("DOMContentLoaded", () => {
-            setTimeout(borrarMarca, 1000); // espera 1 seg para que cargue el widget
+            setTimeout(borrarMarca, 2000); // espera 1 seg para que cargue el widget
         });
-
-        setInterval(borrarMarca, 300000);
+        document.addEventListener("DOMContentLoaded", () => {
+            setTimeout(borrarMarca2, 2000); // espera 1 seg para que cargue el widget
+        });
+        setInterval(borrarMarca, 3000);
+        setInterval(borrarMarca2, 3000);
 
         document.querySelector('a[href="#contacto"]').addEventListener('click', function (e) {
             e.preventDefault();
