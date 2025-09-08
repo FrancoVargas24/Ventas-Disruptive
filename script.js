@@ -1,7 +1,4 @@
-const link = document.querySelector('link[href="css/estilos.css"]');
-if (link) {
-    link.href = 'css/estilos.css?v=' + Date.now();
-}
+
 // --- NAVBAR Y TIMELINE ---
 let lastScrollTop = 0;
 let lastScrollEnd = 100;

@@ -112,12 +112,12 @@
             <img src="iconos/descuento.png" alt="Descuento" class="banner-icon">
             <span>¡Descuento cuanto más stickers sumás!</span>
         </div>
-        
+
         <div class="banner-info">
             <img src="iconos/envio.png" alt="Envío" class="banner-icon">
             <span>Envío a todo el país</span>
         </div>
-        
+
         <div class="banner-info">
             <img src="iconos/calidad.png" alt="Calidad" class="banner-icon">
             <span>La mejor calidad en vinilo</span>
@@ -127,6 +127,10 @@
     <div id="footer-placeholder"></div>
 
     <script>
+        const link = document.querySelector('link[href="css/estilos.css"]');
+        if (link) {
+            link.href = 'css/estilos.css?v=' + Date.now();
+        }
         function borrarMarca() {
             document.querySelectorAll('a[href="https://elfsight.com/google-reviews-widget/?utm_source=websites&utm_medium=clients&utm_content=google-reviews&utm_term=127.0.0.1&utm_campaign=free-widget"]').forEach(el => el.remove());
         }
