@@ -68,10 +68,7 @@
   <div id="footer-placeholder"></div>
 
   <script>
-     const link = document.querySelector('link[href="css/estilos.css"]');
-        if (link) {
-            link.href = 'css/estilos.css?v=' + Date.now();
-        }
+     
         function borrarMarca() {
             document.querySelectorAll('a[href="https://elfsight.com/google-reviews-widget/?utm_source=websites&utm_medium=clients&utm_content=google-reviews&utm_term=disruptivestickers.com.ar&utm_campaign=free-widget"]').forEach(el => el.remove());
         }
