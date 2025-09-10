@@ -68,13 +68,13 @@
   <div id="footer-placeholder"></div>
 
   <script>
-     
-        function borrarMarca() {
-            document.querySelectorAll('a[href="https://elfsight.com/google-reviews-widget/?utm_source=websites&utm_medium=clients&utm_content=google-reviews&utm_term=disruptivestickers.com.ar&utm_campaign=free-widget"]').forEach(el => el.remove());
-        }
-        function borrarMarca2() {
-            document.querySelectorAll('.eapps-widget-toolbar').forEach(el => el.remove());
-        }
+
+    function borrarMarca() {
+      document.querySelectorAll('a[href="https://elfsight.com/google-reviews-widget/?utm_source=websites&utm_medium=clients&utm_content=google-reviews&utm_term=disruptivestickers.com.ar&utm_campaign=free-widget"]').forEach(el => el.remove());
+    }
+    function borrarMarca2() {
+      document.querySelectorAll('.eapps-widget-toolbar').forEach(el => el.remove());
+    }
     function borrarMarca() {
       document.querySelectorAll('a[href="https://elfsight.com/google-reviews-widget/?utm_source=websites&utm_medium=clients&utm_content=google-reviews&utm_term=127.0.0.1&utm_campaign=free-widget"]').forEach(el => el.remove());
     }
@@ -183,18 +183,33 @@
     }
 
     function enviarPorWhatsApp() {
-      const numero = '5491123935400';
       const cantidadTotal = Object.values(carrito).reduce((a, b) => a + b, 0);
+      if (cantidadTotal === 0) {
+        alert('El carrito está vacío. Agregá stickers antes de enviar el pedido.');
+        return;
+      }
+      const numero = '5491123935400';
       const precioUnitario = cantidadTotal >= 20 ? precioDescuento : precioBase;
       const total = cantidadTotal * precioUnitario;
+
+      // Generar número de pedido único
+      const ahora = new Date();
+      const pedidoId = [
+        ahora.getFullYear(),
+        String(ahora.getMonth() + 1).padStart(2, '0'),
+        String(ahora.getDate()).padStart(2, '0'),
+        String(ahora.getHours()).padStart(2, '0'),
+        String(ahora.getMinutes()).padStart(2, '0'),
+        String(ahora.getSeconds()).padStart(2, '0')
+      ].join('');
+
       const lista = Object.entries(carrito)
         .map(([codigo, cant]) => {
-          // Extraer solo el nombre sin carpeta ni extensión
           const nombre = codigo.split('/').pop().replace(/\.[^/.]+$/, '');
           return `${nombre} x${cant}`;
         })
-        .join(', ');
-      const mensaje = `Hola! Quiero pedir:\n\n${lista}\n\nCantidad total: ${cantidadTotal}\nPrecio unitario: $${precioUnitario}\nTotal: $${total}`;
+        .join('\n');
+      const mensaje = `Hola! Quiero pedir:\n\nNúmero de pedido: ${pedidoId}\n\n${lista}\n\nCantidad total: ${cantidadTotal}\nPrecio unitario: $${precioUnitario}\nTotal: $${total}`;
       const url = `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
       window.open(url, '_blank');
     }
