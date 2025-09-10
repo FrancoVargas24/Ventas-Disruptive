@@ -90,6 +90,7 @@ function actualizarBoton(codigo) {
         btnContenedor.querySelector('.btn-agregar').onclick = () => agregarProducto(codigo);
     }
 }
+
 function enviarPorWhatsApp() {
     const cantidadTotal = Object.values(carrito).reduce((a, b) => a + b, 0);
     if (cantidadTotal === 0) {
@@ -99,13 +100,25 @@ function enviarPorWhatsApp() {
     const numero = '5491123935400';
     const precioUnitario = cantidadTotal >= 20 ? precioDescuento : precioBase;
     const total = cantidadTotal * precioUnitario;
+
+    // Generar número de pedido único
+    const ahora = new Date();
+    const pedidoId = [
+        ahora.getFullYear(),
+        String(ahora.getMonth() + 1).padStart(2, '0'),
+        String(ahora.getDate()).padStart(2, '0'),
+        String(ahora.getHours()).padStart(2, '0'),
+        String(ahora.getMinutes()).padStart(2, '0'),
+        String(ahora.getSeconds()).padStart(2, '0')
+    ].join('');
+
     const lista = Object.entries(carrito)
         .map(([codigo, cant]) => {
             const nombre = codigo.split('/').pop().replace(/\.[^/.]+$/, '');
             return `${nombre} x${cant}`;
         })
         .join('\n');
-    const mensaje = `Hola! Quiero pedir:\n\n${lista}\n\nCantidad total: ${cantidadTotal}\nPrecio unitario: $${precioUnitario}\nTotal: $${total}`;
+    const mensaje = `Hola! Quiero pedir:\n\nNúmero de pedido: ${pedidoId}\n\n${lista}\n\nCantidad total: ${cantidadTotal}\nPrecio unitario: $${precioUnitario}\nTotal: $${total}`;
     const url = `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
     window.open(url, '_blank');
 }
