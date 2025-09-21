@@ -68,29 +68,6 @@
   <div id="footer-placeholder"></div>
 
   <script>
-
-    function borrarMarca() {
-      document.querySelectorAll('a[href="https://elfsight.com/google-reviews-widget/?utm_source=websites&utm_medium=clients&utm_content=google-reviews&utm_term=disruptivestickers.com.ar&utm_campaign=free-widget"]').forEach(el => el.remove());
-    }
-    function borrarMarca2() {
-      document.querySelectorAll('.eapps-widget-toolbar').forEach(el => el.remove());
-    }
-    function borrarMarca() {
-      document.querySelectorAll('a[href="https://elfsight.com/google-reviews-widget/?utm_source=websites&utm_medium=clients&utm_content=google-reviews&utm_term=127.0.0.1&utm_campaign=free-widget"]').forEach(el => el.remove());
-    }
-    function borrarMarca2() {
-      document.querySelectorAll('.eapps-widget-toolbar').forEach(el => el.remove());
-    }
-    // Primera limpieza después de que cargue
-    document.addEventListener("DOMContentLoaded", () => {
-      setTimeout(borrarMarca, 2000); // espera 1 seg para que cargue el widget
-    });
-    document.addEventListener("DOMContentLoaded", () => {
-      setTimeout(borrarMarca2, 2000); // espera 1 seg para que cargue el widget
-    });
-    setInterval(borrarMarca, 3000);
-    setInterval(borrarMarca2, 3000);
-
     function vaciarCarrito() {
       if (confirm("¿Está seguro que quiere vaciar todo el carrito?")) {
         carrito = {};               // vaciar objeto
@@ -123,7 +100,7 @@
 
     function calcularTotal() {
       const cantidadTotal = Object.values(carrito).reduce((a, b) => a + b, 0);
-      const precioUnitario = cantidadTotal >= 20 ? precioDescuento : precioBase;
+      const precioUnitario = cantidadTotal >= 500 ? 250 : (cantidadTotal >= 20 ? precioDescuento : precioBase);
       const total = cantidadTotal * precioUnitario;
 
       document.getElementById('carrito-total').textContent =
@@ -189,7 +166,7 @@
         return;
       }
       const numero = '5491123935400';
-      const precioUnitario = cantidadTotal >= 20 ? precioDescuento : precioBase;
+      const precioUnitario = cantidadTotal >= 500 ? 250 : (cantidadTotal >= 20 ? precioDescuento : precioBase);
       const total = cantidadTotal * precioUnitario;
 
       // Generar número de pedido único

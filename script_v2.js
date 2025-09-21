@@ -45,15 +45,25 @@ function guardarCarrito() {
 }
 function calcularTotales() {
     const cantidadTotal = Object.values(carrito).reduce((a, b) => a + b, 0);
-    const precioUnitario = cantidadTotal >= 20 ? precioDescuento : precioBase;
+    let precioUnitario;
+    let mensaje;
+
+    if (cantidadTotal >= 500) {
+        precioUnitario = 250;
+        mensaje = "PRECIO POR MAYOR";
+    } else if (cantidadTotal >= 20) {
+        precioUnitario = precioDescuento;
+        mensaje = "¡Precio mejorado!";
+    } else {
+        precioUnitario = precioBase;
+        mensaje = `Te faltan ${20 - cantidadTotal} para mejorar el precio!`;
+    }
+
     const total = cantidadTotal * precioUnitario;
     if (document.getElementById('cart-total')) document.getElementById('cart-total').textContent = total;
     if (document.getElementById('cart-unitario')) document.getElementById('cart-unitario').textContent = precioUnitario;
     if (document.getElementById('cart-cantidad')) document.getElementById('cart-cantidad').textContent = cantidadTotal;
-    if (document.getElementById('cart-message')) {
-        document.getElementById('cart-message').textContent =
-            cantidadTotal >= 20 ? "¡Precio mejorado!" : `Te faltan ${20 - cantidadTotal} para mejorar el precio!`;
-    }
+    if (document.getElementById('cart-message')) document.getElementById('cart-message').textContent = mensaje;
     if (document.getElementById('cart-bar')) {
         document.getElementById('cart-bar').style.width = Math.min((total / maxTotal) * 100, 100) + '%';
     }
@@ -73,21 +83,52 @@ function quitarProducto(codigo) {
     actualizarBoton(codigo);
     calcularTotales();
 }
-function actualizarBoton(codigo) {
+
+
+ function actualizarBoton(codigo) {
     const btnContenedor = document.querySelector(`.btn-container[data-codigo="${codigo}"]`);
     const cantidad = carrito[codigo] || 0;
+
     if (!btnContenedor) return;
+
+    // Si hay cantidad, mostrar input y sumar/restar
     if (cantidad > 0) {
         btnContenedor.innerHTML = `
-            <span>Seleccionado (${cantidad})</span>
-            <button class="btn-sumar">+</button>
-            <button class="btn-restar">-</button>
+            <button class="btn-restar" title="Quitar uno">−</button>
+            <input type="number" min="1" max="999" value="${cantidad}" class="input-cantidad">
+            <button class="btn-sumar" title="Agregar uno">+</button>
         `;
-        btnContenedor.querySelector('.btn-sumar').onclick = () => agregarProducto(codigo);
-        btnContenedor.querySelector('.btn-restar').onclick = () => quitarProducto(codigo);
+        const input = btnContenedor.querySelector('.input-cantidad');
+        btnContenedor.querySelector('.btn-sumar').onclick = () => {
+            carrito[codigo]++;
+            guardarCarrito();
+            actualizarBoton(codigo);
+            calcularTotales();
+        };
+        btnContenedor.querySelector('.btn-restar').onclick = () => {
+            carrito[codigo]--;
+            if (carrito[codigo] <= 0) delete carrito[codigo];
+            guardarCarrito();
+            actualizarBoton(codigo);
+            calcularTotales();
+        };
+        input.onchange = () => {
+            let valor = parseInt(input.value, 10);
+            if (isNaN(valor) || valor < 1) valor = 1;
+            carrito[codigo] = valor;
+            guardarCarrito();
+            actualizarBoton(codigo);
+            calcularTotales();
+        };
     } else {
-        btnContenedor.innerHTML = `<button class="btn-agregar">Agregar</button>`;
-        btnContenedor.querySelector('.btn-agregar').onclick = () => agregarProducto(codigo);
+        // Si no hay cantidad, solo mostrar el botón Agregar
+        btnContenedor.innerHTML = `<button style="height: 36px;" class="btn-agregar">Agregar</button>`;
+        btnContenedor.querySelector('.btn-agregar').onclick = () => {
+            carrito[codigo] = 1;
+            guardarCarrito();
+            actualizarBoton(codigo);
+            calcularTotales();
+        };
     }
 }
 
@@ -98,8 +139,7 @@ function enviarPorWhatsApp() {
         return;
     }
     const numero = '5491123935400';
-    const precioUnitario = cantidadTotal >= 20 ? precioDescuento : precioBase;
-    const total = cantidadTotal * precioUnitario;
+const precioUnitario = cantidadTotal >= 500 ? 250 : (cantidadTotal >= 20 ? precioDescuento : precioBase);    const total = cantidadTotal * precioUnitario;
 
     // Generar número de pedido único
     const ahora = new Date();

@@ -82,13 +82,13 @@
             <a class="botonCategoria" href="subCategoria.html"><img src="categorias/verTodas.png" alt=""></a>
 
         </div>
-        </div>
+
+
 
         <h2>Los mas vendidos</h2>
         <div class="productos-container" id="productos-container">
             <!-- Aquí se cargan los productos automáticamente -->
         </div>
-
 
     </main>
 
@@ -125,27 +125,12 @@
         </div>
     </section>
 
+
+
     <div id="footer-placeholder"></div>
 
     <script>
-       
-        
-        function borrarMarca() {
-            document.querySelectorAll('a[href="https://elfsight.com/google-reviews-widget/?utm_source=websites&utm_medium=clients&utm_content=google-reviews&utm_term=disruptivestickers.com.ar&utm_campaign=free-widget"]').forEach(el => el.remove());
-        }
-        function borrarMarca2() {
-            document.querySelectorAll('.eapps-widget-toolbar').forEach(el => el.remove());
-        }
-        // Primera limpieza después de que cargue
-        document.addEventListener("DOMContentLoaded", () => {
-            setTimeout(borrarMarca, 2000); // espera 1 seg para que cargue el widget
-        });
-        document.addEventListener("DOMContentLoaded", () => {
-            setTimeout(borrarMarca2, 2000); // espera 1 seg para que cargue el widget
-        });
-        setInterval(borrarMarca, 3000);
-        setInterval(borrarMarca2, 3000);
-
+        // --- CARRUSEL ---
         document.querySelector('a[href="#contacto"]').addEventListener('click', function (e) {
             e.preventDefault();
             document.getElementById('contacto').scrollIntoView({ behavior: 'smooth' });

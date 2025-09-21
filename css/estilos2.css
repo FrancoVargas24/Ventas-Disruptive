@@ -212,7 +212,7 @@ a {
     background: #28a745;
     color: #fff;
     border: none;
-    padding: 8px 10px;
+    padding: 5px 10px;
     border-radius: 5px;
     cursor: pointer;
     transition: background 0.2s;
@@ -449,6 +449,11 @@ a {
     .btn-container {
         width: 95%;
     }
+}
+
+.btn-container {
+    display: flex;
+    justify-content: center;
 }
 
 .cart-timeline {
@@ -833,16 +838,7 @@ footer {
     gap: 10px;
 }
 
-input[type="number"] {
-    width: 95%;
-    padding: 8px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    margin-bottom: 8px;
-    font-size: 1rem;
-    background: #f8f8f8;
-    color: #222;
-}
+
 
 .btn-aceptar {
     background: #28a745;
@@ -925,6 +921,7 @@ input[type="number"] {
     padding: 18px 0;
     border-radius: 5px;
 }
+
 @media (max-width: 768px) {
     .section-informative-banners {
         flex-direction: column;
@@ -951,3 +948,153 @@ input[type="number"] {
     height: 32px;
 }
 
+.btn-sumar,
+.btn-restar {
+    background: linear-gradient(90deg, #ffb347 0%, #ffcc33 100%);
+    border: none;
+    color: #333;
+    font-size: 1.3em;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    margin: 0 4px;
+    cursor: pointer;
+    box-shadow: 0 2px 6px #0001;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.btn-sumar:hover,
+.btn-restar:hover {
+    background: linear-gradient(90deg, #ffe066 0%, #ffd700 100%);
+    transform: scale(1.1);
+}
+
+.btn-agregar {
+    background: #4caf50;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 18px;
+    font-size: 1em;
+    cursor: pointer;
+    margin: 0 4px;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.btn-agregar:hover {
+    background: #388e3c;
+    transform: scale(1.05);
+}
+
+.input-cantidad {
+    width: 45px;
+    padding: 6px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-left: 8px;
+    text-align: center;
+    width: 20px;
+    text-align: center;
+}
+
+
+input[type="number"] {
+    width: 95%;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    background: #f8f8f8;
+    color: #222;
+    margin: 0px;
+    width: 45px;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    input[type="number"] {
+        width: 30px;
+    }
+}
+
+.google-reviews-section {
+    background: #fffbe7f3;
+    padding: 32px 0 24px 0;
+    border-radius: 14px;
+    margin: 40px auto 32px auto;
+    max-width: 900px;
+    box-shadow: 0 2px 16px #0001;
+}
+
+.reviews-title {
+    text-align: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2em;
+    margin-bottom: 24px;
+    color: #333;
+    letter-spacing: 1px;
+}
+
+.google-reviews {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    justify-content: center;
+}
+
+.review-card {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px #0002;
+    padding: 18px 22px;
+    max-width: 280px;
+    min-width: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.review-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.review-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #00000047;
+    border: 2px solid #00000062;
+}
+
+.review-name {
+    font-weight: bold;
+    font-family: 'Montserrat', sans-serif;
+    color: #444;
+    font-size: 1.1em;
+}
+
+.review-stars {
+    color: #ffb347;
+    font-size: 1.1em;
+    margin-left: 2px;
+    letter-spacing: 1px;
+    font-family: 'Montserrat', sans-serif;
+}
+.review-starsgris {
+    color: #cccccc;
+    font-size: 1.1em;
+    margin-left: 2px;
+    letter-spacing: 1px;
+    font-family: 'Montserrat', sans-serif;
+}
+.review-text {
+    font-family: 'Montserrat', sans-serif;
+    color: #555;
+    font-size: 1em;
+    margin: 0;
+}
