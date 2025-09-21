@@ -986,7 +986,7 @@ footer {
     transform: scale(1.05);
 }
 
-.input-cantidad {
+.input-cantidad{
     width: 45px;
     padding: 6px;
     font-size: 1em;
@@ -995,6 +995,18 @@ footer {
     margin-left: 8px;
     text-align: center;
     width: 20px;
+    text-align: center;
+}
+
+.contenedore input[type="number"] {
+    width: 95%;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    background: #f8f8f8;
+    color: #222;
+    margin: 0px;
     text-align: center;
 }
 
@@ -1019,7 +1031,7 @@ input[type="number"] {
 }
 
 .google-reviews-section {
-    background: #fffbe7f3;
+    background: #ffffffe8;
     padding: 32px 0 24px 0;
     border-radius: 14px;
     margin: 40px auto 32px auto;
