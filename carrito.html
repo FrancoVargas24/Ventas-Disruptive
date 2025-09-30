@@ -91,7 +91,8 @@
     };
 
     const precioBase = 400;
-    const precioDescuento = 300;
+const precioDescuento20 = 350;
+const precioDescuento50 = 300;
     let carrito = JSON.parse(localStorage.getItem('carrito') || '{}');
 
     function guardarCarrito() {
@@ -100,8 +101,19 @@
 
     function calcularTotal() {
       const cantidadTotal = Object.values(carrito).reduce((a, b) => a + b, 0);
-      const precioUnitario = cantidadTotal >= 500 ? 250 : (cantidadTotal >= 20 ? precioDescuento : precioBase);
-      const total = cantidadTotal * precioUnitario;
+if (cantidadTotal >= 500) {
+        precioUnitario = 250;
+    } else if (cantidadTotal >= 50) {
+        precioUnitario = precioDescuento50;
+    } else if (cantidadTotal >= 20) {
+        precioUnitario = precioDescuento20;
+    } else {
+        precioUnitario = precioBase;
+    }
+
+    const total = cantidadTotal * precioUnitario;
+
+      
 
       document.getElementById('carrito-total').textContent =
         `Total: $${total} (${cantidadTotal} productos, $${precioUnitario} c/u)`;

@@ -16,6 +16,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/png" href="iconos/LOGO + sombra.png">
     <link rel="stylesheet" href="css/estilos_v3.css?v=3">
+    <link rel="stylesheet" href="css/styles_v1.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
@@ -24,7 +25,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://elfsightcdn.com/platform.js" async></script>
     <script src="script_v3.js?v=3" defer></script>
-
+    
 </head>
 
 <body>
@@ -52,18 +53,30 @@
     </nav>
 
     <main>
-        <h1 style="margin-left: 13%;" class="h1Titulo">Stickers personalizados de vinilo en Argentina</h1>
-        <h2 style="margin-left: 18%;" class="h2Titulo">Calidad premium impresion UV. Para empresas y emprendedores</h2>
-
-        <div class="carrusel-container">
-            <div class="carrusel" id="carrusel">
-                <img src="carrusel/1.png" alt="Imagen 1">
-                <img src="carrusel/2.png" alt="Imagen 2">
-                <img src="carrusel/3.png" alt="Imagen 3">
-                <img src="carrusel/4.png" alt="Imagen 4">
+        <div class="invente" id="invente">
+            <div class="titulos">
+                <h1 style="" class="h1Titulo">Stickers de vinilo en Argentina</h1>
+                <h2 style="" class="h2Titulo">Calidad premium impresion UV. Para empresas y emprendedores</h2>
+            </div>
+            <div class="carrusel-container">
+                <div class="carrusel" id="carrusel">
+                    <img src="carrusel/1.png" alt="Imagen 1">
+                    <img src="carrusel/3.png" alt="Imagen 3">
+                    <img src="carrusel/2.png" alt="Imagen 2">
+                    <img src="carrusel/4.png" alt="Imagen 4">
             </div>
         </div>
+        </div>
+       
+       
 
+        <div class="ContendorBarraIMG" >
+            <div class="barraIMG" id="">
+                <img src="iconos/69B64441.png" alt="Imagen 1">
+                <img src="iconos/69B64446.png" alt="Imagen 3">
+                <img src="iconos/69B64443.png" alt="Imagen 2">
+            </div>
+        </div>
 
         <a style="text-decoration: none;" href="subCategoria.html">
             <h2>Categorías</h2>
@@ -194,6 +207,59 @@
         document.getElementById('navbar-toggle').onclick = function () {
             document.getElementById('navbar-links').classList.toggle('active');
         };
+
+        function cambiarMobile() {
+    const invente = document.querySelector('.invente');
+    if (window.innerWidth >= 768) {
+        // Desktop: sin wrap
+        if (invente) {
+            invente.style.flexWrap = 'nowrap';
+        }
+    } else {
+        // Mobile: con wrap
+        if (invente) {
+            invente.style.flexWrap = 'wrap';
+        }
+    }
+}
+
+// Ejecutar al cargar la página
+window.addEventListener('load', cambiarMobile);
+
+// Ejecutar al redimensionar la ventana
+window.addEventListener('resize', cambiarMobile);
+
+        // Carrusel automático para barraIMG en mobile
+        function iniciarCarruselBarraIMG() {
+        if (window.innerWidth <= 768) {
+        const barraIMG = document.querySelector('.barraIMG');
+        if (barraIMG && !barraIMG.classList.contains('carrusel-activo')) {
+            // Envolver las imágenes en un contenedor carrusel
+            const imagenes = Array.from(barraIMG.children);
+            const carruselContainer = document.createElement('div');
+            carruselContainer.className = 'barraIMG-carrusel';
+            
+            imagenes.forEach(img => carruselContainer.appendChild(img));
+            barraIMG.appendChild(carruselContainer);
+            barraIMG.classList.add('carrusel-activo');
+            
+            // Iniciar rotación automática
+            let indiceActual = 0;
+            const totalImagenes = imagenes.length;
+            
+            setInterval(() => {
+                indiceActual = (indiceActual + 1) % totalImagenes;
+                carruselContainer.style.transform = `translateX(-${indiceActual * 100}%)`;
+            }, 3000); // Cambia cada 3 segundos
+        }
+    }
+}
+
+// Ejecutar al cargar la página
+window.addEventListener('load', iniciarCarruselBarraIMG);
+
+// Ejecutar al redimensionar la ventana
+window.addEventListener('resize', iniciarCarruselBarraIMG);
 
         // --- CARGA DE PRODUCTOS ---
         fetch('json/masVendidos.json')
