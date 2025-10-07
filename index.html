@@ -25,7 +25,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://elfsightcdn.com/platform.js" async></script>
     <script src="script_v3.js?v=3" defer></script>
-    
+
 </head>
 
 <body>
@@ -64,13 +64,13 @@
                     <img src="carrusel/3.png" alt="Imagen 3">
                     <img src="carrusel/2.png" alt="Imagen 2">
                     <img src="carrusel/4.png" alt="Imagen 4">
+                </div>
             </div>
         </div>
-        </div>
-       
-       
 
-        <div class="ContendorBarraIMG" >
+
+
+        <div class="ContendorBarraIMG">
             <div class="barraIMG" id="">
                 <img src="iconos/69B64441.png" alt="Imagen 1">
                 <img src="iconos/69B64446.png" alt="Imagen 3">
@@ -195,51 +195,76 @@
     <div id="footer-placeholder"></div>
 
     <script>
-        fetch('json/01NUEVOS.json')
-            .then(res => res.json())
-            .then(imagenes => {
-                cargarCarritoGuardado();
-                const contenedor = document.getElementById('productos-container+Nuevos');
-                if (!contenedor) return;
-                imagenes.forEach(nombre => {
-                    const div = document.createElement('div');
-                    div.className = 'product-card';
-                    const img = document.createElement('img');
-                    img.src = 'stickers/' + nombre;
-                    img.alt = 'Producto';
-                    const btnContainer = document.createElement('div');
-                    btnContainer.className = 'btn-container';
-                    btnContainer.dataset.codigo = nombre;
-                    div.appendChild(img);
-                    div.appendChild(btnContainer);
-                    contenedor.appendChild(div);
-                    actualizarBoton(nombre);
-                });
-                calcularTotales();
-            });
-        // --- CARGA DE PRODUCTOS ---
-        fetch('json/01masVendidos.json')
-            .then(res => res.json())
-            .then(imagenes => {
-                cargarCarritoGuardado();
-                const contenedor = document.getElementById('productos-container');
-                if (!contenedor) return;
-                imagenes.forEach(nombre => {
-                    const div = document.createElement('div');
-                    div.className = 'product-card';
-                    const img = document.createElement('img');
-                    img.src = 'stickers/' + nombre;
-                    img.alt = 'Producto';
-                    const btnContainer = document.createElement('div');
-                    btnContainer.className = 'btn-container';
-                    btnContainer.dataset.codigo = nombre;
-                    div.appendChild(img);
-                    div.appendChild(btnContainer);
-                    contenedor.appendChild(div);
-                    actualizarBoton(nombre);
-                });
-                calcularTotales();
-            });
+        window.addEventListener('DOMContentLoaded', function () {
+            // Pequeña espera adicional para asegurar que script_v3.js esté disponible
+            setTimeout(() => {
+                // Cargar nuevos lanzamientos
+                fetch('json/01NUEVOS.json')
+                    .then(res => res.json())
+                    .then(imagenes => {
+                        if (typeof cargarCarritoGuardado === 'function') {
+                            cargarCarritoGuardado();
+                        }
+                        const contenedor = document.getElementById('productos-container+Nuevos');
+                        if (!contenedor) return;
+
+                        imagenes.forEach(nombre => {
+                            const div = document.createElement('div');
+                            div.className = 'product-card';
+                            const img = document.createElement('img');
+                            img.src = 'stickers/' + nombre;
+                            img.alt = 'Producto';
+                            const btnContainer = document.createElement('div');
+                            btnContainer.className = 'btn-container';
+                            btnContainer.dataset.codigo = nombre;
+                            div.appendChild(img);
+                            div.appendChild(btnContainer);
+                            contenedor.appendChild(div);
+
+                            if (typeof actualizarBoton === 'function') {
+                                actualizarBoton(nombre);
+                            }
+                        });
+
+                        if (typeof calcularTotales === 'function') {
+                            calcularTotales();
+                        }
+                    })
+                    .catch(err => console.error('Error al cargar nuevos:', err));
+
+                // Cargar más vendidos
+                fetch('json/01masVendidos.json')
+                    .then(res => res.json())
+                    .then(imagenes => {
+                        const contenedor = document.getElementById('productos-container');
+                        if (!contenedor) return;
+
+                        imagenes.forEach(nombre => {
+                            const div = document.createElement('div');
+                            div.className = 'product-card';
+                            const img = document.createElement('img');
+                            img.src = 'stickers/' + nombre;
+                            img.alt = 'Producto';
+                            const btnContainer = document.createElement('div');
+                            btnContainer.className = 'btn-container';
+                            btnContainer.dataset.codigo = nombre;
+                            div.appendChild(img);
+                            div.appendChild(btnContainer);
+                            contenedor.appendChild(div);
+
+                            if (typeof actualizarBoton === 'function') {
+                                actualizarBoton(nombre);
+                            }
+                        });
+
+                        if (typeof calcularTotales === 'function') {
+                            calcularTotales();
+                        }
+                    })
+                    .catch(err => console.error('Error al cargar más vendidos:', err));
+
+            }, 200); // Espera 200ms para que script_v3.js esté disponible
+        });
 
         // --- CARRUSEL ---
         document.querySelector('a[href="#contacto"]').addEventListener('click', function (e) {
@@ -258,59 +283,59 @@
         };
 
         function cambiarMobile() {
-    const invente = document.querySelector('.invente');
-    if (window.innerWidth >= 768) {
-        // Desktop: sin wrap
-        if (invente) {
-            invente.style.flexWrap = 'nowrap';
+            const invente = document.querySelector('.invente');
+            if (window.innerWidth >= 768) {
+                // Desktop: sin wrap
+                if (invente) {
+                    invente.style.flexWrap = 'nowrap';
+                }
+            } else {
+                // Mobile: con wrap
+                if (invente) {
+                    invente.style.flexWrap = 'wrap';
+                }
+            }
         }
-    } else {
-        // Mobile: con wrap
-        if (invente) {
-            invente.style.flexWrap = 'wrap';
-        }
-    }
-}
 
-// Ejecutar al cargar la página
-window.addEventListener('load', cambiarMobile);
+        // Ejecutar al cargar la página
+        window.addEventListener('load', cambiarMobile);
 
-// Ejecutar al redimensionar la ventana
-window.addEventListener('resize', cambiarMobile);
+        // Ejecutar al redimensionar la ventana
+        window.addEventListener('resize', cambiarMobile);
 
         // Carrusel automático para barraIMG en mobile
         function iniciarCarruselBarraIMG() {
-        if (window.innerWidth <= 768) {
-        const barraIMG = document.querySelector('.barraIMG');
-        if (barraIMG && !barraIMG.classList.contains('carrusel-activo')) {
-            // Envolver las imágenes en un contenedor carrusel
-            const imagenes = Array.from(barraIMG.children);
-            const carruselContainer = document.createElement('div');
-            carruselContainer.className = 'barraIMG-carrusel';
-            
-            imagenes.forEach(img => carruselContainer.appendChild(img));
-            barraIMG.appendChild(carruselContainer);
-            barraIMG.classList.add('carrusel-activo');
-            
-            // Iniciar rotación automática
-            let indiceActual = 0;
-            const totalImagenes = imagenes.length;
-            
-            setInterval(() => {
-                indiceActual = (indiceActual + 1) % totalImagenes;
-                carruselContainer.style.transform = `translateX(-${indiceActual * 100}%)`;
-            }, 3000); // Cambia cada 3 segundos
+            if (window.innerWidth <= 768) {
+                const barraIMG = document.querySelector('.barraIMG');
+                if (barraIMG && !barraIMG.classList.contains('carrusel-activo')) {
+                    // Envolver las imágenes en un contenedor carrusel
+                    const imagenes = Array.from(barraIMG.children);
+                    const carruselContainer = document.createElement('div');
+                    carruselContainer.className = 'barraIMG-carrusel';
+
+                    imagenes.forEach(img => carruselContainer.appendChild(img));
+                    barraIMG.appendChild(carruselContainer);
+                    barraIMG.classList.add('carrusel-activo');
+
+                    // Iniciar rotación automática
+                    let indiceActual = 0;
+                    const totalImagenes = imagenes.length;
+
+                    setInterval(() => {
+                        indiceActual = (indiceActual + 1) % totalImagenes;
+                        carruselContainer.style.transform = `translateX(-${indiceActual * 100}%)`;
+                    }, 3000); // Cambia cada 3 segundos
+                }
+            }
         }
-    }
-}
 
-// Ejecutar al cargar la página
-window.addEventListener('load', iniciarCarruselBarraIMG);
+        // Ejecutar al cargar la página
+        window.addEventListener('load', iniciarCarruselBarraIMG);
 
-// Ejecutar al redimensionar la ventana
-window.addEventListener('resize', iniciarCarruselBarraIMG);
+        // Ejecutar al redimensionar la ventana
+        window.addEventListener('resize', iniciarCarruselBarraIMG);
 
-        
+
     </script>
 
 
