@@ -1,115 +1,164 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="https://use.typekit.net/mdk5yrn.css">
-  <link rel="stylesheet" href="https://use.typekit.net/mdk5yrn.css">
-  <link rel="stylesheet" href="css/style.css">
-  <title>Registro de Ventas de Stickers</title>
-</head>
+  <title>Buscador de Stickers</title>
+  <style>
+    body {
+      font-family: 'bebas neue', sans-serif;
+      text-align: center;
+      background: #000000e9;
+    }
 
+    textarea {
+      padding: 10px;
+      width: 420px;
+      font-size: 1.1em;
+      height: 140px;
+      resize: vertical;
+    }
+
+    #resultados {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .sticker {
+      text-align: center;
+      position: relative;
+      display: inline-block;
+      border-radius: 10px;
+      padding: 6px;
+      background: white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+    }
+
+    .sticker:hover {
+      transform: scale(1.05);
+    }
+
+    .sticker img {
+      width: 100px;
+      height: auto;
+      border-radius: 8px;
+    }
+
+    .cantidad-extra {
+      border: 3px solid #ff4d4d; /* rojo si x2 o más */
+      background: #ffe5e5;
+    }
+
+    .etiqueta {
+      position: absolute;
+      top: 6px;
+      right: 8px;
+      background: #ff4d4d;
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+  </style>
+</head>
 <body>
 
-  </div>
-  <h1 style="font-family: 'bebas neue', sans-serif;">BUSCADOR</h1>
+  <h1 style="color: white;">BUSCADOR</h1>
 
-  <!-- Agregar dentro del <body> -->
-  <div style="margin: 30px 0;display: flex;justify-content: center;">
-    <input type="text" id="buscador" placeholder="Codigo del sticker..."
-      style="padding:8px; width: 250px; font-size: 1.1em;">
+  <div style="margin: 30px 0; display: flex; justify-content: center;">
+    <textarea id="buscador" placeholder="Pegá la lista completa o buscá un código individual..."></textarea>
   </div>
-  <div id="resultados" style="display: flex; flex-wrap: wrap; gap: 16px;justify-content: center;"></div>
+
+  <div id="resultados"></div>
 
   <script>
     const stickersFolder = 'stickers/';
     let listaStickers = [];
 
-    // Cargar la lista de archivos JSON
+    // 🔹 Cargar lista de todos los archivos desde 0todos.json
     fetch('json/0todos.json')
       .then(res => res.json())
       .then(archivos => {
-        // Para cada archivo, cargar su contenido (que es un array de nombres de imágenes)
         const promesas = archivos.map(nombre =>
           fetch('json/' + nombre)
             .then(res => res.json())
-            .catch(() => []) // Si algún archivo falla, lo ignora
+            .catch(() => [])
         );
-        // Esperar a que todos los archivos se carguen
         Promise.all(promesas).then(arrays => {
-          // Unir todos los arrays en uno solo
           listaStickers = arrays.flat();
-          mostrarResultados('');
+          console.log('✅ Stickers cargados:', listaStickers.length);
         });
       });
 
+    // 🔹 Procesar lista pegada en el textarea
+    function procesarListaCodigos(texto) {
+      const lineas = texto.split('\n').filter(l => l.trim() !== '');
+      const resultados = [];
+
+      lineas.forEach(linea => {
+        const matchCantidad = linea.match(/x(\d+)/i);
+        const cantidad = matchCantidad ? parseInt(matchCantidad[1]) : 1;
+
+        const codigoLimpio = linea.replace(/\s*x\d+\s*$/i, '').trim();
+
+        const encontrado = listaStickers.find(sticker =>
+          sticker.replace('.png', '').toLowerCase() === codigoLimpio.toLowerCase()
+        );
+
+        if (encontrado) {
+          resultados.push({ nombre: encontrado, cantidad });
+        } else {
+          // Búsqueda flexible si no coincide exacto
+          const aproximado = listaStickers.find(sticker =>
+            sticker.toLowerCase().includes(codigoLimpio.toLowerCase())
+          );
+          if (aproximado) resultados.push({ nombre: aproximado, cantidad });
+        }
+      });
+
+      return resultados;
+    }
+
+    // 🔹 Mostrar resultados visuales
     function mostrarResultados(filtro) {
       const resultados = document.getElementById('resultados');
       resultados.innerHTML = '';
-      const filtroLower = filtro.trim().toLowerCase();
 
-      let filtrados = listaStickers.filter(nombre =>
-        nombre.toLowerCase().includes(filtroLower)
-      );
-
-      // Si el filtro está vacío, mostrar solo los primeros 100
-      if (filtroLower === '') {
-        filtrados = filtrados.slice(0, 100);
-      }
-
-      if (filtrados.length === 0) {
-        resultados.innerHTML = '<p>No se encontraron stickers.</p>';
+      if (!filtro.trim()) {
+        resultados.innerHTML = '<p style="color:#555;">Pegá una lista o escribí algo para buscar.</p>';
         return;
       }
 
-      filtrados.forEach(nombre => {
+      const listaProcesada = procesarListaCodigos(filtro);
+
+      if (listaProcesada.length === 0) {
+        resultados.innerHTML = '<p style="color:#888;">No se encontraron coincidencias.</p>';
+        return;
+      }
+
+      listaProcesada.forEach(({ nombre, cantidad }) => {
         const div = document.createElement('div');
-        div.style.textAlign = 'center';
+        div.className = 'sticker' + (cantidad > 1 ? ' cantidad-extra' : '');
+
         div.innerHTML = `
-      <img src="${stickersFolder}${nombre}" alt="${nombre}" style="width:100px; height:auto; display:block; margin-bottom:4px;">
-    `;
+          <img src="${stickersFolder}${nombre}" alt="${nombre}"
+               onerror="this.style.display='none'; console.warn('No se encontró imagen:', '${nombre}');">
+          ${cantidad > 1 ? `<span class="etiqueta">x${cantidad}</span>` : ''}
+        `;
         resultados.appendChild(div);
       });
     }
 
-    document.getElementById('buscador').addEventListener('input', function () {
-      mostrarResultados(this.value);
+    // 🔹 Escuchar cambios en textarea
+    document.getElementById('buscador').addEventListener('input', e => {
+      mostrarResultados(e.target.value);
     });
-
-    // Abrir el menú al tocar el logo
-    document.getElementById("abrirMenu").addEventListener("click", function () {
-      document.getElementById("sidebar").classList.add("visible");
-    });
-
-    // Cerrar el menú
-    function cerrarMenu() {
-      document.getElementById("sidebar").classList.remove("visible");
-    }
-
-    document.addEventListener("click", function (event) {
-      const sidebar = document.getElementById("sidebar");
-      const logo = document.getElementById("abrirMenu");
-
-      if (
-        sidebar.classList.contains("visible") &&
-        !sidebar.contains(event.target) &&
-        event.target !== logo
-      ) {
-        cerrarMenu();
-      }
-    });
-
-    // Cargar lista de imágenes (de un JSON generado previamente)
-    fetch('json/0todos.json')
-      .then(res => res.json())
-      .then(data => {
-        listaStickers = data;
-        mostrarResultados('');
-      });
-
-
   </script>
 </body>
-
 </html>
