@@ -36,17 +36,21 @@
       padding: 6px;
       background: white;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      transition: transform 0.2s;
+      transition: transform 0.2s, opacity 0.18s;
+      cursor: pointer;
+      outline: none;
     }
 
     .sticker:hover {
       transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
 
     .sticker img {
       width: 100px;
       height: auto;
       border-radius: 8px;
+      display: block;
     }
 
     .cantidad-extra {
@@ -65,6 +69,19 @@
       padding: 2px 6px;
       border-radius: 6px;
     }
+
+    /* clase para marcar visualmente que fue quitado */
+    .sticker.removed {
+      opacity: 0.28;
+      transform: scale(0.95);
+      pointer-events: none;
+    }
+
+    /* pequeño texto cuando no hay resultados */
+    .mensaje-resultados {
+      color: #888;
+      margin-top: 12px;
+    }
   </style>
 </head>
 <body>
@@ -78,87 +95,157 @@
   <div id="resultados"></div>
 
   <script>
-    const stickersFolder = 'stickers/';
-    let listaStickers = [];
+  const stickersFolder = 'stickers/';
+  let listaStickers = [];
 
-    // 🔹 Cargar lista de todos los archivos desde 0todos.json
-    fetch('json/0todos.json')
-      .then(res => res.json())
-      .then(archivos => {
-        const promesas = archivos.map(nombre =>
-          fetch('json/' + nombre)
-            .then(res => res.json())
-            .catch(() => [])
+  // Set de stickers que el usuario ocultó al clickear (evita re-render)
+  const STORAGE_KEY = 'stickers_ocultos';
+  const seenStickers = new Set(JSON.parse(sessionStorage.getItem(STORAGE_KEY) || '[]'));
+
+  function persistSeen() {
+    try {
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(seenStickers)));
+    } catch (e) {
+      // si falla el storage, no rompe la app
+      console.warn('No se pudo persistir seenStickers', e);
+    }
+  }
+
+  // 🔹 Cargar lista de todos los archivos desde 0todos.json
+  fetch('json/0todos.json')
+    .then(res => res.json())
+    .then(archivos => {
+      const promesas = archivos.map(nombre =>
+        fetch('json/' + nombre)
+          .then(res => res.json())
+          .catch(() => [])
+      );
+      Promise.all(promesas).then(arrays => {
+        listaStickers = arrays.flat();
+        console.log('✅ Stickers cargados:', listaStickers.length);
+      });
+    }).catch(err => console.warn('Error cargando 0todos.json', err));
+
+  // 🔹 Procesar lista pegada en el textarea
+  function procesarListaCodigos(texto) {
+    const lineas = texto.split('\n').filter(l => l.trim() !== '');
+    const resultados = [];
+
+    lineas.forEach(linea => {
+      const matchCantidad = linea.match(/x(\d+)/i);
+      const cantidad = matchCantidad ? parseInt(matchCantidad[1]) : 1;
+
+      const codigoLimpio = linea.replace(/\s*x\d+\s*$/i, '').trim();
+
+      const encontrado = listaStickers.find(sticker =>
+        sticker.replace('.png', '').toLowerCase() === codigoLimpio.toLowerCase()
+      );
+
+      if (encontrado) {
+        resultados.push({ nombre: encontrado, cantidad });
+      } else {
+        // Búsqueda flexible si no coincide exacto
+        const aproximado = listaStickers.find(sticker =>
+          sticker.toLowerCase().includes(codigoLimpio.toLowerCase())
         );
-        Promise.all(promesas).then(arrays => {
-          listaStickers = arrays.flat();
-          console.log('✅ Stickers cargados:', listaStickers.length);
-        });
+        if (aproximado) resultados.push({ nombre: aproximado, cantidad });
+      }
+    });
+
+    return resultados;
+  }
+
+  // 🔹 Mostrar resultados visuales
+  function mostrarResultados(filtro) {
+    const resultados = document.getElementById('resultados');
+    resultados.innerHTML = '';
+
+    if (!filtro.trim()) {
+      resultados.innerHTML = '<p class="mensaje-resultados">Pegá una lista o escribí algo para buscar.</p>';
+      return;
+    }
+
+    const listaProcesada = procesarListaCodigos(filtro);
+
+    // Filtrar también por los que ya fueron ocultados (seenStickers)
+    const listaFiltrada = listaProcesada.filter(item => !seenStickers.has(item.nombre));
+
+    if (listaFiltrada.length === 0) {
+      resultados.innerHTML = '<p class="mensaje-resultados">No se encontraron coincidencias.</p>';
+      return;
+    }
+
+    listaFiltrada.forEach(({ nombre, cantidad }) => {
+      const div = document.createElement('div');
+      div.className = 'sticker' + (cantidad > 1 ? ' cantidad-extra' : '');
+      div.setAttribute('tabindex', '0'); // accesibilidad: foco
+      div.setAttribute('role', 'button');
+      div.setAttribute('data-nombre', nombre);
+
+      div.innerHTML = `
+        <img src="${stickersFolder}${nombre}" alt="${nombre}"
+             onerror="this.style.display='none'; console.warn('No se encontró imagen:', '${nombre}');">
+        ${cantidad > 1 ? `<span class="etiqueta">x${cantidad}</span>` : ''}
+      `;
+
+      // Al clickear el sticker: marcar como visto/oculto y eliminar del DOM inmediatamente
+      div.addEventListener('click', () => {
+        // si ya está oculto, no hacer nada
+        if (seenStickers.has(nombre)) return;
+
+        // marcar como visto en el Set y persistir
+        seenStickers.add(nombre);
+        persistSeen();
+
+        // remover inmediatamente del DOM (para que desaparezca del front)
+        const parent = div.parentNode;
+        if (parent) parent.removeChild(div);
+
+        // actualizar textarea y volver a renderizar (por si hay otras apariciones)
+        eliminarStickerDelBuscador(nombre);
       });
 
-    // 🔹 Procesar lista pegada en el textarea
-    function procesarListaCodigos(texto) {
-      const lineas = texto.split('\n').filter(l => l.trim() !== '');
-      const resultados = [];
-
-      lineas.forEach(linea => {
-        const matchCantidad = linea.match(/x(\d+)/i);
-        const cantidad = matchCantidad ? parseInt(matchCantidad[1]) : 1;
-
-        const codigoLimpio = linea.replace(/\s*x\d+\s*$/i, '').trim();
-
-        const encontrado = listaStickers.find(sticker =>
-          sticker.replace('.png', '').toLowerCase() === codigoLimpio.toLowerCase()
-        );
-
-        if (encontrado) {
-          resultados.push({ nombre: encontrado, cantidad });
-        } else {
-          // Búsqueda flexible si no coincide exacto
-          const aproximado = listaStickers.find(sticker =>
-            sticker.toLowerCase().includes(codigoLimpio.toLowerCase())
-          );
-          if (aproximado) resultados.push({ nombre: aproximado, cantidad });
+      // Soporta teclado: Enter o espacio
+      div.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          div.click();
         }
       });
 
-      return resultados;
-    }
-
-    // 🔹 Mostrar resultados visuales
-    function mostrarResultados(filtro) {
-      const resultados = document.getElementById('resultados');
-      resultados.innerHTML = '';
-
-      if (!filtro.trim()) {
-        resultados.innerHTML = '<p style="color:#555;">Pegá una lista o escribí algo para buscar.</p>';
-        return;
-      }
-
-      const listaProcesada = procesarListaCodigos(filtro);
-
-      if (listaProcesada.length === 0) {
-        resultados.innerHTML = '<p style="color:#888;">No se encontraron coincidencias.</p>';
-        return;
-      }
-
-      listaProcesada.forEach(({ nombre, cantidad }) => {
-        const div = document.createElement('div');
-        div.className = 'sticker' + (cantidad > 1 ? ' cantidad-extra' : '');
-
-        div.innerHTML = `
-          <img src="${stickersFolder}${nombre}" alt="${nombre}"
-               onerror="this.style.display='none'; console.warn('No se encontró imagen:', '${nombre}');">
-          ${cantidad > 1 ? `<span class="etiqueta">x${cantidad}</span>` : ''}
-        `;
-        resultados.appendChild(div);
-      });
-    }
-
-    // 🔹 Escuchar cambios en textarea
-    document.getElementById('buscador').addEventListener('input', e => {
-      mostrarResultados(e.target.value);
+      resultados.appendChild(div);
     });
-  </script>
+  }
+
+  function eliminarStickerDelBuscador(nombreSticker) {
+    const textarea = document.getElementById('buscador');
+    const textoActual = textarea.value;
+    const lineas = textoActual.split('\n');
+
+    // Buscar el código sin extensión
+    const codigoBuscado = nombreSticker.replace('.png', '').toLowerCase();
+
+    // Filtrar líneas que NO coincidan con el sticker clickeado
+    const lineasFiltradas = lineas.filter(linea => {
+      const codigoLinea = linea.trim().replace(/\s*x\d+\s*$/i, '').trim();
+      return codigoLinea.toLowerCase() !== codigoBuscado;
+    });
+
+    // Actualizar textarea y mostrar resultados
+    textarea.value = lineasFiltradas.join('\n');
+    mostrarResultados(textarea.value);
+  }
+
+  // 🔹 Escuchar cambios en textarea
+  document.getElementById('buscador').addEventListener('input', function () {
+    mostrarResultados(this.value);
+  });
+
+  // Mostrar al cargar si ya hay texto
+  document.addEventListener('DOMContentLoaded', () => {
+    const ta = document.getElementById('buscador');
+    if (ta.value.trim()) mostrarResultados(ta.value);
+  });
+</script>
 </body>
 </html>
