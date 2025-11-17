@@ -15,6 +15,7 @@
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
         <script src="https://elfsightcdn.com/platform.js" async></script>
         <script src="script_v3.js" defer></script>
+        <script src="categoria-loader.js" defer></script>
 </head>
 
 <body>
@@ -153,7 +154,7 @@
                                         src="categorias/argentina/argentina.png" alt=""></a>
                         <a class="botonCategoria" href="catalogo.html?cat=politica"><img
                                         src="categorias/argentina/politica.png" alt=""></a>
-                         <a class="botonCategoria" href="catalogo.html?cat=MAFALDA"><img
+                         <a class="botonCategoria" href="catalogo.html?cat=mafalda"><img
                                         src="categorias/argentina/mafalda.png" alt=""></a>
                         <a class="botonCategoria" href="catalogo.html?cat=PROVINCIAS"><img
                                         src="categorias/argentina/provincias.png" alt=""></a>
@@ -368,50 +369,20 @@
 
 
 <script>
-// Esperar a que el DOM y todos los scripts defer estén cargados
-window.addEventListener('DOMContentLoaded', function() {
-    // Pequeña espera adicional para asegurar que script_v3.js esté disponible
+
+window.addEventListener('DOMContentLoaded', function () {
     setTimeout(() => {
-        // --- CARGA DE PRODUCTOS ---
-        fetch('json/01masVendidos.json')
-            .then(res => res.json())
-            .then(imagenes => {
-                // Verificar que las funciones existen antes de usarlas
-                if (typeof cargarCarritoGuardado === 'function') {
-                    cargarCarritoGuardado();
-                }
-                
-                const contenedor = document.getElementById('productos-container');
-                if (!contenedor) return;
-                
-                imagenes.forEach(nombre => {
-                    const div = document.createElement('div');
-                    div.className = 'product-card';
-                    const img = document.createElement('img');
-                    img.src = 'stickers/' + nombre;
-                    img.alt = 'Producto';
-                    const btnContainer = document.createElement('div');
-                    btnContainer.className = 'btn-container';
-                    btnContainer.dataset.codigo = nombre;
-                    div.appendChild(img);
-                    div.appendChild(btnContainer);
-                    contenedor.appendChild(div);
-                    
-                    if (typeof actualizarBoton === 'function') {
-                        actualizarBoton(nombre);
-                    }
-                });
-                
-                if (typeof calcularTotales === 'function') {
-                    calcularTotales();
-                }
-            })
-            .catch(err => {
-                console.error('Error cargando masVendidos.json:', err);
-                document.getElementById('productos-container').innerHTML = '<p>Error cargando productos.</p>';
-            });
-    }, 100); // Espera 100ms para que script_v3.js esté disponible
-});
+        // Cargar carrito una sola vez
+        if (typeof cargarCarritoGuardado === 'function') {
+            cargarCarritoGuardado();
+        }
+
+        // Cargar más vendidos usando el sistema centralizado  
+        cargarProductosCategoria('masVendidos', 'productos-container');
+
+    }, 400); // Espera 200ms para que ambos scripts estén disponibles
+})
+
 </script>
 
 </body>

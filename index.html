@@ -25,7 +25,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://elfsightcdn.com/platform.js" async></script>
     <script src="script_v3.js?v=3" defer></script>
-
+    <script src="categoria-loader.js" defer></script>
 </head>
 
 <body>
@@ -55,8 +55,8 @@
     <main>
         <div class="invente" id="invente">
             <div class="titulos">
-                <h1 style="" class="h1Titulo">Stickers de vinilo en Argentina</h1>
-                <h2 style="" class="h2Titulo">Calidad premium impresion UV. Para empresas y emprendedores</h2>
+                <h1 class="h1Titulo">Stickers de vinilo en Argentina</h1>
+                <h2 class="h2Titulo">Calidad premium impresion UV. Para empresas y emprendedores</h2>
             </div>
             <div class="carrusel-container">
                 <div class="carrusel" id="carrusel">
@@ -196,75 +196,21 @@
 
     <script>
         window.addEventListener('DOMContentLoaded', function () {
-            // Pequeña espera adicional para asegurar que script_v3.js esté disponible
-            setTimeout(() => {
-                // Cargar nuevos lanzamientos
-                fetch('json/01NUEVOS.json')
-                    .then(res => res.json())
-                    .then(imagenes => {
-                        if (typeof cargarCarritoGuardado === 'function') {
-                            cargarCarritoGuardado();
-                        }
-                        const contenedor = document.getElementById('productos-container+Nuevos');
-                        if (!contenedor) return;
+    setTimeout(() => {
+        // Cargar carrito una sola vez
+        if (typeof cargarCarritoGuardado === 'function') {
+            cargarCarritoGuardado();
+        }
 
-                        imagenes.forEach(nombre => {
-                            const div = document.createElement('div');
-                            div.className = 'product-card';
-                            const img = document.createElement('img');
-                            img.src = 'stickers/' + nombre;
-                            img.alt = 'Producto';
-                            const btnContainer = document.createElement('div');
-                            btnContainer.className = 'btn-container';
-                            btnContainer.dataset.codigo = nombre;
-                            div.appendChild(img);
-                            div.appendChild(btnContainer);
-                            contenedor.appendChild(div);
+        // Cargar nuevos lanzamientos usando el sistema centralizado
+        cargarProductosCategoria('nuevos', 'productos-container+Nuevos');
 
-                            if (typeof actualizarBoton === 'function') {
-                                actualizarBoton(nombre);
-                            }
-                        });
+        // Cargar más vendidos usando el sistema centralizado  
+        cargarProductosCategoria('masVendidos', 'productos-container');
 
-                        if (typeof calcularTotales === 'function') {
-                            calcularTotales();
-                        }
-                    })
-                    .catch(err => console.error('Error al cargar nuevos:', err));
+    }, 200); // Espera 200ms para que ambos scripts estén disponibles
+});
 
-                // Cargar más vendidos
-                fetch('json/01masVendidos.json')
-                    .then(res => res.json())
-                    .then(imagenes => {
-                        const contenedor = document.getElementById('productos-container');
-                        if (!contenedor) return;
-
-                        imagenes.forEach(nombre => {
-                            const div = document.createElement('div');
-                            div.className = 'product-card';
-                            const img = document.createElement('img');
-                            img.src = 'stickers/' + nombre;
-                            img.alt = 'Producto';
-                            const btnContainer = document.createElement('div');
-                            btnContainer.className = 'btn-container';
-                            btnContainer.dataset.codigo = nombre;
-                            div.appendChild(img);
-                            div.appendChild(btnContainer);
-                            contenedor.appendChild(div);
-
-                            if (typeof actualizarBoton === 'function') {
-                                actualizarBoton(nombre);
-                            }
-                        });
-
-                        if (typeof calcularTotales === 'function') {
-                            calcularTotales();
-                        }
-                    })
-                    .catch(err => console.error('Error al cargar más vendidos:', err));
-
-            }, 200); // Espera 200ms para que script_v3.js esté disponible
-        });
 
         // --- CARRUSEL ---
         document.querySelector('a[href="#contacto"]').addEventListener('click', function (e) {

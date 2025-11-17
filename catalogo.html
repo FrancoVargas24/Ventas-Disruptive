@@ -15,6 +15,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://elfsightcdn.com/platform.js" async></script>
     <script src="script_v3.js" defer></script>
+    <script src="categoria-loader.js" defer></script>
 </head>
 
 <body>
@@ -92,65 +93,27 @@
 
     <script>
         
-        function borrarMarca() {
-            document.querySelectorAll('a[href="https://elfsight.com/google-reviews-widget/?utm_source=websites&utm_medium=clients&utm_content=google-reviews&utm_term=disruptivestickers.com.ar&utm_campaign=free-widget"]').forEach(el => el.remove());
+       
+const urlParams = new URLSearchParams(window.location.search);
+const categoria = urlParams.get('cat');
+
+window.addEventListener('DOMContentLoaded', function() {
+    setTimeout(() => {
+        if (typeof cargarCarritoGuardado === 'function') {
+            cargarCarritoGuardado();
         }
-        function borrarMarca2() {
-            document.querySelectorAll('.eapps-widget-toolbar').forEach(el => el.remove());
+        
+        if (categoria) {
+            console.log('Cargando categoría:', categoria);
+            cargarProductosCategoria(categoria, 'productos-container');
         }
-        function borrarMarca() {
-            document.querySelectorAll('a[href="https://elfsight.com/google-reviews-widget/?utm_source=websites&utm_medium=clients&utm_content=google-reviews&utm_term=127.0.0.1&utm_campaign=free-widget"]').forEach(el => el.remove());
+        
+        if (typeof calcularTotales === 'function') {
+            calcularTotales();
         }
-        function borrarMarca2() {
-            document.querySelectorAll('.eapps-widget-toolbar').forEach(el => el.remove());
-        }
-        // Primera limpieza después de que cargue
-        document.addEventListener("DOMContentLoaded", () => {
-            setTimeout(borrarMarca, 2000); // espera 1 seg para que cargue el widget
-        });
-        document.addEventListener("DOMContentLoaded", () => {
-            setTimeout(borrarMarca2, 2000); // espera 1 seg para que cargue el widget
-        });
-        setInterval(borrarMarca, 3000);
-        setInterval(borrarMarca2, 3000);
+    }, 200);
+});
 
-        // --------- CARGA DINÁMICA ---------
-        const params = new URLSearchParams(window.location.search);
-        const categoria = params.get('cat') || 'imagenes';
-
-        document.getElementById('categoria-titulo').textContent = categoria.toUpperCase();
-
-        fetch(`json/${categoria}.json`)
-            .then(res => res.json())
-            .then(imagenes => {
-                cargarCarritoGuardado();
-                const contenedor = document.getElementById('productos-container');
-
-                imagenes.forEach(nombre => {
-                    const div = document.createElement('div');
-                    div.className = 'product-card';
-
-                    const img = document.createElement('img');
-                    img.src = 'stickers/' + nombre;
-                    img.alt = 'Producto';
-
-                    const btnContainer = document.createElement('div');
-                    btnContainer.className = 'btn-container';
-                    btnContainer.dataset.codigo = nombre;
-
-                    div.appendChild(img);
-                    div.appendChild(btnContainer);
-                    contenedor.appendChild(div);
-
-                    actualizarBoton(nombre);
-                });
-
-                calcularTotales();
-            });
-
-        document.getElementById('btn-volver').onclick = function () {
-            location.reload();
-        };
     </script>
 </body>
 
