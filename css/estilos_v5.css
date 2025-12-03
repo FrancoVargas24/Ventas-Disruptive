@@ -7,10 +7,9 @@ body {
 }
 
 li {
-    font-size: 20px;
     background: #ffffffea;
-    padding: 10px;
     border-radius: 5px;
+    gap: 1px;
 }
 
 header {
@@ -280,6 +279,43 @@ a {
     color: #828282;
 }
 
+/* 🔹 MEJORAR ÁREA CLICKEABLE DEL MENÚ */
+.navbar-links a {
+  display: block !important;
+  width: 100% !important;
+  padding: 15px 20px !important;
+  text-decoration: none !important;
+  color: inherit !important;
+  transition: background-color 0.3s ease !important;
+}
+
+.navbar-links a:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  border-radius: 5px !important;
+}
+
+.navbar-links li {
+  margin: 0 !important;
+  border-radius: 5px !important;
+  overflow: hidden !important;
+  gap: 1px !important;
+padding: 0px 12px !important;
+}
+
+/* Para mobile cuando el menú está desplegado */
+@media (max-width: 768px) {
+  .navbar-links.active a {
+    display: block !important;
+    width: 100% !important;
+    padding: 10px 0px !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  }
+  
+  .navbar-links.active a:hover {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+  }
+}
+
 .navbar-user {
     display: flex;
     align-items: center;
@@ -373,12 +409,8 @@ a {
         min-width: 180px;
     }
 
-    .navbar-links.active {
-        display: flex;
-    }
-
     .navbar-links li {
-        margin: 10px 10px;
+        margin: 10px 10px !important;
         text-align: right;
     }
 

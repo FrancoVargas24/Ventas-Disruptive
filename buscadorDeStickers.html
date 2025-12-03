@@ -513,7 +513,7 @@ async function agregarStickerAlPDF(doc, img, x, y, width, height, cantidad) {
     doc.rect(x, y, width, height);
 
     // 🔹 AGREGAR CÓDIGO DEBAJO DE LA IMAGEN
-const codigo = img.alt.split('/').pop().replace('.png', '').replace('.jpg', '').replace('.jpeg', '');    doc.setFontSize(7);
+    const codigo = img.alt.split('/').pop().replace('.png', '').replace('.jpg', '').replace('.jpeg', '');    doc.setFontSize(7);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(60, 60, 60); // Gris oscuro
     
