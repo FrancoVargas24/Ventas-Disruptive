@@ -10,6 +10,34 @@
       font-family: 'bebas neue', sans-serif;
       text-align: center;
       background: #000000e9;
+      position: relative;
+    }
+
+    /* CONTADOR EN ESQUINA SUPERIOR IZQUIERDA */
+    .contador {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: #25d366;
+      color: white;
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      z-index: 1000;
+      min-width: 120px;
+      text-align: center;
+    }
+
+    .contador .numero {
+      font-size: 24px;
+      display: block;
+    }
+
+    .contador .texto {
+      font-size: 14px;
+      opacity: 0.9;
     }
 
     textarea {
@@ -54,7 +82,7 @@
     }
 
     .cantidad-extra {
-      border: 3px solid #ff4d4d; /* rojo si x2 o más */
+      border: 3px solid #ff4d4d;
       background: #ffe5e5;
     }
 
@@ -70,14 +98,12 @@
       border-radius: 6px;
     }
 
-    /* clase para marcar visualmente que fue quitado */
     .sticker.removed {
       opacity: 0.28;
       transform: scale(0.95);
       pointer-events: none;
     }
 
-    /* pequeño texto cuando no hay resultados */
     .mensaje-resultados {
       color: #888;
       margin-top: 12px;
@@ -85,6 +111,12 @@
   </style>
 </head>
 <body>
+
+  <!-- CONTADOR EN ESQUINA SUPERIOR IZQUIERDA -->
+  <div class="contador" id="contador">
+    <span class="numero" id="contador-numero">0</span>
+    <span class="texto">stickers</span>
+  </div>
 
   <h1 style="color: white;">BUSCADOR</h1>
 
@@ -98,35 +130,74 @@
   const stickersFolder = 'stickers/';
   let listaStickers = [];
 
-  // Set de stickers que el usuario ocultó al clickear (evita re-render)
-  const STORAGE_KEY = 'stickers_ocultos';
-  const seenStickers = new Set(JSON.parse(sessionStorage.getItem(STORAGE_KEY) || '[]'));
-
-  function persistSeen() {
-    try {
-      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(seenStickers)));
-    } catch (e) {
-      // si falla el storage, no rompe la app
-      console.warn('No se pudo persistir seenStickers', e);
+  // 🔹 FUNCIÓN PARA ACTUALIZAR CONTADOR (cuenta las unidades reales, no los DIVs)
+  function actualizarContador() {
+    const contadorNumero = document.getElementById('contador-numero');
+    
+    // Sumar todas las cantidades de los stickers visibles
+    const divs = document.querySelectorAll('#resultados .sticker:not(.removed)');
+    let totalUnidades = 0;
+    
+    divs.forEach(div => {
+      const cantidad = parseInt(div.getAttribute('data-cantidad')) || 1;
+      totalUnidades += cantidad;
+    });
+    
+    contadorNumero.textContent = totalUnidades;
+    
+    // Cambiar color según la cantidad
+    const contador = document.getElementById('contador');
+    if (totalUnidades === 0) {
+      contador.style.background = '#666';
+    } else if (totalUnidades < 20) {
+      contador.style.background = '#ff4d4d';
+    } else if (totalUnidades < 50) {
+      contador.style.background = '#ff8c00';
+    } else {
+      contador.style.background = '#25d366';
     }
   }
 
-  // 🔹 Cargar lista de todos los archivos desde 0todos.json
-  fetch('json/0todos.json')
+  // Cargar configuración
+  fetch('json/0categorias-config.json')
     .then(res => res.json())
-    .then(archivos => {
-      const promesas = archivos.map(nombre =>
+    .then(config => {
+      console.log('✅ Configuración cargada:', config);
+      
+      const archivosJSON = Object.values(config);
+      console.log('📁 Archivos a cargar:', archivosJSON);
+      
+      const promesas = archivosJSON.map(nombre =>
         fetch('json/' + nombre)
-          .then(res => res.json())
-          .catch(() => [])
+          .then(res => {
+            if (!res.ok) {
+              console.warn(`⚠️ No se pudo cargar: ${nombre}`);
+              return [];
+            }
+            return res.json();
+          })
+          .catch(err => {
+            console.warn(`❌ Error cargando ${nombre}:`, err);
+            return [];
+          })
       );
+      
       Promise.all(promesas).then(arrays => {
         listaStickers = arrays.flat();
         console.log('✅ Stickers cargados:', listaStickers.length);
+        
+        if (listaStickers.length === 0) {
+          document.getElementById('resultados').innerHTML = 
+            '<p style="color:red;">⚠️ No se cargaron stickers. Revisa la consola.</p>';
+        }
       });
-    }).catch(err => console.warn('Error cargando 0todos.json', err));
+    })
+    .catch(err => {
+      console.error('❌ Error cargando configuración:', err);
+      document.getElementById('resultados').innerHTML = 
+        '<p style="color:red;">Error cargando configuración de categorías.</p>';
+    });
 
-  // 🔹 Procesar lista pegada en el textarea
   function procesarListaCodigos(texto) {
     const lineas = texto.split('\n').filter(l => l.trim() !== '');
     const resultados = [];
@@ -144,7 +215,6 @@
       if (encontrado) {
         resultados.push({ nombre: encontrado, cantidad });
       } else {
-        // Búsqueda flexible si no coincide exacto
         const aproximado = listaStickers.find(sticker =>
           sticker.toLowerCase().includes(codigoLimpio.toLowerCase())
         );
@@ -155,32 +225,32 @@
     return resultados;
   }
 
-  // 🔹 Mostrar resultados visuales
   function mostrarResultados(filtro) {
     const resultados = document.getElementById('resultados');
     resultados.innerHTML = '';
 
     if (!filtro.trim()) {
+      actualizarContador(); // Contador en 0
       resultados.innerHTML = '<p class="mensaje-resultados">Pegá una lista o escribí algo para buscar.</p>';
       return;
     }
 
     const listaProcesada = procesarListaCodigos(filtro);
 
-    // Filtrar también por los que ya fueron ocultados (seenStickers)
-    const listaFiltrada = listaProcesada.filter(item => !seenStickers.has(item.nombre));
-
-    if (listaFiltrada.length === 0) {
+    if (listaProcesada.length === 0) {
       resultados.innerHTML = '<p class="mensaje-resultados">No se encontraron coincidencias.</p>';
+      actualizarContador();
       return;
     }
 
-    listaFiltrada.forEach(({ nombre, cantidad }) => {
+    // 🔹 CREAR UN DIV POR PRODUCTO (con etiqueta de cantidad visible)
+    listaProcesada.forEach(({ nombre, cantidad }) => {
       const div = document.createElement('div');
       div.className = 'sticker' + (cantidad > 1 ? ' cantidad-extra' : '');
-      div.setAttribute('tabindex', '0'); // accesibilidad: foco
+      div.setAttribute('tabindex', '0');
       div.setAttribute('role', 'button');
       div.setAttribute('data-nombre', nombre);
+      div.setAttribute('data-cantidad', cantidad); // 🔹 Guardamos la cantidad para el contador
 
       div.innerHTML = `
         <img src="${stickersFolder}${nombre}" alt="${nombre}"
@@ -188,24 +258,23 @@
         ${cantidad > 1 ? `<span class="etiqueta">x${cantidad}</span>` : ''}
       `;
 
-      // Al clickear el sticker: marcar como visto/oculto y eliminar del DOM inmediatamente
+      // 🔹 CLICK: Eliminar completamente el producto
       div.addEventListener('click', () => {
-        // si ya está oculto, no hacer nada
-        if (seenStickers.has(nombre)) return;
-
-        // marcar como visto en el Set y persistir
-        seenStickers.add(nombre);
-        persistSeen();
-
-        // remover inmediatamente del DOM (para que desaparezca del front)
-        const parent = div.parentNode;
-        if (parent) parent.removeChild(div);
-
-        // actualizar textarea y volver a renderizar (por si hay otras apariciones)
-        eliminarStickerDelBuscador(nombre);
+        // Marcar como removido visualmente
+        div.classList.add('removed');
+        
+        // Eliminar del DOM después de la animación
+        setTimeout(() => {
+          if (div.parentNode) {
+            div.parentNode.removeChild(div);
+            actualizarContador(); // Actualizar contador después de eliminar
+          }
+        }, 200);
+        
+        // Eliminar línea completa del textarea
+        eliminarLineaCompleta(nombre);
       });
 
-      // Soporta teclado: Enter o espacio
       div.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
@@ -215,37 +284,42 @@
 
       resultados.appendChild(div);
     });
+
+    // 🔹 Actualizar contador después de crear todos los DIVs
+    actualizarContador();
   }
 
-  function eliminarStickerDelBuscador(nombreSticker) {
+  // 🔹 FUNCIÓN: Eliminar línea completa del textarea
+  function eliminarLineaCompleta(nombreSticker) {
     const textarea = document.getElementById('buscador');
-    const textoActual = textarea.value;
-    const lineas = textoActual.split('\n');
-
-    // Buscar el código sin extensión
+    const lineas = textarea.value.split('\n');
     const codigoBuscado = nombreSticker.replace('.png', '').toLowerCase();
 
-    // Filtrar líneas que NO coincidan con el sticker clickeado
     const lineasFiltradas = lineas.filter(linea => {
       const codigoLinea = linea.trim().replace(/\s*x\d+\s*$/i, '').trim();
       return codigoLinea.toLowerCase() !== codigoBuscado;
     });
 
-    // Actualizar textarea y mostrar resultados
     textarea.value = lineasFiltradas.join('\n');
-    mostrarResultados(textarea.value);
+    
+    // Si no quedan líneas, mostrar mensaje
+    if (lineasFiltradas.length === 0) {
+      setTimeout(() => {
+        document.getElementById('resultados').innerHTML = '<p class="mensaje-resultados">Lista completada! 🎉</p>';
+        actualizarContador();
+      }, 250);
+    }
   }
 
-  // 🔹 Escuchar cambios en textarea
+  // Event listeners
   document.getElementById('buscador').addEventListener('input', function () {
     mostrarResultados(this.value);
   });
 
-  // Mostrar al cargar si ya hay texto
   document.addEventListener('DOMContentLoaded', () => {
     const ta = document.getElementById('buscador');
     if (ta.value.trim()) mostrarResultados(ta.value);
   });
-</script>
+  </script>
 </body>
 </html>
