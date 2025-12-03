@@ -1,9 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="https://use.typekit.net/mdk5yrn.css">
+  <!-- 🔹 Agregar jsPDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <title>Buscador de Stickers</title>
   <style>
     body {
@@ -24,7 +28,7 @@
       border-radius: 10px;
       font-size: 18px;
       font-weight: bold;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
       z-index: 1000;
       min-width: 120px;
       text-align: center;
@@ -38,6 +42,33 @@
     .contador .texto {
       font-size: 14px;
       opacity: 0.9;
+    }
+
+    /* 🔹 BOTÓN PDF */
+    .btn-pdf {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #e74c3c;
+      color: white;
+      padding: 12px 16px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+      transition: background 0.3s;
+    }
+
+    .btn-pdf:hover {
+      background: #c0392b;
+    }
+
+    .btn-pdf:disabled {
+      background: #666;
+      cursor: not-allowed;
     }
 
     textarea {
@@ -63,7 +94,7 @@
       border-radius: 10px;
       padding: 6px;
       background: white;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       transition: transform 0.2s, opacity 0.18s;
       cursor: pointer;
       outline: none;
@@ -71,7 +102,7 @@
 
     .sticker:hover {
       transform: scale(1.05);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
 
     .sticker img {
@@ -108,8 +139,84 @@
       color: #888;
       margin-top: 12px;
     }
+
+    /* 🔹 ESTILOS PARA PDF (ocultos normalmente) */
+    .pdf-container {
+      display: none;
+      background: white;
+      padding: 30px;
+      width: 800px;
+      margin: 0 auto;
+    }
+
+    .pdf-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .pdf-title {
+      font-size: 28px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .pdf-fecha {
+      font-size: 16px;
+      color: #666;
+    }
+
+    .pdf-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .pdf-sticker {
+      text-align: center;
+      position: relative;
+      background: white;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      padding: 8px;
+      width: 110px;
+    }
+
+    .pdf-sticker.cantidad-extra {
+      border-color: #ff4d4d;
+      background: #ffe5e5;
+    }
+
+    .pdf-sticker img {
+      width: 90px;
+      height: auto;
+      border-radius: 6px;
+    }
+
+    .pdf-etiqueta {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      background: #ff4d4d;
+      color: white;
+      font-weight: bold;
+      font-size: 12px;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .pdf-resumen {
+      margin-top: 30px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+    }
   </style>
 </head>
+
 <body>
 
   <!-- CONTADOR EN ESQUINA SUPERIOR IZQUIERDA -->
@@ -117,6 +224,11 @@
     <span class="numero" id="contador-numero">0</span>
     <span class="texto">stickers</span>
   </div>
+
+  <!-- 🔹 BOTÓN PDF EN ESQUINA SUPERIOR DERECHA -->
+  <button class="btn-pdf" id="btn-descargar-pdf" onclick="generarPDF()" disabled>
+    📄 Descargar PDF
+  </button>
 
   <h1 style="color: white;">BUSCADOR</h1>
 
@@ -126,200 +238,481 @@
 
   <div id="resultados"></div>
 
+  <!-- 🔹 CONTENEDOR OCULTO PARA GENERAR PDF -->
+  <div class="pdf-container" id="pdf-container">
+    <div class="pdf-header">
+      <div class="pdf-title">LISTA DE STICKERS</div>
+      <div class="pdf-fecha" id="pdf-fecha"></div>
+    </div>
+    <div class="pdf-grid" id="pdf-grid">
+      <!-- Los stickers se copiarán aquí para el PDF -->
+    </div>
+    <div class="pdf-resumen" id="pdf-resumen">
+      <!-- El resumen se generará aquí -->
+    </div>
+  </div>
+
   <script>
-  const stickersFolder = 'stickers/';
-  let listaStickers = [];
+    const stickersFolder = 'stickers/';
+    let listaStickers = [];
 
-  // 🔹 FUNCIÓN PARA ACTUALIZAR CONTADOR (cuenta las unidades reales, no los DIVs)
-  function actualizarContador() {
-    const contadorNumero = document.getElementById('contador-numero');
-    
-    // Sumar todas las cantidades de los stickers visibles
-    const divs = document.querySelectorAll('#resultados .sticker:not(.removed)');
-    let totalUnidades = 0;
-    
-    divs.forEach(div => {
-      const cantidad = parseInt(div.getAttribute('data-cantidad')) || 1;
-      totalUnidades += cantidad;
-    });
-    
-    contadorNumero.textContent = totalUnidades;
-    
-    // Cambiar color según la cantidad
-    const contador = document.getElementById('contador');
-    if (totalUnidades === 0) {
-      contador.style.background = '#666';
-    } else if (totalUnidades < 20) {
-      contador.style.background = '#ff4d4d';
-    } else if (totalUnidades < 50) {
-      contador.style.background = '#ff8c00';
-    } else {
-      contador.style.background = '#25d366';
+    // 🔹 FUNCIÓN PARA ACTUALIZAR CONTADOR
+    function actualizarContador() {
+      const contadorNumero = document.getElementById('contador-numero');
+      const btnPDF = document.getElementById('btn-descargar-pdf');
+
+      // Sumar todas las cantidades de los stickers visibles
+      const divs = document.querySelectorAll('#resultados .sticker:not(.removed)');
+      let totalUnidades = 0;
+
+      divs.forEach(div => {
+        const cantidad = parseInt(div.getAttribute('data-cantidad')) || 1;
+        totalUnidades += cantidad;
+      });
+
+      contadorNumero.textContent = totalUnidades;
+
+      // 🔹 Habilitar/deshabilitar botón PDF
+      if (totalUnidades > 0) {
+        btnPDF.disabled = false;
+        btnPDF.textContent = `📄 Descargar PDF (${totalUnidades})`;
+      } else {
+        btnPDF.disabled = true;
+        btnPDF.textContent = '📄 Descargar PDF';
+      }
+
+      // Cambiar color según la cantidad
+      const contador = document.getElementById('contador');
+      if (totalUnidades === 0) {
+        contador.style.background = '#666';
+      } else if (totalUnidades < 20) {
+        contador.style.background = '#ff4d4d';
+      } else if (totalUnidades < 50) {
+        contador.style.background = '#ff8c00';
+      } else {
+        contador.style.background = '#25d366';
+      }
     }
-  }
 
-  // Cargar configuración
-  fetch('json/0categorias-config.json')
-    .then(res => res.json())
-    .then(config => {
-      console.log('✅ Configuración cargada:', config);
-      
-      const archivosJSON = Object.values(config);
-      console.log('📁 Archivos a cargar:', archivosJSON);
-      
-      const promesas = archivosJSON.map(nombre =>
-        fetch('json/' + nombre)
-          .then(res => {
-            if (!res.ok) {
-              console.warn(`⚠️ No se pudo cargar: ${nombre}`);
+    // Reemplaza la función generarPDF() completa por esta versión mejorada:
+
+    // 🔹 FUNCIÓN PARA GENERAR PDF (CON FONDO BLANCO)
+    async function generarPDF() {
+      const btnPDF = document.getElementById('btn-descargar-pdf');
+      btnPDF.disabled = true;
+      btnPDF.textContent = '⏳ Generando PDF...';
+
+      try {
+        // Obtener stickers visibles
+        const stickersVisibles = document.querySelectorAll('#resultados .sticker:not(.removed)');
+
+        if (stickersVisibles.length === 0) {
+          alert('No hay stickers para generar PDF');
+          return;
+        }
+
+        // Crear PDF
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({
+          orientation: 'portrait',
+          unit: 'mm',
+          format: 'a4'
+        });
+
+        // Cambiar estas líneas en la función generarPDF():
+
+        // Configuración del PDF
+        const pageWidth = 210; // A4 ancho
+        const pageHeight = 297; // A4 alto
+        const margin = 10; // 🔹 Reducir margen de 15 a 10
+        const contentWidth = pageWidth - (margin * 2);
+        const stickerWidth = 28; // 🔹 Cambiar de 35 a 18 (más pequeño)
+        const stickerHeight = 31; // 🔹 Cambiar de 40 a 20 (más pequeño)
+        const gap = 1; // 🔹 Cambiar de 5 a 2 (menos espacio entre stickers)
+
+        // Calcular cuántos stickers caben por fila
+        const stickersPerRow = Math.floor((contentWidth + gap) / (stickerWidth + gap));
+        const actualRowWidth = (stickersPerRow * stickerWidth) + ((stickersPerRow - 1) * gap);
+        const startX = margin + (contentWidth - actualRowWidth) / 2; // Centrar horizontalmente
+
+        let currentPage = 1;
+        let yPosition = margin + 30; // Dejar espacio para el título
+        let stickerIndex = 0;
+
+        // 🔹 Agregar fondo blanco a la página
+        function agregarFondoBlanco() {
+          doc.setFillColor(255, 255, 255); // Blanco
+          doc.rect(0, 0, pageWidth, pageHeight, 'F'); // Llenar toda la página
+        }
+
+        // Agregar título a cada página
+        function agregarTitulo(pageNum = 1) {
+          agregarFondoBlanco(); // 🔹 Fondo blanco primero
+
+          doc.setFontSize(20);
+          doc.setFont('helvetica', 'bold');
+          doc.setTextColor(0, 0, 0); // Negro
+          doc.text('LISTA DE STICKERS', pageWidth / 2, margin + 15, { align: 'center' });
+
+          doc.setFontSize(12);
+          doc.setFont('helvetica', 'normal');
+          doc.setTextColor(100, 100, 100); // Gris
+          const fecha = new Date().toLocaleDateString('es-ES', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+          doc.text(`${fecha} - Página ${pageNum}`, pageWidth / 2, margin + 22, { align: 'center' });
+
+          // Línea separadora
+          doc.setDrawColor(200, 200, 200);
+          doc.setLineWidth(0.5);
+          doc.line(margin, margin + 25, pageWidth - margin, margin + 25);
+        }
+
+        agregarTitulo();
+
+        // Procesar cada sticker
+        for (const sticker of stickersVisibles) {
+          const cantidad = parseInt(sticker.getAttribute('data-cantidad')) || 1;
+          const img = sticker.querySelector('img');
+
+          // Calcular posición en la grilla
+          const col = stickerIndex % stickersPerRow;
+          const row = Math.floor(stickerIndex / stickersPerRow);
+
+          const x = startX + col * (stickerWidth + gap);
+          const y = yPosition + row * (stickerHeight + gap);
+
+          // Verificar si necesitamos nueva página
+          if (y + stickerHeight > pageHeight - margin) {
+            // Nueva página
+            doc.addPage();
+            currentPage++;
+            agregarTitulo(currentPage);
+            yPosition = margin + 30;
+            stickerIndex = 0;
+
+            // Recalcular posición para la nueva página
+            const newCol = stickerIndex % stickersPerRow;
+            const newRow = Math.floor(stickerIndex / stickersPerRow);
+            const newX = startX + newCol * (stickerWidth + gap);
+            const newY = yPosition + newRow * (stickerHeight + gap);
+
+            await agregarStickerAlPDF(doc, img, newX, newY, stickerWidth, stickerHeight - 5, cantidad);
+          } else {
+            await agregarStickerAlPDF(doc, img, x, y, stickerWidth, stickerHeight - 5, cantidad);
+          }
+
+          stickerIndex++;
+        }
+
+        // Agregar resumen al final
+        const totalStickers = Array.from(stickersVisibles).reduce((total, sticker) => {
+          return total + (parseInt(sticker.getAttribute('data-cantidad')) || 1);
+        }, 0);
+
+        // Verificar si hay espacio para el resumen
+        const resumenY = yPosition + Math.ceil(stickerIndex / stickersPerRow) * (stickerHeight + gap) + 15;
+
+        if (resumenY > pageHeight - margin - 20) {
+          doc.addPage();
+          currentPage++;
+          agregarTitulo(currentPage);
+          doc.setFontSize(16);
+          doc.setFont('helvetica', 'bold');
+          doc.setTextColor(0, 0, 0);
+          doc.text(`TOTAL: ${totalStickers} stickers`, pageWidth / 2, margin + 50, { align: 'center' });
+        } else {
+          doc.setFontSize(16);
+          doc.setFont('helvetica', 'bold');
+          doc.setTextColor(0, 0, 0);
+          doc.text(`TOTAL: ${totalStickers} stickers`, pageWidth / 2, resumenY, { align: 'center' });
+        }
+
+        // Descargar PDF
+        const fileName = `stickers_lista_${new Date().toISOString().slice(0, 10)}.pdf`;
+        doc.save(fileName);
+
+      } catch (error) {
+        console.error('Error generando PDF:', error);
+        alert('Error al generar PDF. Revisa la consola.');
+      } finally {
+        // Restaurar botón
+        btnPDF.disabled = false;
+        actualizarContador();
+      }
+    }
+
+    // 🔹 FUNCIÓN AUXILIAR: Agregar sticker al PDF (SIN DEFORMACIÓN)
+    // 🔹 FUNCIÓN AUXILIAR: Agregar sticker al PDF (CON CÓDIGO DEBAJO)
+async function agregarStickerAlPDF(doc, img, x, y, width, height, cantidad) {
+  try {
+    // Crear canvas para convertir la imagen
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    // Cargar imagen
+    const imagenOriginal = new Image();
+    imagenOriginal.crossOrigin = 'anonymous';
+
+    await new Promise((resolve, reject) => {
+      imagenOriginal.onload = resolve;
+      imagenOriginal.onerror = reject;
+      imagenOriginal.src = img.src;
+    });
+
+    // 🔹 CALCULAR DIMENSIONES SIN DEFORMACIÓN (reservar espacio para texto)
+    const espacioTexto = 8; // Espacio reservado para el código
+    const alturaImagen = height - espacioTexto;
+    const aspectRatio = imagenOriginal.width / imagenOriginal.height;
+    const containerAspectRatio = (width - 4) / (alturaImagen - 4);
+
+    let imgWidth, imgHeight, imgX, imgY;
+
+    if (aspectRatio > containerAspectRatio) {
+      // La imagen es más ancha, ajustar al ancho
+      imgWidth = width - 4;
+      imgHeight = imgWidth / aspectRatio;
+      imgX = x + 2;
+      imgY = y + 2 + ((alturaImagen - 4) - imgHeight) / 2; // Centrar verticalmente
+    } else {
+      // La imagen es más alta, ajustar a la altura
+      imgHeight = alturaImagen - 4;
+      imgWidth = imgHeight * aspectRatio;
+      imgX = x + 2 + ((width - 4) - imgWidth) / 2; // Centrar horizontalmente
+      imgY = y + 2;
+    }
+
+    // Configurar canvas con las dimensiones originales
+    canvas.width = imagenOriginal.width;
+    canvas.height = imagenOriginal.height;
+
+    // 🔹 Fondo blanco en el canvas
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Dibujar imagen
+    ctx.drawImage(imagenOriginal, 0, 0);
+
+    // Convertir a base64
+    const imgData = canvas.toDataURL('image/jpeg', 0.9);
+
+    // 🔹 Fondo blanco para el contenedor del sticker
+    doc.setFillColor(255, 255, 255);
+    doc.rect(x, y, width, height, 'F');
+
+    // 🔹 Agregar imagen sin deformación
+    doc.addImage(imgData, 'JPEG', imgX, imgY, imgWidth, imgHeight);
+
+    // Agregar borde
+    doc.setDrawColor(cantidad > 1 ? 255 : 220, cantidad > 1 ? 77 : 220, cantidad > 1 ? 77 : 220);
+    doc.setLineWidth(cantidad > 1 ? 0.8 : 0.3);
+    doc.rect(x, y, width, height);
+
+    // 🔹 AGREGAR CÓDIGO DEBAJO DE LA IMAGEN
+const codigo = img.alt.split('/').pop().replace('.png', '').replace('.jpg', '').replace('.jpeg', '');    doc.setFontSize(7);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(60, 60, 60); // Gris oscuro
+    
+    // Centrar el texto horizontalmente
+    doc.text(codigo, x + width/2, y + height - 2, { align: 'center' });
+
+    // Agregar etiqueta de cantidad si es mayor a 1
+    if (cantidad > 1) {
+      doc.setFillColor(255, 77, 77);
+      doc.rect(x + width - 10, y, 10, 8, 'F');
+
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'bold');
+      doc.text(`x${cantidad}`, x + width - 5, y + 5.5, { align: 'center' });
+    }
+
+    // Resetear color
+    doc.setTextColor(0, 0, 0);
+
+  } catch (error) {
+    console.warn('Error agregando imagen al PDF:', error);
+
+    // Si falla la imagen, agregar un rectángulo gris claro
+    doc.setFillColor(250, 250, 250);
+    doc.rect(x, y, width, height, 'F');
+
+    doc.setDrawColor(200, 200, 200);
+    doc.rect(x, y, width, height);
+
+    doc.setFontSize(8);
+    doc.setTextColor(100, 100, 100);
+    doc.text('IMAGEN', x + width/2, y + height/2 - 4, { align: 'center' });
+    doc.text('NO DISPONIBLE', x + width/2, y + height/2 + 2, { align: 'center' });
+    
+    // Agregar código aunque falle la imagen
+    const codigo = img.alt.replace('.png', '').replace('.jpg', '').replace('.jpeg', '');
+    doc.setFontSize(7);
+    doc.text(codigo, x + width/2, y + height - 2, { align: 'center' });
+    
+    doc.setTextColor(0, 0, 0); // Resetear color
+  }
+}
+
+    // Cargar configuración
+    fetch('json/0categorias-config.json')
+      .then(res => res.json())
+      .then(config => {
+        console.log('✅ Configuración cargada:', config);
+
+        const archivosJSON = Object.values(config);
+        console.log('📁 Archivos a cargar:', archivosJSON);
+
+        const promesas = archivosJSON.map(nombre =>
+          fetch('json/' + nombre)
+            .then(res => {
+              if (!res.ok) {
+                console.warn(`⚠️ No se pudo cargar: ${nombre}`);
+                return [];
+              }
+              return res.json();
+            })
+            .catch(err => {
+              console.warn(`❌ Error cargando ${nombre}:`, err);
               return [];
-            }
-            return res.json();
-          })
-          .catch(err => {
-            console.warn(`❌ Error cargando ${nombre}:`, err);
-            return [];
-          })
-      );
-      
-      Promise.all(promesas).then(arrays => {
-        listaStickers = arrays.flat();
-        console.log('✅ Stickers cargados:', listaStickers.length);
-        
-        if (listaStickers.length === 0) {
-          document.getElementById('resultados').innerHTML = 
-            '<p style="color:red;">⚠️ No se cargaron stickers. Revisa la consola.</p>';
+            })
+        );
+
+        Promise.all(promesas).then(arrays => {
+          listaStickers = arrays.flat();
+          console.log('✅ Stickers cargados:', listaStickers.length);
+
+          if (listaStickers.length === 0) {
+            document.getElementById('resultados').innerHTML =
+              '<p style="color:red;">⚠️ No se cargaron stickers. Revisa la consola.</p>';
+          }
+        });
+      })
+      .catch(err => {
+        console.error('❌ Error cargando configuración:', err);
+        document.getElementById('resultados').innerHTML =
+          '<p style="color:red;">Error cargando configuración de categorías.</p>';
+      });
+
+    function procesarListaCodigos(texto) {
+      const lineas = texto.split('\n').filter(l => l.trim() !== '');
+      const resultados = [];
+
+      lineas.forEach(linea => {
+        const matchCantidad = linea.match(/x(\d+)/i);
+        const cantidad = matchCantidad ? parseInt(matchCantidad[1]) : 1;
+
+        const codigoLimpio = linea.replace(/\s*x\d+\s*$/i, '').trim();
+
+        const encontrado = listaStickers.find(sticker =>
+          sticker.replace('.png', '').toLowerCase() === codigoLimpio.toLowerCase()
+        );
+
+        if (encontrado) {
+          resultados.push({ nombre: encontrado, cantidad });
+        } else {
+          const aproximado = listaStickers.find(sticker =>
+            sticker.toLowerCase().includes(codigoLimpio.toLowerCase())
+          );
+          if (aproximado) resultados.push({ nombre: aproximado, cantidad });
         }
       });
-    })
-    .catch(err => {
-      console.error('❌ Error cargando configuración:', err);
-      document.getElementById('resultados').innerHTML = 
-        '<p style="color:red;">Error cargando configuración de categorías.</p>';
-    });
 
-  function procesarListaCodigos(texto) {
-    const lineas = texto.split('\n').filter(l => l.trim() !== '');
-    const resultados = [];
+      return resultados;
+    }
 
-    lineas.forEach(linea => {
-      const matchCantidad = linea.match(/x(\d+)/i);
-      const cantidad = matchCantidad ? parseInt(matchCantidad[1]) : 1;
+    function mostrarResultados(filtro) {
+      const resultados = document.getElementById('resultados');
+      resultados.innerHTML = '';
 
-      const codigoLimpio = linea.replace(/\s*x\d+\s*$/i, '').trim();
-
-      const encontrado = listaStickers.find(sticker =>
-        sticker.replace('.png', '').toLowerCase() === codigoLimpio.toLowerCase()
-      );
-
-      if (encontrado) {
-        resultados.push({ nombre: encontrado, cantidad });
-      } else {
-        const aproximado = listaStickers.find(sticker =>
-          sticker.toLowerCase().includes(codigoLimpio.toLowerCase())
-        );
-        if (aproximado) resultados.push({ nombre: aproximado, cantidad });
+      if (!filtro.trim()) {
+        actualizarContador();
+        resultados.innerHTML = '<p class="mensaje-resultados">Pegá una lista o escribí algo para buscar.</p>';
+        return;
       }
-    });
 
-    return resultados;
-  }
+      const listaProcesada = procesarListaCodigos(filtro);
 
-  function mostrarResultados(filtro) {
-    const resultados = document.getElementById('resultados');
-    resultados.innerHTML = '';
+      if (listaProcesada.length === 0) {
+        resultados.innerHTML = '<p class="mensaje-resultados">No se encontraron coincidencias.</p>';
+        actualizarContador();
+        return;
+      }
 
-    if (!filtro.trim()) {
-      actualizarContador(); // Contador en 0
-      resultados.innerHTML = '<p class="mensaje-resultados">Pegá una lista o escribí algo para buscar.</p>';
-      return;
-    }
+      listaProcesada.forEach(({ nombre, cantidad }) => {
+        const div = document.createElement('div');
+        div.className = 'sticker' + (cantidad > 1 ? ' cantidad-extra' : '');
+        div.setAttribute('tabindex', '0');
+        div.setAttribute('role', 'button');
+        div.setAttribute('data-nombre', nombre);
+        div.setAttribute('data-cantidad', cantidad);
 
-    const listaProcesada = procesarListaCodigos(filtro);
-
-    if (listaProcesada.length === 0) {
-      resultados.innerHTML = '<p class="mensaje-resultados">No se encontraron coincidencias.</p>';
-      actualizarContador();
-      return;
-    }
-
-    // 🔹 CREAR UN DIV POR PRODUCTO (con etiqueta de cantidad visible)
-    listaProcesada.forEach(({ nombre, cantidad }) => {
-      const div = document.createElement('div');
-      div.className = 'sticker' + (cantidad > 1 ? ' cantidad-extra' : '');
-      div.setAttribute('tabindex', '0');
-      div.setAttribute('role', 'button');
-      div.setAttribute('data-nombre', nombre);
-      div.setAttribute('data-cantidad', cantidad); // 🔹 Guardamos la cantidad para el contador
-
-      div.innerHTML = `
+        div.innerHTML = `
         <img src="${stickersFolder}${nombre}" alt="${nombre}"
              onerror="this.style.display='none'; console.warn('No se encontró imagen:', '${nombre}');">
         ${cantidad > 1 ? `<span class="etiqueta">x${cantidad}</span>` : ''}
       `;
 
-      // 🔹 CLICK: Eliminar completamente el producto
-      div.addEventListener('click', () => {
-        // Marcar como removido visualmente
-        div.classList.add('removed');
-        
-        // Eliminar del DOM después de la animación
-        setTimeout(() => {
-          if (div.parentNode) {
-            div.parentNode.removeChild(div);
-            actualizarContador(); // Actualizar contador después de eliminar
+        div.addEventListener('click', () => {
+          div.classList.add('removed');
+
+          setTimeout(() => {
+            if (div.parentNode) {
+              div.parentNode.removeChild(div);
+              actualizarContador();
+            }
+          }, 200);
+
+          eliminarLineaCompleta(nombre);
+        });
+
+        div.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            div.click();
           }
-        }, 200);
-        
-        // Eliminar línea completa del textarea
-        eliminarLineaCompleta(nombre);
+        });
+
+        resultados.appendChild(div);
       });
 
-      div.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          div.click();
-        }
-      });
-
-      resultados.appendChild(div);
-    });
-
-    // 🔹 Actualizar contador después de crear todos los DIVs
-    actualizarContador();
-  }
-
-  // 🔹 FUNCIÓN: Eliminar línea completa del textarea
-  function eliminarLineaCompleta(nombreSticker) {
-    const textarea = document.getElementById('buscador');
-    const lineas = textarea.value.split('\n');
-    const codigoBuscado = nombreSticker.replace('.png', '').toLowerCase();
-
-    const lineasFiltradas = lineas.filter(linea => {
-      const codigoLinea = linea.trim().replace(/\s*x\d+\s*$/i, '').trim();
-      return codigoLinea.toLowerCase() !== codigoBuscado;
-    });
-
-    textarea.value = lineasFiltradas.join('\n');
-    
-    // Si no quedan líneas, mostrar mensaje
-    if (lineasFiltradas.length === 0) {
-      setTimeout(() => {
-        document.getElementById('resultados').innerHTML = '<p class="mensaje-resultados">Lista completada! 🎉</p>';
-        actualizarContador();
-      }, 250);
+      actualizarContador();
     }
-  }
 
-  // Event listeners
-  document.getElementById('buscador').addEventListener('input', function () {
-    mostrarResultados(this.value);
-  });
+    function eliminarLineaCompleta(nombreSticker) {
+      const textarea = document.getElementById('buscador');
+      const lineas = textarea.value.split('\n');
+      const codigoBuscado = nombreSticker.replace('.png', '').toLowerCase();
 
-  document.addEventListener('DOMContentLoaded', () => {
-    const ta = document.getElementById('buscador');
-    if (ta.value.trim()) mostrarResultados(ta.value);
-  });
+      const lineasFiltradas = lineas.filter(linea => {
+        const codigoLinea = linea.trim().replace(/\s*x\d+\s*$/i, '').trim();
+        return codigoLinea.toLowerCase() !== codigoBuscado;
+      });
+
+      textarea.value = lineasFiltradas.join('\n');
+
+      if (lineasFiltradas.length === 0) {
+        setTimeout(() => {
+          document.getElementById('resultados').innerHTML = '<p class="mensaje-resultados">Lista completada! 🎉</p>';
+          actualizarContador();
+        }, 250);
+      }
+    }
+
+    // Event listeners
+    document.getElementById('buscador').addEventListener('input', function () {
+      mostrarResultados(this.value);
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const ta = document.getElementById('buscador');
+      if (ta.value.trim()) mostrarResultados(ta.value);
+    });
   </script>
 </body>
+
 </html>
