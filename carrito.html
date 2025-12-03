@@ -61,116 +61,200 @@
       <button class="botonWhatsApp" onclick="enviarPorWhatsApp()" style="margin-top:10px;"><img src="iconos/wp.png"
           alt="">Enviar pedido por WhatsApp</button>
     </div>
-    </div>
-
 
   </main>
   <div id="footer-placeholder"></div>
 
   <script>
-    function vaciarCarrito() {
-      if (confirm("¿Está seguro que quiere vaciar todo el carrito?")) {
-        carrito = {};               // vaciar objeto
-        guardarCarrito();           // limpiar en localStorage
-        actualizarVista();          // refrescar la vista
+    // 🔹 VARIABLES LOCALES (copiadas de script_v3.js)
+    let carrito = {};
+    const precioBase = 400;
+    const precioDescuento20 = 350;
+    const precioDescuento50 = 300;
+
+    // 🔹 CARGAR CARRITO DESDE LOCALSTORAGE
+    function cargarCarrito() {
+      const carritoGuardado = localStorage.getItem('carrito');
+      if (carritoGuardado) {
+        try {
+          carrito = JSON.parse(carritoGuardado);
+        } catch (e) {
+          console.error('Error al cargar carrito:', e);
+          carrito = {};
+        }
       }
     }
 
-
-    fetch('footer.html') // o 'componentes/footer.html' si lo tenés en una carpeta
-      .then(res => res.text())
-      .then(data => {
-        document.getElementById('footer-placeholder').innerHTML = data;
-      })
-      .catch(err => console.error('Error al cargar footer:', err));
-
-
-
-    document.getElementById('navbar-toggle').onclick = function () {
-      document.getElementById('navbar-links').classList.toggle('active');
-    };
-
-    const precioBase = 400;
-const precioDescuento20 = 350;
-const precioDescuento50 = 300;
-    let carrito = JSON.parse(localStorage.getItem('carrito') || '{}');
-
+    // 🔹 GUARDAR CARRITO EN LOCALSTORAGE
     function guardarCarrito() {
-      localStorage.setItem('carrito', JSON.stringify(carrito));
+      try {
+        localStorage.setItem('carrito', JSON.stringify(carrito));
+      } catch (e) {
+        console.error('Error al guardar carrito:', e);
+      }
     }
 
+    // 🔹 FUNCIÓN ESPECÍFICA PARA VACIAR CARRITO
+    function vaciarCarrito() {
+      if (confirm("¿Está seguro que quiere vaciar todo el carrito?")) {
+        carrito = {};
+        guardarCarrito();
+        actualizarVistaCarrito();
+      }
+    }
+
+    // 🔹 CALCULAR TOTAL
     function calcularTotal() {
       const cantidadTotal = Object.values(carrito).reduce((a, b) => a + b, 0);
-if (cantidadTotal >= 500) {
-        precioUnitario = 250;
-    } else if (cantidadTotal >= 50) {
-        precioUnitario = precioDescuento50;
-    } else if (cantidadTotal >= 20) {
-        precioUnitario = precioDescuento20;
-    } else {
-        precioUnitario = precioBase;
-    }
-
-    const total = cantidadTotal * precioUnitario;
-
       
+      let precioUnitario;
+      if (cantidadTotal >= 500) {
+        precioUnitario = 250;
+      } else if (cantidadTotal >= 50) {
+        precioUnitario = precioDescuento50;
+      } else if (cantidadTotal >= 20) {
+        precioUnitario = precioDescuento20;
+      } else {
+        precioUnitario = precioBase;
+      }
+
+      const total = cantidadTotal * precioUnitario;
 
       document.getElementById('carrito-total').textContent =
         `Total: $${total} (${cantidadTotal} productos, $${precioUnitario} c/u)`;
     }
 
-    function actualizarVista() {
-      const contenedor = document.getElementById('carrito-contenido');
-      contenedor.innerHTML = '';
+    // 🔹 ACTUALIZAR VISTA DEL CARRITO (CORREGIDA)
+function actualizarVistaCarrito() {
+  const contenedor = document.getElementById('carrito-contenido');
+  contenedor.innerHTML = '';
 
-      Object.entries(carrito).forEach(([codigo, cantidad]) => {
-        const div = document.createElement('div');
-        div.className = 'product-card';
+  // Si el carrito está vacío
+  if (Object.keys(carrito).length === 0) {
+    contenedor.innerHTML = '<p style="text-align: center; color: #666; font-size: 18px; margin-top: 50px;">Tu carrito está vacío</p>';
+    document.getElementById('carrito-total').textContent = 'Total: $0 (0 productos)';
+    return;
+  }
 
-        const img = document.createElement('img');
-        img.src = 'stickers/' + codigo;
-        img.alt = codigo;
+  // Mostrar productos del carrito
+  Object.entries(carrito).forEach(([codigo, cantidad]) => {
+    const div = document.createElement('div');
+    div.className = 'product-card';
+    div.style.cssText = `
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 15px;
+      margin: 10px;
+      text-align: center;
+      background: white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      display: inline-block;
+      vertical-align: top;
+      width: 160px;
+    `;
 
-        const contador = document.createElement('div');
-        contador.style.marginTop = '10px';
+    const img = document.createElement('img');
+    img.src = 'stickers/' + codigo;
+    img.alt = codigo;
+    img.style.cssText = `
+      width: 120px;
+      height: auto;
+      border-radius: 8px;
+      margin-bottom: 8px;
+    `;
+    img.onerror = function() { 
+      this.src = 'iconos/imagen-no-encontrada.png'; 
+      this.style.opacity = '0.5';
+    };
 
-        const cantidadSpan = document.createElement('span');
-        cantidadSpan.textContent = `Cantidad: ${cantidad}`;
-        cantidadSpan.style.display = 'block';
-        cantidadSpan.style.marginBottom = '8px';
+    // 🔹 ELIMINÉ EL CÓDIGO/NOMBRE DEL STICKER
 
-        const btnMas = document.createElement('button');
-        btnMas.textContent = '+';
-        btnMas.style.marginRight = '10px';
-        btnMas.onclick = () => {
-          carrito[codigo]++;
-          guardarCarrito();
-          actualizarVista();
-        };
+    const cantidadSpan = document.createElement('span');
+    cantidadSpan.textContent = `Cantidad: ${cantidad}`;
+    cantidadSpan.style.cssText = `
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: #555;
+      font-size: 14px;
+    `;
 
-        const btnMenos = document.createElement('button');
-        btnMenos.textContent = '−';
-        btnMenos.onclick = () => {
-          carrito[codigo]--;
-          if (carrito[codigo] <= 0) {
-            delete carrito[codigo];
-          }
-          guardarCarrito();
-          actualizarVista();
-        };
+    const controlesDiv = document.createElement('div');
+    controlesDiv.style.cssText = `
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin-top: 5px;
+    `;
 
-        contador.appendChild(cantidadSpan);
-        contador.appendChild(btnMas);
-        contador.appendChild(btnMenos);
+    const btnMenos = document.createElement('button');
+    btnMenos.textContent = '−';
+    btnMenos.style.cssText = `
+      background: #f44336;
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      width: 32px;
+      height: 32px;
+    `;
+    btnMenos.onclick = () => {
+      carrito[codigo]--;
+      if (carrito[codigo] <= 0) {
+        delete carrito[codigo];
+      }
+      guardarCarrito();
+      actualizarVistaCarrito();
+    };
 
-        div.appendChild(img);
-        div.appendChild(contador);
-        contenedor.appendChild(div);
-      });
+    const cantidadDisplay = document.createElement('span');
+    cantidadDisplay.textContent = cantidad;
+    cantidadDisplay.style.cssText = `
+      min-width: 25px;
+      text-align: center;
+      font-size: 16px;
+      font-weight: bold;
+      color: #333;
+    `;
 
-      calcularTotal();
-    }
+    const btnMas = document.createElement('button');
+    btnMas.textContent = '+';
+    btnMas.style.cssText = `
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      width: 32px;
+      height: 32px;
+    `;
+    btnMas.onclick = () => {
+      carrito[codigo]++;
+      guardarCarrito();
+      actualizarVistaCarrito();
+    };
 
+    controlesDiv.appendChild(btnMenos);
+    controlesDiv.appendChild(cantidadDisplay);
+    controlesDiv.appendChild(btnMas);
+
+    div.appendChild(img);
+    div.appendChild(cantidadSpan);
+    div.appendChild(controlesDiv);
+    contenedor.appendChild(div);
+  });
+
+  calcularTotal();
+}
+
+    // 🔹 FUNCIÓN PARA ENVIAR POR WHATSAPP (copiada de script_v3.js)
     function enviarPorWhatsApp() {
       const cantidadTotal = Object.values(carrito).reduce((a, b) => a + b, 0);
       if (cantidadTotal === 0) {
@@ -178,7 +262,18 @@ if (cantidadTotal >= 500) {
         return;
       }
       const numero = '5491123935400';
-      const precioUnitario = cantidadTotal >= 500 ? 250 : (cantidadTotal >= 20 ? precioDescuento : precioBase);
+      
+      let precioUnitario;
+      if (cantidadTotal >= 500) {
+        precioUnitario = 250;
+      } else if (cantidadTotal >= 50) {
+        precioUnitario = precioDescuento50;
+      } else if (cantidadTotal >= 20) {
+        precioUnitario = precioDescuento20;
+      } else {
+        precioUnitario = precioBase;
+      }
+
       const total = cantidadTotal * precioUnitario;
 
       // Generar número de pedido único
@@ -198,12 +293,30 @@ if (cantidadTotal >= 500) {
           return `${nombre} x${cant}`;
         })
         .join('\n');
+
       const mensaje = `Hola! Quiero pedir:\n\nNúmero de pedido: ${pedidoId}\n\n${lista}\n\nCantidad total: ${cantidadTotal}\nPrecio unitario: $${precioUnitario}\nTotal: $${total}`;
       const url = `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
       window.open(url, '_blank');
     }
 
-    actualizarVista();
+    // 🔹 CARGAR FOOTER
+    fetch('footer.html')
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById('footer-placeholder').innerHTML = data;
+      })
+      .catch(err => console.error('Error al cargar footer:', err));
+
+    // 🔹 NAVBAR TOGGLE
+    document.getElementById('navbar-toggle').onclick = function () {
+      document.getElementById('navbar-links').classList.toggle('active');
+    };
+
+    // 🔹 INICIALIZAR AL CARGAR LA PÁGINA
+    window.addEventListener('DOMContentLoaded', function() {
+      cargarCarrito();
+      actualizarVistaCarrito();
+    });
   </script>
 </body>
 
