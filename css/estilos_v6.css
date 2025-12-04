@@ -429,8 +429,6 @@ padding: 0px 12px !important;
     .product-card {
         margin: 15px auto;
         display: block;
-        width: 26%;
-        height: 160px;
     }
 }
 
@@ -477,6 +475,8 @@ padding: 0px 12px !important;
     .product-card {
         margin: 0 0 15px 0;
         display: flex;
+        height: 190px;
+        width: 130px!important;
     }
 
     .productos-container span {

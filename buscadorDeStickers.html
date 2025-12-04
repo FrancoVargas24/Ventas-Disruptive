@@ -599,89 +599,137 @@ async function agregarStickerAlPDF(doc, img, x, y, width, height, cantidad) {
       });
 
     function procesarListaCodigos(texto) {
-      const lineas = texto.split('\n').filter(l => l.trim() !== '');
-      const resultados = [];
+  const lineas = texto.split('\n').filter(l => l.trim() !== '');
+  const resultados = [];
 
-      lineas.forEach(linea => {
-        const matchCantidad = linea.match(/x(\d+)/i);
-        const cantidad = matchCantidad ? parseInt(matchCantidad[1]) : 1;
+  lineas.forEach(linea => {
+    const matchCantidad = linea.match(/x(\d+)/i);
+    const cantidad = matchCantidad ? parseInt(matchCantidad[1]) : 1;
 
-        const codigoLimpio = linea.replace(/\s*x\d+\s*$/i, '').trim();
+    const codigoLimpio = linea.replace(/\s*x\d+\s*$/i, '').trim();
 
-        const encontrado = listaStickers.find(sticker =>
-          sticker.replace('.png', '').toLowerCase() === codigoLimpio.toLowerCase()
-        );
+    // 🔹 BÚSQUEDA MEJORADA - Múltiples intentos
+    let encontrado = null;
 
-        if (encontrado) {
-          resultados.push({ nombre: encontrado, cantidad });
-        } else {
-          const aproximado = listaStickers.find(sticker =>
-            sticker.toLowerCase().includes(codigoLimpio.toLowerCase())
-          );
-          if (aproximado) resultados.push({ nombre: aproximado, cantidad });
-        }
-      });
+    // 1. Búsqueda exacta (como antes)
+    encontrado = listaStickers.find(sticker =>
+      sticker.replace('.png', '').toLowerCase() === codigoLimpio.toLowerCase()
+    );
 
-      return resultados;
+    // 2. Si no encuentra, buscar por coincidencia parcial al inicio
+    if (!encontrado) {
+      encontrado = listaStickers.find(sticker =>
+        sticker.toLowerCase().startsWith(codigoLimpio.toLowerCase())
+      );
     }
+
+    // 3. Si no encuentra, buscar que contenga el código
+    if (!encontrado) {
+      encontrado = listaStickers.find(sticker =>
+        sticker.toLowerCase().includes(codigoLimpio.toLowerCase())
+      );
+    }
+
+    // 4. 🔹 BÚSQUEDA ESPECIAL PARA CÓDIGOS COMO "BOBE"
+    if (!encontrado && codigoLimpio.length >= 3) {
+      // Buscar archivos que empiecen con el código + espacio o paréntesis
+      encontrado = listaStickers.find(sticker => {
+        const nombreArchivo = sticker.replace('.png', '').toLowerCase();
+        const codigoBusqueda = codigoLimpio.toLowerCase();
+        
+        // Buscar patrones como: "BOBE (1)", "BOBE 1", "BOBE-1", etc.
+        return nombreArchivo.match(new RegExp(`^${codigoBusqueda}\\s*[\\(\\s\\-]`, 'i'));
+      });
+    }
+
+    // 5. 🔹 BÚSQUEDA MÁS FLEXIBLE - Sin espacios ni paréntesis
+    if (!encontrado && codigoLimpio.length >= 3) {
+      encontrado = listaStickers.find(sticker => {
+        const nombreLimpio = sticker.replace('.png', '')
+          .replace(/[\(\)\s\-]/g, '') // Quitar paréntesis, espacios y guiones
+          .toLowerCase();
+        const codigoSinEspacios = codigoLimpio.replace(/[\(\)\s\-]/g, '').toLowerCase();
+        
+        return nombreLimpio.startsWith(codigoSinEspacios);
+      });
+    }
+
+    if (encontrado) {
+      resultados.push({ nombre: encontrado, cantidad });
+      console.log(`✅ Encontrado: "${codigoLimpio}" → "${encontrado}"`);
+    } else {
+      console.warn(`❌ No encontrado: "${codigoLimpio}"`);
+    }
+  });
+
+  return resultados;
+}
 
     function mostrarResultados(filtro) {
-      const resultados = document.getElementById('resultados');
-      resultados.innerHTML = '';
+  const resultados = document.getElementById('resultados');
+  resultados.innerHTML = '';
 
-      if (!filtro.trim()) {
-        actualizarContador();
-        resultados.innerHTML = '<p class="mensaje-resultados">Pegá una lista o escribí algo para buscar.</p>';
-        return;
+  if (!filtro.trim()) {
+    actualizarContador();
+    resultados.innerHTML = '<p class="mensaje-resultados">Pegá una lista o escribí algo para buscar.</p>';
+    return;
+  }
+
+  const listaProcesada = procesarListaCodigos(filtro);
+
+  if (listaProcesada.length === 0) {
+    resultados.innerHTML = '<p class="mensaje-resultados">No se encontraron coincidencias.</p>';
+    actualizarContador();
+    return;
+  }
+
+  // 🔹 ORDENAR ALFABÉTICAMENTE POR NOMBRE DE ARCHIVO
+  const listaOrdenada = listaProcesada.sort((a, b) => {
+    const nombreA = a.nombre.toLowerCase();
+    const nombreB = b.nombre.toLowerCase();
+    return nombreA.localeCompare(nombreB);
+  });
+
+  // 🔹 USAR LA LISTA ORDENADA
+  listaOrdenada.forEach(({ nombre, cantidad }) => {
+    const div = document.createElement('div');
+    div.className = 'sticker' + (cantidad > 1 ? ' cantidad-extra' : '');
+    div.setAttribute('tabindex', '0');
+    div.setAttribute('role', 'button');
+    div.setAttribute('data-nombre', nombre);
+    div.setAttribute('data-cantidad', cantidad);
+
+    div.innerHTML = `
+      <img src="${stickersFolder}${nombre}" alt="${nombre}"
+           onerror="this.style.display='none'; console.warn('No se encontró imagen:', '${nombre}');">
+      ${cantidad > 1 ? `<span class="etiqueta">x${cantidad}</span>` : ''}
+    `;
+
+    div.addEventListener('click', () => {
+      div.classList.add('removed');
+
+      setTimeout(() => {
+        if (div.parentNode) {
+          div.parentNode.removeChild(div);
+          actualizarContador();
+        }
+      }, 200);
+
+      eliminarLineaCompleta(nombre);
+    });
+
+    div.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        div.click();
       }
+    });
 
-      const listaProcesada = procesarListaCodigos(filtro);
+    resultados.appendChild(div);
+  });
 
-      if (listaProcesada.length === 0) {
-        resultados.innerHTML = '<p class="mensaje-resultados">No se encontraron coincidencias.</p>';
-        actualizarContador();
-        return;
-      }
-
-      listaProcesada.forEach(({ nombre, cantidad }) => {
-        const div = document.createElement('div');
-        div.className = 'sticker' + (cantidad > 1 ? ' cantidad-extra' : '');
-        div.setAttribute('tabindex', '0');
-        div.setAttribute('role', 'button');
-        div.setAttribute('data-nombre', nombre);
-        div.setAttribute('data-cantidad', cantidad);
-
-        div.innerHTML = `
-        <img src="${stickersFolder}${nombre}" alt="${nombre}"
-             onerror="this.style.display='none'; console.warn('No se encontró imagen:', '${nombre}');">
-        ${cantidad > 1 ? `<span class="etiqueta">x${cantidad}</span>` : ''}
-      `;
-
-        div.addEventListener('click', () => {
-          div.classList.add('removed');
-
-          setTimeout(() => {
-            if (div.parentNode) {
-              div.parentNode.removeChild(div);
-              actualizarContador();
-            }
-          }, 200);
-
-          eliminarLineaCompleta(nombre);
-        });
-
-        div.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            div.click();
-          }
-        });
-
-        resultados.appendChild(div);
-      });
-
-      actualizarContador();
-    }
+  actualizarContador();
+}
 
     function eliminarLineaCompleta(nombreSticker) {
       const textarea = document.getElementById('buscador');
