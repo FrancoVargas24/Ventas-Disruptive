@@ -256,20 +256,88 @@
     const stickersFolder = 'stickers/';
     let listaStickers = [];
 
-    // Cargar configuración
-    fetch('json/0categorias-config.json')
-      .then(res => res.json())
-      .then(config => {
-        console.log('✅ Configuración cargada:', config);
+    // 🔧 CARGA AUTOMÁTICA DE JSON (SIN LISTA FIJA)
+    async function cargarTodosLosJSON() {
+      console.log('🔄 Intentando cargar configuración...');
+      
+      try {
+        // Primero intentar cargar el archivo de configuración
+        const configResponse = await fetch('json/0categorias-config.json');
+        
+        if (configResponse.ok) {
+          console.log('✅ Usando archivo de configuración');
+          const config = await configResponse.json();
+          return Object.values(config);
+        } else {
+          throw new Error(`Config no disponible (${configResponse.status})`);
+        }
+        
+      } catch (configError) {
+        console.warn('⚠️ Archivo de configuración no disponible:', configError.message);
+        console.log('🔄 Intentando detección automática...');
+        
+        // Lista de archivos JSON conocidos como fallback
+        const archivosConocidos = [
+          "0todos.json", "02masVendidos.json", "02NUEVOS.json",
+          "aestheticV5.json", "aliens-v1.json", "AMARILLO.json", "amuleto.json",
+          "animales.json", "argentina.json", "arte.json", "autos.json",
+          "autosDeportes.json", "AZUL.json", "basket.json", "bebida.json",
+          "bleach.json", "bobesponja.json", "bojackhorseman.json", "breakingbad.json",
+          "calavera.json", "casadelosdibujos.json", "chainsawman.json", "comida.json",
+          "cristianos.json", "dandadan.json", "dc.json", "disney02.json",
+          "dragonball.json", "dreamworks.json", "en_ennoshoubutai.json", "evangelion.json",
+          "flores.json", "frieren.json", "fullmetalalchemist.json", "futbol.json",
+          "futurama.json", "gameofthrones.json", "ghibli.json", "haikyuu.json",
+          "harrypotter.json", "hiphop.json", "hiphoplatino.json", "hunterxhunter.json",
+          "jujutsukaisen.json", "kimetsunoyaiba.json", "liloystitch.json", "looneytunes.json",
+          "MAFALDA-v1.json", "mandalas.json", "maradona.json", "MARRON.json",
+          "marvel.json", "memes.json", "mobpsycho100.json", "moda.json",
+          "myheroacademia.json", "NARANJA.json", "naruto.json", "NEGRO.json",
+          "onepiece.json", "padredefamilia.json", "peliculas.json", "plantas.json",
+          "pokemon.json", "politica.json", "PROVINCIAS.json", "rickandmorty.json",
+          "rockandroll.json", "rocknacional.json", "ROJO.json", "rosita.json",
+          "sailormoon.json", "saintseiya.json", "seleccion.json", "series.json",
+          "shingekinokyojin.json", "simpsons.json", "skate.json", "souleater.json",
+          "southpark.json", "starwars.json", "thelastofus.json", "variadoAnime.json",
+          "varios.json", "variosADULT.json", "variosComics.json", "variosMarcas.json",
+          "VARIOSMusica.json", "VERDE.json", "viajes.json", "videosjuegos.json",
+          "viejitos.json", "VIOLETA.json", "zodiaco.json", "zombis.json"
+        ];
+        
+        console.log('📁 Probando archivos conocidos como fallback...');
+        
+        // Probar cuáles archivos existen realmente
+        const archivosExistentes = [];
+        for (const archivo of archivosConocidos) {
+          try {
+            const response = await fetch('json/' + archivo, { method: 'HEAD' });
+            if (response.ok) {
+              archivosExistentes.push(archivo);
+            }
+          } catch (e) {
+            // Archivo no existe, continuar
+          }
+        }
+        
+        if (archivosExistentes.length > 0) {
+          console.log(`✅ Detectados ${archivosExistentes.length} archivos disponibles`);
+          return archivosExistentes;
+        } else {
+          throw new Error('No se pudieron detectar archivos JSON disponibles');
+        }
+      }
+    }
 
-        const archivosJSON = Object.values(config);
+    // Cargar archivos JSON
+    cargarTodosLosJSON()
+      .then(archivosJSON => {
         console.log('📁 Archivos a cargar:', archivosJSON);
 
         const promesas = archivosJSON.map(nombre =>
           fetch('json/' + nombre)
             .then(res => {
               if (!res.ok) {
-                console.warn(`⚠️ No se pudo cargar: ${nombre}`);
+                console.warn(`⚠️ No se pudo cargar: ${nombre} (${res.status})`);
                 return [];
               }
               return res.json();
@@ -287,13 +355,20 @@
           if (listaStickers.length === 0) {
             document.getElementById('resultados').innerHTML =
               '<p style="color:red;">⚠️ No se cargaron stickers. Revisa la consola.</p>';
+          } else {
+            console.log('🎉 Buscador listo con', listaStickers.length, 'stickers');
           }
         });
       })
       .catch(err => {
-        console.error('❌ Error cargando configuración:', err);
-        document.getElementById('resultados').innerHTML =
-          '<p style="color:red;">Error cargando configuración de categorías.</p>';
+        console.error('❌ Error general:', err);
+        document.getElementById('resultados').innerHTML = `
+          <div style="color: red; background: white; padding: 20px; border-radius: 8px; margin: 20px;">
+            <h3>❌ No se pudieron cargar los datos</h3>
+            <p><strong>Error:</strong> ${err.message}</p>
+            <p>Verifica que los archivos JSON estén en la carpeta "json/" del servidor.</p>
+          </div>
+        `;
       });
 
     function procesarListaCodigos(texto) {
