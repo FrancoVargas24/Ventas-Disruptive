@@ -342,6 +342,16 @@
               }
               return res.json();
             })
+            .then(data => {
+              console.log(`✅ Cargado ${nombre}: ${data.length} stickers`);
+              
+              // 🔍 Debug específico para bobesponja
+              if (nombre.includes('bobesponja')) {
+                console.log(`🧽 Contenido de ${nombre}:`, data);
+              }
+              
+              return data;
+            })
             .catch(err => {
               console.warn(`❌ Error cargando ${nombre}:`, err);
               return [];
@@ -375,11 +385,15 @@
   const lineas = texto.split('\n').filter(l => l.trim() !== '');
   const resultados = [];
 
+  console.log('🔍 Procesando códigos:', lineas);
+
   lineas.forEach(linea => {
     const matchCantidad = linea.match(/x(\d+)/i);
     const cantidad = matchCantidad ? parseInt(matchCantidad[1]) : 1;
 
     const codigoLimpio = linea.replace(/\s*x\d+\s*$/i, '').trim();
+    
+    console.log(`🔎 Buscando código: "${codigoLimpio}"`);
 
     // 🔹 BÚSQUEDA MEJORADA - Múltiples intentos
     let encontrado = null;
@@ -389,11 +403,14 @@
       sticker.replace('.png', '').toLowerCase() === codigoLimpio.toLowerCase()
     );
 
+    console.log(`1️⃣ Búsqueda exacta: ${encontrado ? '✅ ' + encontrado : '❌ No encontrado'}`);
+
     // 2. Si no encuentra, buscar por coincidencia parcial al inicio
     if (!encontrado) {
       encontrado = listaStickers.find(sticker =>
         sticker.toLowerCase().startsWith(codigoLimpio.toLowerCase())
       );
+      console.log(`2️⃣ Búsqueda por inicio: ${encontrado ? '✅ ' + encontrado : '❌ No encontrado'}`);
     }
 
     // 3. Si no encuentra, buscar que contenga el código
@@ -401,6 +418,7 @@
       encontrado = listaStickers.find(sticker =>
         sticker.toLowerCase().includes(codigoLimpio.toLowerCase())
       );
+      console.log(`3️⃣ Búsqueda por contenido: ${encontrado ? '✅ ' + encontrado : '❌ No encontrado'}`);
     }
 
     // 4. 🔹 BÚSQUEDA ESPECIAL PARA CÓDIGOS COMO "BOBE"
@@ -411,8 +429,30 @@
         const codigoBusqueda = codigoLimpio.toLowerCase();
         
         // Buscar patrones como: "BOBE (1)", "BOBE 1", "BOBE-1", etc.
-        return nombreArchivo.match(new RegExp(`^${codigoBusqueda}\\s*[\\(\\s\\-]`, 'i'));
+        const patron = new RegExp(`^${codigoBusqueda}\\s*[\\(\\s\\-]`, 'i');
+        const coincide = nombreArchivo.match(patron);
+        
+        if (coincide) {
+          console.log(`4️⃣ Patrón encontrado: "${nombreArchivo}" coincide con patrón /${patron.source}/i`);
+        }
+        
+        return coincide;
       });
+      
+      if (encontrado) {
+        console.log(`4️⃣ Búsqueda con patrón: ✅ ${encontrado}`);
+      } else {
+        console.log(`4️⃣ Búsqueda con patrón: ❌ No encontrado`);
+        
+        // 🔹 DEBUG: Mostrar archivos que contengan el código
+        const candidatos = listaStickers.filter(sticker => 
+          sticker.toLowerCase().includes(codigoLimpio.toLowerCase())
+        );
+        
+        if (candidatos.length > 0) {
+          console.log(`🔍 Candidatos que contienen "${codigoLimpio}":`, candidatos);
+        }
+      }
     }
 
     // 5. 🔹 BÚSQUEDA MÁS FLEXIBLE - Sin espacios ni paréntesis
@@ -425,13 +465,29 @@
         
         return nombreLimpio.startsWith(codigoSinEspacios);
       });
+      
+      if (encontrado) {
+        console.log(`5️⃣ Búsqueda flexible: ✅ ${encontrado}`);
+      } else {
+        console.log(`5️⃣ Búsqueda flexible: ❌ No encontrado`);
+      }
     }
 
     if (encontrado) {
       resultados.push({ nombre: encontrado, cantidad });
-      console.log(`✅ Encontrado: "${codigoLimpio}" → "${encontrado}"`);
+      console.log(`✅ RESULTADO FINAL: "${codigoLimpio}" → "${encontrado}"`);
     } else {
-      console.warn(`❌ No encontrado: "${codigoLimpio}"`);
+      console.warn(`❌ NO ENCONTRADO: "${codigoLimpio}"`);
+      
+      // 🔍 DEBUG ADICIONAL para códigos no encontrados
+      console.log(`📊 Total stickers cargados: ${listaStickers.length}`);
+      console.log(`🔍 Primeros 10 stickers:`, listaStickers.slice(0, 10));
+      
+      // Buscar si existe algún archivo relacionado con bobesponja
+      const bobeFiles = listaStickers.filter(sticker => 
+        sticker.toLowerCase().includes('bobe')
+      );
+      console.log(`🧽 Archivos de Bobesponja encontrados:`, bobeFiles);
     }
   });
 
