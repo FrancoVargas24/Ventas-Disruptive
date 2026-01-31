@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Generador de Código - Disruptive Stickers</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="iconos/LOGO + sombra.png">
+    <link rel="stylesheet" href="css/estilos_v7.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://elfsightcdn.com/platform.js" async></script>
+    <script src="script_v3.js" defer></script>
+    <style>
+        /* Estilos específicos para esta página si es necesario */
+        .generador-wrapper {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        #codigoGenerado {
+            flex-grow: 1;
+            text-align: center;
+            font-size: 1.5rem;
+            /* Más grande para legibilidad */
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+            background-color: #f9f9f9;
+            color: #333;
+            font-weight: 700;
+        }
+
+        .btn-copiar {
+            padding: 0 20px;
+            font-weight: bold;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-copiar:hover {
+            background-color: #45a049;
+        }
+
+        .btn-generar {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2rem;
+            margin-top: 10px;
+        }
+
+        /* Ajuste para mantener consistencia con personalizado.html */
+        .titulo-generador {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <header style="background-color: #ffffff29;">
+        <section style="margin: -10px 0;">
+            <p style="margin: 0px;font-size: 15px;">Tiempos de entrega 10 días hábiles</p>
+        </section>
+    </header>
+    <nav class="navbar">
+        <div class="navbar-logo">
+            <a href="https://disruptivestickers.com.ar/"><img src="iconos/LOGO + sombra.png" alt="Logo" /></a>
+        </div>
+        <button class="navbar-toggle" id="navbar-toggle">&#9776;</button>
+        <ul class="navbar-links" id="navbar-links">
+            <li style="background: rgba(0, 0, 0, 0);"><a href="subCategoria.html">Categorías</a></li>
+            <li style="background: rgba(0, 0, 0, 0);"><a href="seguridadehigiene.html">Seguridad e higiene</a></li>
+            <li style="background: rgba(0, 0, 0, 0);"><a href="#contacto">Contacto</a></li>
+            <li style="background: rgba(0, 0, 0, 0);"><a href="nosotros.html">Nosotros</a></li>
+        </ul>
+        <div class="navbar-user">
+            <button class="carrito-btn" onclick="window.location.href='carrito.html'"><img src="iconos/carrito.png"
+                    alt=""></button>
+        </div>
+    </nav>
+
+    <main>
+        <div class="contornito personalizado-container">
+            <h1 class="titulo-generador">Generador de Código</h1>
+
+            <div class="generador-wrapper">
+                <div class="contenedor" style="width: 100%;">
+                    <p style="text-align: center; margin-bottom: 15px;">Generá un código único para tu pedido
+                        personalizado.</p>
+
+                    <div class="input-group">
+                        <input type="text" id="codigoGenerado" placeholder="Click en Generar" readonly>
+                        <button class="btn-copiar" onclick="copiarCodigo()" title="Copiar al portapapeles">
+                            <img src="https://img.icons8.com/material-outlined/24/ffffff/copy.png" alt="Copiar"
+                                style="filter: invert(1);">
+                            <!-- Fallback texto si la imagen no carga -->
+                            COPIAR
+                        </button>
+                    </div>
+
+                    <button class="btn btn-aceptar btn-generar" onclick="generarCodigoUnico()">GENERAR NUEVO
+                        CÓDIGO</button>
+
+                    <p id="mensajeCopia"
+                        style="text-align: center; color: #4CAF50; height: 20px; margin-top: 10px; font-weight: bold; opacity: 0; transition: opacity 0.5s;">
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        // Cargar Footer
+        fetch('footer.html')
+            .then(res => res.text())
+            .then(data => {
+                document.getElementById('footer-placeholder').innerHTML = data;
+            })
+            .catch(err => console.error('Error al cargar footer:', err));
+
+        // Toggle Navbar
+        document.getElementById('navbar-toggle').onclick = function () {
+            document.getElementById('navbar-links').classList.toggle('active');
+        };
+
+        // Función para generar código único
+        function generarCodigoUnico() {
+            // Usamos timestamp para asegurar que no se repita en el tiempo
+            const timestamp = Date.now().toString(36).toUpperCase();
+            // Añadimos componentes aleatorios para mayor entropía
+            const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase();
+
+            const codigo = `prz-${timestamp}-${randomPart}`;
+
+            document.getElementById('codigoGenerado').value = codigo;
+
+            // Efecto visual suave
+            const input = document.getElementById('codigoGenerado');
+            input.style.backgroundColor = "#e8f5e9";
+            setTimeout(() => {
+                input.style.backgroundColor = "#f9f9f9";
+            }, 300);
+        }
+
+        // Función para copiar al portapapeles
+        function copiarCodigo() {
+            const copyText = document.getElementById("codigoGenerado");
+
+            if (!copyText.value) {
+                mostrarMensaje("¡Primero generá un código!", "red");
+                return;
+            }
+
+            // Seleccionar el texto
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); // Para móviles
+
+            // Copiar
+            try {
+                navigator.clipboard.writeText(copyText.value).then(() => {
+                    mostrarMensaje("¡Código copiado al portapapeles!", "#4CAF50");
+                });
+            } catch (err) {
+                // Fallback para navegadores antiguos
+                document.execCommand("copy");
+                mostrarMensaje("¡Código copiado!", "#4CAF50");
+            }
+        }
+
+        function mostrarMensaje(texto, color) {
+            const msgElement = document.getElementById('mensajeCopia');
+            msgElement.innerText = texto;
+            msgElement.style.color = color;
+            msgElement.style.opacity = 1;
+
+            setTimeout(() => {
+                msgElement.style.opacity = 0;
+            }, 2000);
+        }
+
+        // Generar uno al cargar la página para conveniencia (opcional, pero el usuario pidió que "haga", así que mejor esperar acción o hacerlo auto? El usuario dijo "que crees códigos... que con un click lo podamos copiar", implica acción de un botón para crear también tal vez, pero tener uno listo ayuda. Lo dejaré en blanco para que el usuario sienta que 'genera' algo nuevo).
+    </script>
+</body>
+
+</html>
