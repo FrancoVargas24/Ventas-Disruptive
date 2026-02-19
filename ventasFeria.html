@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="https://use.typekit.net/mdk5yrn.css">
   <link rel="stylesheet" href="https://use.typekit.net/mdk5yrn.css">
-  
+
   <link rel="stylesheet" href="css/style.css">
   <title>Registro de Ventas de Stickers</title>
 </head>
@@ -62,11 +62,7 @@
       <button class="btn btn-sumar10" onclick="sumar(10)">+10</button>
       <button class="btn btn-sumar25" onclick="sumar(20)">+20</button>
     </div>
-    <div class="combos">
-      <button class="btn btn-sumarCLEAR" onclick="sumar(1.25)">CLEAR +1</button>
-      <button class="btn btn-sumarCLEAR-" onclick="sumar(-1.25)">CLEAR -1</button>
 
-    </div>
     <button class="btn btn-sumarCombo" onclick="sumar(6)">Plantilla</button>
     <button class="btn btn-borrar" onclick="borrarContador()">BORRAR</button>
     <button class="btn btn-aceptar" onclick="registrarVenta()">Registrar Venta</button>
@@ -134,9 +130,9 @@
     }
 
     function calcularPrecioUnitario(cant) {
-      if (cant >= 20) return 300;
-      if (cant >= 10) return 350;
-      return 400;
+      if (cant >= 20) return 400;
+      if (cant >= 10) return 450;
+      return 500;
     }
 
     function registrarVenta() {
