@@ -8,7 +8,7 @@ body {
 
 /* Global resets - removed intrusive li background */
 li {
-    list-style: none; 
+    list-style: none;
 }
 
 header {
@@ -232,8 +232,10 @@ a {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: rgba(20, 20, 20, 0.9); /* Dark semi-transparent */
-    backdrop-filter: blur(10px); /* Glassmorphism */
+    background: rgba(20, 20, 20, 0.9);
+    /* Dark semi-transparent */
+    backdrop-filter: blur(10px);
+    /* Glassmorphism */
     -webkit-backdrop-filter: blur(10px);
     padding: 10px 5%;
     position: sticky;
@@ -251,7 +253,7 @@ a {
 .navbar-logo img {
     height: 60px;
     width: auto;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
     transition: transform 0.3s ease;
 }
 
@@ -315,8 +317,10 @@ a {
 .carrito-btn {
     background: transparent;
     border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 50%; /* Redondo */
-    padding: 8px; /* Ajuste padding */
+    border-radius: 50%;
+    /* Redondo */
+    padding: 8px;
+    /* Ajuste padding */
     width: 45px;
     height: 45px;
     display: flex;
@@ -331,7 +335,8 @@ a {
     width: 20px;
     height: 20px;
     vertical-align: middle;
-    filter: invert(1); /* Icono blanco */
+    filter: invert(1);
+    /* Icono blanco */
     transition: transform 0.3s ease;
 }
 
@@ -366,7 +371,8 @@ a {
     background: none;
     border: none;
     font-size: 1.8rem;
-    color: #fff; /* Hamburguesa blanca */
+    color: #fff;
+    /* Hamburguesa blanca */
     cursor: pointer;
     margin-left: auto;
     padding: 5px;
@@ -380,22 +386,25 @@ a {
     }
 
     .navbar-links {
-        display: none; /* Oculto por defecto en mobile */
+        display: none;
+        /* Oculto por defecto en mobile */
         flex-direction: column;
         position: absolute;
-        top: 100%; /* Debajo del header */
+        top: 100%;
+        /* Debajo del header */
         left: 0;
         width: 100%;
         background: rgba(15, 15, 15, 0.98);
         backdrop-filter: blur(15px);
         padding: 20px 0;
         gap: 0;
-        border-top: 1px solid rgba(255,255,255,0.1);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
     }
 
     .navbar-links.active {
-        display: flex; /* Mostrar como columna flex */
+        display: flex;
+        /* Mostrar como columna flex */
         animation: slideDown 0.3s ease forwards;
     }
 
@@ -405,13 +414,14 @@ a {
     }
 
     .navbar-links a {
-        display: block !important; /* Full width */
+        display: block !important;
+        /* Full width */
         width: 100% !important;
         padding: 15px 0 !important;
         border-radius: 0;
-        border-bottom: 1px solid rgba(255,255,255,0.05);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
-    
+
     .navbar-links a:hover {
         background: rgba(255, 255, 255, 0.05) !important;
         transform: none;
@@ -421,15 +431,22 @@ a {
         display: block;
         margin-right: 15px;
     }
-    
+
     .navbar-user {
         margin-left: 0;
     }
 }
 
 @keyframes slideDown {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Responsive para tarjetas de productos */
@@ -1038,7 +1055,7 @@ footer {
     transform: scale(1.05);
 }
 
-.input-cantidad{
+.input-cantidad {
     width: 45px;
     padding: 6px;
     font-size: 1em;
@@ -1149,6 +1166,7 @@ input[type="number"] {
     letter-spacing: 1px;
     font-family: 'Montserrat', sans-serif;
 }
+
 .review-starsgris {
     color: #cccccc;
     font-size: 1.1em;
@@ -1156,9 +1174,104 @@ input[type="number"] {
     letter-spacing: 1px;
     font-family: 'Montserrat', sans-serif;
 }
+
 .review-text {
     font-family: 'Montserrat', sans-serif;
     color: #555;
     font-size: 1em;
     margin: 0;
+}
+
+/* Popup de Lanzamiento */
+.popup-lanzamiento-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.popup-lanzamiento-overlay.activo {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.popup-lanzamiento-content {
+    background: #1e1e1eba;
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    max-width: 450px;
+    width: 90%;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    transform: translateY(-20px);
+    transition: transform 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    backdrop-filter: blur(10px);
+}
+
+.popup-lanzamiento-overlay.activo .popup-lanzamiento-content {
+    transform: translateY(0);
+}
+
+.popup-lanzamiento-close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    color: #ccc;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+}
+
+.popup-lanzamiento-close:hover {
+    color: #fff;
+}
+
+.popup-lanzamiento-input {
+    width: 80%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #444;
+    background: #111;
+    color: #fff;
+    font-size: 1rem;
+    margin: 15px auto;
+    font-family: inherit;
+    text-align: center;
+    display: block;
+}
+
+.popup-lanzamiento-input:focus {
+    outline: none;
+    border-color: #e99753;
+}
+
+.popup-lanzamiento-btn {
+    background: #e99753;
+    color: #000;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    width: 80%;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.popup-lanzamiento-btn:hover {
+    background: #d8803a;
 }
