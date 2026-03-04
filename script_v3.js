@@ -33,9 +33,9 @@ if (carrusel) {
 // --- CARRITO ---
 let carrito = {};
 const maxTotal = 8000;
-const precioBase = 400;
-const precioDescuento20 = 350;
-const precioDescuento50 = 300;
+const precioBase = 500;
+const precioDescuento20 = 450;
+const precioDescuento50 = 400;
 
 function cargarCarritoGuardado() {
     const guardado = localStorage.getItem('carrito');
@@ -50,7 +50,7 @@ function calcularTotales() {
     let mensaje;
 
     if (cantidadTotal >= 500) {
-        precioUnitario = 250;
+        precioUnitario = 350;
         mensaje = "PRECIO POR MAYOR";
     } else if (cantidadTotal >= 50) {
         precioUnitario = precioDescuento50;
@@ -145,7 +145,7 @@ function enviarPorWhatsApp() {
     const numero = '5491123935400';
     
     if (cantidadTotal >= 500) {
-        precioUnitario = 250;
+        precioUnitario = 350;
     } else if (cantidadTotal >= 50) {
         precioUnitario = precioDescuento50;
     } else if (cantidadTotal >= 20) {
