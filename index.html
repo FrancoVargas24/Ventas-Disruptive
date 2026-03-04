@@ -259,8 +259,8 @@
             btnSubmit.innerText = 'Guardando...';
             btnSubmit.disabled = true;
 
-            // Enviar a Google Sheets usando el mismo script de ventasFeria
-            fetch("https://script.google.com/macros/s/AKfycbwa5RFiunXmQRrqtxG8VV91sSuEcPi5jWrDKDdZDIefB8VQXSAs2O6RJAs26hmiq6Yttw/exec", {
+            // Enviar a Google Sheets usando el nuevo script de doble hoja
+            fetch("https://script.google.com/macros/s/AKfycbzevxyb1mBMNCCEa8mrGynvw0agc0BXLGJWm8hkj-o-_5j8p6RguJL0bLEish7aKsp7/exec", {
                 method: "POST",
                 mode: "no-cors",
                 headers: {
@@ -268,7 +268,9 @@
                 },
                 body: JSON.stringify({
                     email: email,
-                    origen: "Lanzamiento Web" // Para identificar de dónde viene el dato en Sheets
+                    origen: "Lanzamiento Web",
+                    formType: "newsletter", // clave para que sheets sepa a qué hoja va
+                    fecha: new Date().toLocaleDateString("es-AR")
                 })
             })
                 .then(() => {
