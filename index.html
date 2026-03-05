@@ -32,24 +32,6 @@
 </head>
 
 <body>
-    <!-- Popup de Lanzamiento -->
-    <div id="popup-lanzamiento" class="popup-lanzamiento-overlay">
-        <div class="popup-lanzamiento-content contornito">
-            <button class="popup-lanzamiento-close" onclick="cerrarPopupLanzamiento()">×</button>
-            <h2 style="color: #e99753; font-size: 2.2rem; margin-bottom: 10px;">¡Nueva web en camino!</h2>
-            <p style="margin-top: 0; font-size: 1.1rem; color: #ddd; margin-bottom: 15px;">Dejanos tu mail para
-                enterarte el día del lanzamiento y recibir un cupón de descuento especial.</p>
-            <form id="form-lanzamiento" onsubmit="enviarEmailLaunch(event)">
-                <input type="email" id="email-launch" class="popup-lanzamiento-input"
-                    placeholder="Tu correo electrónico" required>
-                <button type="submit" class="popup-lanzamiento-btn">¡Quiero mi descuento!</button>
-            </form>
-            <p id="popup-mensaje-exito"
-                style="display: none; color: #add8e6; margin-top: 20px; font-weight: bold; font-size: 1.2rem;">¡Gracias!
-                Te avisaremos pronto.</p>
-        </div>
-    </div>
-
     <header style="background-color: #ffffff29;">
         <section style="margin: -10px 0;">
             <p style="margin: 0px;font-size: 15px;">Tiempos de entrega 10 días hábiles</p>
@@ -91,13 +73,6 @@
 
 
 
-        <div class="ContendorBarraIMG">
-            <div class="barraIMG" id="">
-                <img src="iconos/69B64441.png" alt="Imagen 1">
-                <img src="iconos/69B64446.png" alt="Imagen 3">
-                <img src="iconos/69B64443.png" alt="Imagen 2">
-            </div>
-        </div>
 
         <a style="text-decoration: none;" href="subCategoria.html">
             <h2>Categorías</h2>
@@ -141,11 +116,11 @@
         <div class="cart-progress">
             <div id="cart-bar"></div>
         </div>
-
+        
         <button class="botonWhatsApp" onclick="enviarPorWhatsApp()" style="margin-top:10px;"><img src="iconos/wp.png"
                 alt="">Enviar pedido por WhatsApp</button>
-    </div>
-
+        </div>
+        
 
     <section class="section-informative-banners">
         <div class="banner-info">
@@ -219,78 +194,20 @@
 
     <script>
         window.addEventListener('DOMContentLoaded', function () {
-            setTimeout(() => {
-                // Cargar carrito una sola vez
-                if (typeof cargarCarritoGuardado === 'function') {
-                    cargarCarritoGuardado();
-                }
-
-                // Cargar nuevos lanzamientos usando el sistema centralizado
-                cargarProductosCategoria('nuevos', 'productos-container+Nuevos');
-
-                // Cargar más vendidos usando el sistema centralizado  
-                cargarProductosCategoria('masVendidos', 'productos-container');
-
-            }, 400); // Espera 200ms para que ambos scripts estén disponibles
-        });
-
-        // Popup de Lanzamiento
-        function mostrarPopupLanzamiento() {
-            // Mostrar si no se envió antes
-            if (!localStorage.getItem('popupLanzamientoVisto')) {
-                setTimeout(() => {
-                    document.getElementById('popup-lanzamiento').classList.add('activo');
-                }, 1500); // 1.5 seconds after loading
-            }
+    setTimeout(() => {
+        // Cargar carrito una sola vez
+        if (typeof cargarCarritoGuardado === 'function') {
+            cargarCarritoGuardado();
         }
 
-        function cerrarPopupLanzamiento() {
-            document.getElementById('popup-lanzamiento').classList.remove('activo');
-            localStorage.setItem('popupLanzamientoVisto', 'true');
-        }
+        // Cargar nuevos lanzamientos usando el sistema centralizado
+        cargarProductosCategoria('nuevos', 'productos-container+Nuevos');
 
-        function enviarEmailLaunch(e) {
-            e.preventDefault();
-            const email = document.getElementById('email-launch').value;
+        // Cargar más vendidos usando el sistema centralizado  
+        cargarProductosCategoria('masVendidos', 'productos-container');
 
-            // Mostrar estado de carga (opcional pero recomendado)
-            const btnSubmit = document.querySelector('.popup-lanzamiento-btn');
-            const textoOriginal = btnSubmit.innerText;
-            btnSubmit.innerText = 'Guardando...';
-            btnSubmit.disabled = true;
-
-            // Enviar a Google Sheets usando el nuevo script de doble hoja
-            fetch("https://script.google.com/macros/s/AKfycbzevxyb1mBMNCCEa8mrGynvw0agc0BXLGJWm8hkj-o-_5j8p6RguJL0bLEish7aKsp7/exec", {
-                method: "POST",
-                mode: "no-cors",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    email: email,
-                    origen: "Lanzamiento Web",
-                    formType: "newsletter", // clave para que sheets sepa a qué hoja va
-                    fecha: new Date().toLocaleDateString("es-AR")
-                })
-            })
-                .then(() => {
-                    document.getElementById('form-lanzamiento').style.display = 'none';
-                    document.getElementById('popup-mensaje-exito').style.display = 'block';
-
-                    // Cerrar a los 3 segundos
-                    setTimeout(() => {
-                        cerrarPopupLanzamiento();
-                    }, 3000);
-                })
-                .catch(error => {
-                    alert("Hubo un error al guardar tu correo. Por favor intentá de nuevo.");
-                    console.error("Error:", error);
-                    btnSubmit.innerText = textoOriginal;
-                    btnSubmit.disabled = false;
-                });
-        }
-
-        window.addEventListener('load', mostrarPopupLanzamiento);
+    }, 400); // Espera 200ms para que ambos scripts estén disponibles
+});
 
 
         // --- CARRUSEL ---
