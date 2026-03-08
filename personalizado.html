@@ -275,8 +275,8 @@
                 valorPorCm2 *= 1.4;
             }
 
-            totalActual = Math.ceil((ancho * alto * valorPorCm2) * cantidad);
-            totalUnidad = Math.ceil((ancho * alto * valorPorCm2));
+            totalUnidad = Math.ceil(ancho * alto * valorPorCm2);
+            totalActual = totalUnidad * cantidad;
 
             descuentoAplicado = false;
             document.getElementById("contador").innerText = `Total: $${totalActual}`;
