@@ -259,11 +259,11 @@
     // 🔧 CARGA AUTOMÁTICA DE JSON (SIN LISTA FIJA)
     async function cargarTodosLosJSON() {
       console.log('🔄 Intentando cargar configuración...');
-      
+
       try {
         // Primero intentar cargar el archivo de configuración
         const configResponse = await fetch('json/0categorias-config.json');
-        
+
         if (configResponse.ok) {
           console.log('✅ Usando archivo de configuración');
           const config = await configResponse.json();
@@ -271,11 +271,11 @@
         } else {
           throw new Error(`Config no disponible (${configResponse.status})`);
         }
-        
+
       } catch (configError) {
         console.warn('⚠️ Archivo de configuración no disponible:', configError.message);
         console.log('🔄 Intentando detección automática...');
-        
+
         // Lista de archivos JSON conocidos como fallback
         const archivosConocidos = [
           "0todos.json", "02masVendidos.json", "02NUEVOS.json",
@@ -303,9 +303,9 @@
           "VARIOSMusica.json", "VERDE.json", "viajes.json", "videosjuegos.json",
           "viejitos.json", "VIOLETA.json", "zodiaco.json", "zombis.json"
         ];
-        
+
         console.log('📁 Probando archivos conocidos como fallback...');
-        
+
         // Probar cuáles archivos existen realmente
         const archivosExistentes = [];
         for (const archivo of archivosConocidos) {
@@ -318,7 +318,7 @@
             // Archivo no existe, continuar
           }
         }
-        
+
         if (archivosExistentes.length > 0) {
           console.log(`✅ Detectados ${archivosExistentes.length} archivos disponibles`);
           return archivosExistentes;
@@ -344,12 +344,12 @@
             })
             .then(data => {
               console.log(`✅ Cargado ${nombre}: ${data.length} stickers`);
-              
+
               // 🔍 Debug específico para bobesponja
               if (nombre.includes('bobesponja')) {
                 console.log(`🧽 Contenido de ${nombre}:`, data);
               }
-              
+
               return data;
             })
             .catch(err => {
@@ -382,183 +382,192 @@
       });
 
     function procesarListaCodigos(texto) {
-  const lineas = texto.split('\n').filter(l => l.trim() !== '');
-  const resultados = [];
+      const lineas = texto.split('\n').filter(l => l.trim() !== '');
+      const resultados = [];
 
-  console.log('🔍 Procesando códigos:', lineas);
+      console.log('🔍 Procesando códigos:', lineas);
 
-  lineas.forEach(linea => {
-    const matchCantidad = linea.match(/x(\d+)/i);
-    const cantidad = matchCantidad ? parseInt(matchCantidad[1]) : 1;
+      lineas.forEach(linea => {
+        const matchCantidad = linea.match(/x(\d+)/i);
+        const cantidad = matchCantidad ? parseInt(matchCantidad[1]) : 1;
 
-    const codigoLimpio = linea.replace(/\s*x\d+\s*$/i, '').trim();
-    
-    console.log(`🔎 Buscando código: "${codigoLimpio}"`);
+        const codigoLimpio = linea.replace(/\s*x\d+\s*$/i, '').trim();
 
-    // 🔹 BÚSQUEDA MEJORADA - Múltiples intentos
-    let encontrado = null;
+        console.log(`🔎 Buscando código: "${codigoLimpio}"`);
 
-    // 1. Búsqueda exacta (como antes)
-    encontrado = listaStickers.find(sticker =>
-      sticker.replace('.png', '').toLowerCase() === codigoLimpio.toLowerCase()
-    );
+        // 🔹 BÚSQUEDA MEJORADA - Múltiples intentos
+        let encontrado = null;
 
-    console.log(`1️⃣ Búsqueda exacta: ${encontrado ? '✅ ' + encontrado : '❌ No encontrado'}`);
-
-    // 2. Si no encuentra, buscar por coincidencia parcial al inicio
-    if (!encontrado) {
-      encontrado = listaStickers.find(sticker =>
-        sticker.toLowerCase().startsWith(codigoLimpio.toLowerCase())
-      );
-      console.log(`2️⃣ Búsqueda por inicio: ${encontrado ? '✅ ' + encontrado : '❌ No encontrado'}`);
-    }
-
-    // 3. Si no encuentra, buscar que contenga el código
-    if (!encontrado) {
-      encontrado = listaStickers.find(sticker =>
-        sticker.toLowerCase().includes(codigoLimpio.toLowerCase())
-      );
-      console.log(`3️⃣ Búsqueda por contenido: ${encontrado ? '✅ ' + encontrado : '❌ No encontrado'}`);
-    }
-
-    // 4. 🔹 BÚSQUEDA ESPECIAL PARA CÓDIGOS COMO "BOBE"
-    if (!encontrado && codigoLimpio.length >= 3) {
-      // Buscar archivos que empiecen con el código + espacio o paréntesis
-      encontrado = listaStickers.find(sticker => {
-        const nombreArchivo = sticker.replace('.png', '').toLowerCase();
-        const codigoBusqueda = codigoLimpio.toLowerCase();
-        
-        // Buscar patrones como: "BOBE (1)", "BOBE 1", "BOBE-1", etc.
-        const patron = new RegExp(`^${codigoBusqueda}\\s*[\\(\\s\\-]`, 'i');
-        const coincide = nombreArchivo.match(patron);
-        
-        if (coincide) {
-          console.log(`4️⃣ Patrón encontrado: "${nombreArchivo}" coincide con patrón /${patron.source}/i`);
-        }
-        
-        return coincide;
-      });
-      
-      if (encontrado) {
-        console.log(`4️⃣ Búsqueda con patrón: ✅ ${encontrado}`);
-      } else {
-        console.log(`4️⃣ Búsqueda con patrón: ❌ No encontrado`);
-        
-        // 🔹 DEBUG: Mostrar archivos que contengan el código
-        const candidatos = listaStickers.filter(sticker => 
-          sticker.toLowerCase().includes(codigoLimpio.toLowerCase())
+        // 1. Búsqueda exacta (como antes)
+        encontrado = listaStickers.find(sticker =>
+          sticker.replace('.png', '').toLowerCase() === codigoLimpio.toLowerCase()
         );
-        
-        if (candidatos.length > 0) {
-          console.log(`🔍 Candidatos que contienen "${codigoLimpio}":`, candidatos);
+
+        console.log(`1️⃣ Búsqueda exacta: ${encontrado ? '✅ ' + encontrado : '❌ No encontrado'}`);
+
+        // 2. Si no encuentra, buscar por coincidencia parcial al inicio
+        if (!encontrado) {
+          encontrado = listaStickers.find(sticker =>
+            sticker.toLowerCase().startsWith(codigoLimpio.toLowerCase())
+          );
+          console.log(`2️⃣ Búsqueda por inicio: ${encontrado ? '✅ ' + encontrado : '❌ No encontrado'}`);
         }
-      }
-    }
 
-    // 5. 🔹 BÚSQUEDA MÁS FLEXIBLE - Sin espacios ni paréntesis
-    if (!encontrado && codigoLimpio.length >= 3) {
-      encontrado = listaStickers.find(sticker => {
-        const nombreLimpio = sticker.replace('.png', '')
-          .replace(/[\(\)\s\-]/g, '') // Quitar paréntesis, espacios y guiones
-          .toLowerCase();
-        const codigoSinEspacios = codigoLimpio.replace(/[\(\)\s\-]/g, '').toLowerCase();
-        
-        return nombreLimpio.startsWith(codigoSinEspacios);
+        // 3. Si no encuentra, buscar que contenga el código
+        if (!encontrado) {
+          encontrado = listaStickers.find(sticker =>
+            sticker.toLowerCase().includes(codigoLimpio.toLowerCase())
+          );
+          console.log(`3️⃣ Búsqueda por contenido: ${encontrado ? '✅ ' + encontrado : '❌ No encontrado'}`);
+        }
+
+        // 4. 🔹 BÚSQUEDA ESPECIAL PARA CÓDIGOS COMO "BOBE"
+        if (!encontrado && codigoLimpio.length >= 3) {
+          // Buscar archivos que empiecen con el código + espacio o paréntesis
+          encontrado = listaStickers.find(sticker => {
+            const nombreArchivo = sticker.replace('.png', '').toLowerCase();
+            const codigoBusqueda = codigoLimpio.toLowerCase();
+
+            // Buscar patrones como: "BOBE (1)", "BOBE 1", "BOBE-1", etc.
+            const patron = new RegExp(`^${codigoBusqueda}\\s*[\\(\\s\\-]`, 'i');
+            const coincide = nombreArchivo.match(patron);
+
+            if (coincide) {
+              console.log(`4️⃣ Patrón encontrado: "${nombreArchivo}" coincide con patrón /${patron.source}/i`);
+            }
+
+            return coincide;
+          });
+
+          if (encontrado) {
+            console.log(`4️⃣ Búsqueda con patrón: ✅ ${encontrado}`);
+          } else {
+            console.log(`4️⃣ Búsqueda con patrón: ❌ No encontrado`);
+
+            // 🔹 DEBUG: Mostrar archivos que contengan el código
+            const candidatos = listaStickers.filter(sticker =>
+              sticker.toLowerCase().includes(codigoLimpio.toLowerCase())
+            );
+
+            if (candidatos.length > 0) {
+              console.log(`🔍 Candidatos que contienen "${codigoLimpio}":`, candidatos);
+            }
+          }
+        }
+
+        // 5. 🔹 BÚSQUEDA MÁS FLEXIBLE - Sin espacios ni paréntesis
+        if (!encontrado && codigoLimpio.length >= 3) {
+          encontrado = listaStickers.find(sticker => {
+            const nombreLimpio = sticker.replace('.png', '')
+              .replace(/[\(\)\s\-]/g, '') // Quitar paréntesis, espacios y guiones
+              .toLowerCase();
+            const codigoSinEspacios = codigoLimpio.replace(/[\(\)\s\-]/g, '').toLowerCase();
+
+            return nombreLimpio.startsWith(codigoSinEspacios);
+          });
+
+          if (encontrado) {
+            console.log(`5️⃣ Búsqueda flexible: ✅ ${encontrado}`);
+          } else {
+            console.log(`5️⃣ Búsqueda flexible: ❌ No encontrado`);
+          }
+        }
+
+        if (encontrado) {
+          // 🔹 AGRUPAR CANTIDADES DE CÓDIGOS REPETIDOS
+          const itemExistente = resultados.find(item => item.nombre === encontrado);
+          if (itemExistente) {
+            itemExistente.cantidad += cantidad;
+            console.log(`🔄 Agrupado: "${encontrado}" ahora tiene ${itemExistente.cantidad} unidades`);
+          } else {
+            resultados.push({ nombre: encontrado, cantidad });
+            console.log(`✅ RESULTADO FINAL: "${codigoLimpio}" → "${encontrado}"`);
+          }
+        } else {
+          console.warn(`❌ NO ENCONTRADO: "${codigoLimpio}"`);
+
+          // 🔍 DEBUG ADICIONAL para códigos no encontrados
+          console.log(`📊 Total stickers cargados: ${listaStickers.length}`);
+          console.log(`🔍 Primeros 10 stickers:`, listaStickers.slice(0, 10));
+
+          // Buscar si existe algún archivo relacionado con bobesponja
+          const bobeFiles = listaStickers.filter(sticker =>
+            sticker.toLowerCase().includes('bobe')
+          );
+          if (bobeFiles.length > 0) {
+            console.log(`🧽 Archivos de Bobesponja encontrados:`, bobeFiles);
+          }
+        }
       });
-      
-      if (encontrado) {
-        console.log(`5️⃣ Búsqueda flexible: ✅ ${encontrado}`);
-      } else {
-        console.log(`5️⃣ Búsqueda flexible: ❌ No encontrado`);
-      }
-    }
 
-    if (encontrado) {
-      resultados.push({ nombre: encontrado, cantidad });
-      console.log(`✅ RESULTADO FINAL: "${codigoLimpio}" → "${encontrado}"`);
-    } else {
-      console.warn(`❌ NO ENCONTRADO: "${codigoLimpio}"`);
-      
-      // 🔍 DEBUG ADICIONAL para códigos no encontrados
-      console.log(`📊 Total stickers cargados: ${listaStickers.length}`);
-      console.log(`🔍 Primeros 10 stickers:`, listaStickers.slice(0, 10));
-      
-      // Buscar si existe algún archivo relacionado con bobesponja
-      const bobeFiles = listaStickers.filter(sticker => 
-        sticker.toLowerCase().includes('bobe')
-      );
-      console.log(`🧽 Archivos de Bobesponja encontrados:`, bobeFiles);
+      return resultados;
     }
-  });
-
-  return resultados;
-}
 
     function mostrarResultados(filtro) {
-  const resultados = document.getElementById('resultados');
-  resultados.innerHTML = '';
+      const resultados = document.getElementById('resultados');
+      resultados.innerHTML = '';
 
-  if (!filtro.trim()) {
-    actualizarContador();
-    resultados.innerHTML = '<p class="mensaje-resultados">Pegá una lista o escribí algo para buscar.</p>';
-    return;
-  }
+      if (!filtro.trim()) {
+        actualizarContador();
+        resultados.innerHTML = '<p class="mensaje-resultados">Pegá una lista o escribí algo para buscar.</p>';
+        return;
+      }
 
-  const listaProcesada = procesarListaCodigos(filtro);
+      const listaProcesada = procesarListaCodigos(filtro);
 
-  if (listaProcesada.length === 0) {
-    resultados.innerHTML = '<p class="mensaje-resultados">No se encontraron coincidencias.</p>';
-    actualizarContador();
-    return;
-  }
+      if (listaProcesada.length === 0) {
+        resultados.innerHTML = '<p class="mensaje-resultados">No se encontraron coincidencias.</p>';
+        actualizarContador();
+        return;
+      }
 
-  // 🔹 ORDENAR ALFABÉTICAMENTE POR NOMBRE DE ARCHIVO
-  const listaOrdenada = listaProcesada.sort((a, b) => {
-    const nombreA = a.nombre.toLowerCase();
-    const nombreB = b.nombre.toLowerCase();
-    return nombreA.localeCompare(nombreB);
-  });
+      // 🔹 ORDENAR ALFABÉTICAMENTE POR NOMBRE DE ARCHIVO
+      const listaOrdenada = listaProcesada.sort((a, b) => {
+        const nombreA = a.nombre.toLowerCase();
+        const nombreB = b.nombre.toLowerCase();
+        return nombreA.localeCompare(nombreB);
+      });
 
-  // 🔹 USAR LA LISTA ORDENADA
-  listaOrdenada.forEach(({ nombre, cantidad }) => {
-    const div = document.createElement('div');
-    div.className = 'sticker' + (cantidad > 1 ? ' cantidad-extra' : '');
-    div.setAttribute('tabindex', '0');
-    div.setAttribute('role', 'button');
-    div.setAttribute('data-nombre', nombre);
-    div.setAttribute('data-cantidad', cantidad);
+      // 🔹 USAR LA LISTA ORDENADA
+      listaOrdenada.forEach(({ nombre, cantidad }) => {
+        const div = document.createElement('div');
+        div.className = 'sticker' + (cantidad > 1 ? ' cantidad-extra' : '');
+        div.setAttribute('tabindex', '0');
+        div.setAttribute('role', 'button');
+        div.setAttribute('data-nombre', nombre);
+        div.setAttribute('data-cantidad', cantidad);
 
-    div.innerHTML = `
+        div.innerHTML = `
       <img src="${stickersFolder}${nombre}" alt="${nombre}"
            onerror="this.style.display='none'; console.warn('No se encontró imagen:', '${nombre}');">
       ${cantidad > 1 ? `<span class="etiqueta">x${cantidad}</span>` : ''}
     `;
 
-    div.addEventListener('click', () => {
-      div.classList.add('removed');
+        div.addEventListener('click', () => {
+          div.classList.add('removed');
 
-      setTimeout(() => {
-        if (div.parentNode) {
-          div.parentNode.removeChild(div);
-          actualizarContador();
-        }
-      }, 200);
+          setTimeout(() => {
+            if (div.parentNode) {
+              div.parentNode.removeChild(div);
+              actualizarContador();
+            }
+          }, 200);
 
-      eliminarLineaCompleta(nombre);
-    });
+          eliminarLineaCompleta(nombre);
+        });
 
-    div.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        div.click();
-      }
-    });
+        div.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            div.click();
+          }
+        });
 
-    resultados.appendChild(div);
-  });
+        resultados.appendChild(div);
+      });
 
-  actualizarContador();
-}
+      actualizarContador();
+    }
 
     function eliminarLineaCompleta(nombreSticker) {
       const textarea = document.getElementById('buscador');
@@ -590,7 +599,7 @@
       if (ta.value.trim()) mostrarResultados(ta.value);
     });
 
-    
+
     // 🔹 FUNCIÓN PARA ACTUALIZAR CONTADOR
     function actualizarContador() {
       const contadorNumero = document.getElementById('contador-numero');
@@ -783,115 +792,115 @@
 
     // 🔹 FUNCIÓN AUXILIAR: Agregar sticker al PDF (SIN DEFORMACIÓN)
     // 🔹 FUNCIÓN AUXILIAR: Agregar sticker al PDF (CON CÓDIGO DEBAJO)
-async function agregarStickerAlPDF(doc, img, x, y, width, height, cantidad) {
-  try {
-    // Crear canvas para convertir la imagen
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
+    async function agregarStickerAlPDF(doc, img, x, y, width, height, cantidad) {
+      try {
+        // Crear canvas para convertir la imagen
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
 
-    // Cargar imagen
-    const imagenOriginal = new Image();
-    imagenOriginal.crossOrigin = 'anonymous';
+        // Cargar imagen
+        const imagenOriginal = new Image();
+        imagenOriginal.crossOrigin = 'anonymous';
 
-    await new Promise((resolve, reject) => {
-      imagenOriginal.onload = resolve;
-      imagenOriginal.onerror = reject;
-      imagenOriginal.src = img.src;
-    });
+        await new Promise((resolve, reject) => {
+          imagenOriginal.onload = resolve;
+          imagenOriginal.onerror = reject;
+          imagenOriginal.src = img.src;
+        });
 
-    // 🔹 CALCULAR DIMENSIONES SIN DEFORMACIÓN (reservar espacio para texto)
-    const espacioTexto = 8; // Espacio reservado para el código
-    const alturaImagen = height - espacioTexto;
-    const aspectRatio = imagenOriginal.width / imagenOriginal.height;
-    const containerAspectRatio = (width - 4) / (alturaImagen - 4);
+        // 🔹 CALCULAR DIMENSIONES SIN DEFORMACIÓN (reservar espacio para texto)
+        const espacioTexto = 8; // Espacio reservado para el código
+        const alturaImagen = height - espacioTexto;
+        const aspectRatio = imagenOriginal.width / imagenOriginal.height;
+        const containerAspectRatio = (width - 4) / (alturaImagen - 4);
 
-    let imgWidth, imgHeight, imgX, imgY;
+        let imgWidth, imgHeight, imgX, imgY;
 
-    if (aspectRatio > containerAspectRatio) {
-      // La imagen es más ancha, ajustar al ancho
-      imgWidth = width - 4;
-      imgHeight = imgWidth / aspectRatio;
-      imgX = x + 2;
-      imgY = y + 2 + ((alturaImagen - 4) - imgHeight) / 2; // Centrar verticalmente
-    } else {
-      // La imagen es más alta, ajustar a la altura
-      imgHeight = alturaImagen - 4;
-      imgWidth = imgHeight * aspectRatio;
-      imgX = x + 2 + ((width - 4) - imgWidth) / 2; // Centrar horizontalmente
-      imgY = y + 2;
+        if (aspectRatio > containerAspectRatio) {
+          // La imagen es más ancha, ajustar al ancho
+          imgWidth = width - 4;
+          imgHeight = imgWidth / aspectRatio;
+          imgX = x + 2;
+          imgY = y + 2 + ((alturaImagen - 4) - imgHeight) / 2; // Centrar verticalmente
+        } else {
+          // La imagen es más alta, ajustar a la altura
+          imgHeight = alturaImagen - 4;
+          imgWidth = imgHeight * aspectRatio;
+          imgX = x + 2 + ((width - 4) - imgWidth) / 2; // Centrar horizontalmente
+          imgY = y + 2;
+        }
+
+        // Configurar canvas con las dimensiones originales
+        canvas.width = imagenOriginal.width;
+        canvas.height = imagenOriginal.height;
+
+        // 🔹 Fondo blanco en el canvas
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Dibujar imagen
+        ctx.drawImage(imagenOriginal, 0, 0);
+
+        // Convertir a base64
+        const imgData = canvas.toDataURL('image/jpeg', 0.9);
+
+        // 🔹 Fondo blanco para el contenedor del sticker
+        doc.setFillColor(255, 255, 255);
+        doc.rect(x, y, width, height, 'F');
+
+        // 🔹 Agregar imagen sin deformación
+        doc.addImage(imgData, 'JPEG', imgX, imgY, imgWidth, imgHeight);
+
+        // Agregar borde
+        doc.setDrawColor(cantidad > 1 ? 255 : 220, cantidad > 1 ? 77 : 220, cantidad > 1 ? 77 : 220);
+        doc.setLineWidth(cantidad > 1 ? 0.8 : 0.3);
+        doc.rect(x, y, width, height);
+
+        // 🔹 AGREGAR CÓDIGO DEBAJO DE LA IMAGEN
+        const codigo = img.alt.split('/').pop().replace('.png', '').replace('.jpg', '').replace('.jpeg', ''); doc.setFontSize(7);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(60, 60, 60); // Gris oscuro
+
+        // Centrar el texto horizontalmente
+        doc.text(codigo, x + width / 2, y + height - 2, { align: 'center' });
+
+        // Agregar etiqueta de cantidad si es mayor a 1
+        if (cantidad > 1) {
+          doc.setFillColor(255, 77, 77);
+          doc.rect(x + width - 10, y, 10, 8, 'F');
+
+          doc.setTextColor(255, 255, 255);
+          doc.setFontSize(10);
+          doc.setFont('helvetica', 'bold');
+          doc.text(`x${cantidad}`, x + width - 5, y + 5.5, { align: 'center' });
+        }
+
+        // Resetear color
+        doc.setTextColor(0, 0, 0);
+
+      } catch (error) {
+        console.warn('Error agregando imagen al PDF:', error);
+
+        // Si falla la imagen, agregar un rectángulo gris claro
+        doc.setFillColor(250, 250, 250);
+        doc.rect(x, y, width, height, 'F');
+
+        doc.setDrawColor(200, 200, 200);
+        doc.rect(x, y, width, height);
+
+        doc.setFontSize(8);
+        doc.setTextColor(100, 100, 100);
+        doc.text('IMAGEN', x + width / 2, y + height / 2 - 4, { align: 'center' });
+        doc.text('NO DISPONIBLE', x + width / 2, y + height / 2 + 2, { align: 'center' });
+
+        // Agregar código aunque falle la imagen
+        const codigo = img.alt.replace('.png', '').replace('.jpg', '').replace('.jpeg', '');
+        doc.setFontSize(7);
+        doc.text(codigo, x + width / 2, y + height - 2, { align: 'center' });
+
+        doc.setTextColor(0, 0, 0); // Resetear color
+      }
     }
-
-    // Configurar canvas con las dimensiones originales
-    canvas.width = imagenOriginal.width;
-    canvas.height = imagenOriginal.height;
-
-    // 🔹 Fondo blanco en el canvas
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Dibujar imagen
-    ctx.drawImage(imagenOriginal, 0, 0);
-
-    // Convertir a base64
-    const imgData = canvas.toDataURL('image/jpeg', 0.9);
-
-    // 🔹 Fondo blanco para el contenedor del sticker
-    doc.setFillColor(255, 255, 255);
-    doc.rect(x, y, width, height, 'F');
-
-    // 🔹 Agregar imagen sin deformación
-    doc.addImage(imgData, 'JPEG', imgX, imgY, imgWidth, imgHeight);
-
-    // Agregar borde
-    doc.setDrawColor(cantidad > 1 ? 255 : 220, cantidad > 1 ? 77 : 220, cantidad > 1 ? 77 : 220);
-    doc.setLineWidth(cantidad > 1 ? 0.8 : 0.3);
-    doc.rect(x, y, width, height);
-
-    // 🔹 AGREGAR CÓDIGO DEBAJO DE LA IMAGEN
-    const codigo = img.alt.split('/').pop().replace('.png', '').replace('.jpg', '').replace('.jpeg', '');    doc.setFontSize(7);
-    doc.setFont('helvetica', 'normal');
-    doc.setTextColor(60, 60, 60); // Gris oscuro
-    
-    // Centrar el texto horizontalmente
-    doc.text(codigo, x + width/2, y + height - 2, { align: 'center' });
-
-    // Agregar etiqueta de cantidad si es mayor a 1
-    if (cantidad > 1) {
-      doc.setFillColor(255, 77, 77);
-      doc.rect(x + width - 10, y, 10, 8, 'F');
-
-      doc.setTextColor(255, 255, 255);
-      doc.setFontSize(10);
-      doc.setFont('helvetica', 'bold');
-      doc.text(`x${cantidad}`, x + width - 5, y + 5.5, { align: 'center' });
-    }
-
-    // Resetear color
-    doc.setTextColor(0, 0, 0);
-
-  } catch (error) {
-    console.warn('Error agregando imagen al PDF:', error);
-
-    // Si falla la imagen, agregar un rectángulo gris claro
-    doc.setFillColor(250, 250, 250);
-    doc.rect(x, y, width, height, 'F');
-
-    doc.setDrawColor(200, 200, 200);
-    doc.rect(x, y, width, height);
-
-    doc.setFontSize(8);
-    doc.setTextColor(100, 100, 100);
-    doc.text('IMAGEN', x + width/2, y + height/2 - 4, { align: 'center' });
-    doc.text('NO DISPONIBLE', x + width/2, y + height/2 + 2, { align: 'center' });
-    
-    // Agregar código aunque falle la imagen
-    const codigo = img.alt.replace('.png', '').replace('.jpg', '').replace('.jpeg', '');
-    doc.setFontSize(7);
-    doc.text(codigo, x + width/2, y + height - 2, { align: 'center' });
-    
-    doc.setTextColor(0, 0, 0); // Resetear color
-  }
-}
 
   </script>
 </body>
