@@ -6,7 +6,7 @@
   <title>Disruptive Stickers</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/png" href="iconos/LOGO + sombra.png">
-      <link rel="stylesheet" href="css/estilos_v7.css">
+  <link rel="stylesheet" href="css/estilos_v7.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
@@ -70,9 +70,9 @@
   <script>
     // 🔹 VARIABLES LOCALES (copiadas de script_v3.js)
     let carrito = {};
-    const precioBase = 400;
-    const precioDescuento20 = 350;
-    const precioDescuento50 = 300;
+    const precioBase = 500;
+    const precioDescuento20 = 450;
+    const precioDescuento50 = 400;
 
     // 🔹 CARGAR CARRITO DESDE LOCALSTORAGE
     function cargarCarrito() {
@@ -108,10 +108,10 @@
     // 🔹 CALCULAR TOTAL
     function calcularTotal() {
       const cantidadTotal = Object.values(carrito).reduce((a, b) => a + b, 0);
-      
+
       let precioUnitario;
       if (cantidadTotal >= 500) {
-        precioUnitario = 250;
+        precioUnitario = 350;
       } else if (cantidadTotal >= 50) {
         precioUnitario = precioDescuento50;
       } else if (cantidadTotal >= 20) {
@@ -127,22 +127,22 @@
     }
 
     // 🔹 ACTUALIZAR VISTA DEL CARRITO (CORREGIDA)
-function actualizarVistaCarrito() {
-  const contenedor = document.getElementById('carrito-contenido');
-  contenedor.innerHTML = '';
+    function actualizarVistaCarrito() {
+      const contenedor = document.getElementById('carrito-contenido');
+      contenedor.innerHTML = '';
 
-  // Si el carrito está vacío
-  if (Object.keys(carrito).length === 0) {
-    contenedor.innerHTML = '<p style="text-align: center; color: #666; font-size: 18px; margin-top: 50px;">Tu carrito está vacío</p>';
-    document.getElementById('carrito-total').textContent = 'Total: $0 (0 productos)';
-    return;
-  }
+      // Si el carrito está vacío
+      if (Object.keys(carrito).length === 0) {
+        contenedor.innerHTML = '<p style="text-align: center; color: #666; font-size: 18px; margin-top: 50px;">Tu carrito está vacío</p>';
+        document.getElementById('carrito-total').textContent = 'Total: $0 (0 productos)';
+        return;
+      }
 
-  // Mostrar productos del carrito
-  Object.entries(carrito).forEach(([codigo, cantidad]) => {
-    const div = document.createElement('div');
-    div.className = 'product-card';
-    div.style.cssText = `
+      // Mostrar productos del carrito
+      Object.entries(carrito).forEach(([codigo, cantidad]) => {
+        const div = document.createElement('div');
+        div.className = 'product-card';
+        div.style.cssText = `
       border: 1px solid #ddd;
       border-radius: 10px;
       padding: 15px;
@@ -155,25 +155,25 @@ function actualizarVistaCarrito() {
       width: 160px;
     `;
 
-    const img = document.createElement('img');
-    img.src = 'stickers/' + codigo;
-    img.alt = codigo;
-    img.style.cssText = `
+        const img = document.createElement('img');
+        img.src = 'stickers/' + codigo;
+        img.alt = codigo;
+        img.style.cssText = `
       width: 120px;
       height: auto;
       border-radius: 8px;
       margin-bottom: 8px;
     `;
-    img.onerror = function() { 
-      this.src = 'iconos/imagen-no-encontrada.png'; 
-      this.style.opacity = '0.5';
-    };
+        img.onerror = function () {
+          this.src = 'iconos/imagen-no-encontrada.png';
+          this.style.opacity = '0.5';
+        };
 
-    // 🔹 ELIMINÉ EL CÓDIGO/NOMBRE DEL STICKER
+        // 🔹 ELIMINÉ EL CÓDIGO/NOMBRE DEL STICKER
 
-    const cantidadSpan = document.createElement('span');
-    cantidadSpan.textContent = `Cantidad: ${cantidad}`;
-    cantidadSpan.style.cssText = `
+        const cantidadSpan = document.createElement('span');
+        cantidadSpan.textContent = `Cantidad: ${cantidad}`;
+        cantidadSpan.style.cssText = `
       display: block;
       margin-bottom: 8px;
       font-weight: bold;
@@ -181,8 +181,8 @@ function actualizarVistaCarrito() {
       font-size: 14px;
     `;
 
-    const controlesDiv = document.createElement('div');
-    controlesDiv.style.cssText = `
+        const controlesDiv = document.createElement('div');
+        controlesDiv.style.cssText = `
       display: flex;
       justify-content: center;
       align-items: center;
@@ -190,9 +190,9 @@ function actualizarVistaCarrito() {
       margin-top: 5px;
     `;
 
-    const btnMenos = document.createElement('button');
-    btnMenos.textContent = '−';
-    btnMenos.style.cssText = `
+        const btnMenos = document.createElement('button');
+        btnMenos.textContent = '−';
+        btnMenos.style.cssText = `
       background: #f44336;
       color: white;
       border: none;
@@ -204,18 +204,18 @@ function actualizarVistaCarrito() {
       width: 32px;
       height: 32px;
     `;
-    btnMenos.onclick = () => {
-      carrito[codigo]--;
-      if (carrito[codigo] <= 0) {
-        delete carrito[codigo];
-      }
-      guardarCarrito();
-      actualizarVistaCarrito();
-    };
+        btnMenos.onclick = () => {
+          carrito[codigo]--;
+          if (carrito[codigo] <= 0) {
+            delete carrito[codigo];
+          }
+          guardarCarrito();
+          actualizarVistaCarrito();
+        };
 
-    const cantidadDisplay = document.createElement('span');
-    cantidadDisplay.textContent = cantidad;
-    cantidadDisplay.style.cssText = `
+        const cantidadDisplay = document.createElement('span');
+        cantidadDisplay.textContent = cantidad;
+        cantidadDisplay.style.cssText = `
       min-width: 25px;
       text-align: center;
       font-size: 16px;
@@ -223,9 +223,9 @@ function actualizarVistaCarrito() {
       color: #333;
     `;
 
-    const btnMas = document.createElement('button');
-    btnMas.textContent = '+';
-    btnMas.style.cssText = `
+        const btnMas = document.createElement('button');
+        btnMas.textContent = '+';
+        btnMas.style.cssText = `
       background: #4CAF50;
       color: white;
       border: none;
@@ -237,24 +237,24 @@ function actualizarVistaCarrito() {
       width: 32px;
       height: 32px;
     `;
-    btnMas.onclick = () => {
-      carrito[codigo]++;
-      guardarCarrito();
-      actualizarVistaCarrito();
-    };
+        btnMas.onclick = () => {
+          carrito[codigo]++;
+          guardarCarrito();
+          actualizarVistaCarrito();
+        };
 
-    controlesDiv.appendChild(btnMenos);
-    controlesDiv.appendChild(cantidadDisplay);
-    controlesDiv.appendChild(btnMas);
+        controlesDiv.appendChild(btnMenos);
+        controlesDiv.appendChild(cantidadDisplay);
+        controlesDiv.appendChild(btnMas);
 
-    div.appendChild(img);
-    div.appendChild(cantidadSpan);
-    div.appendChild(controlesDiv);
-    contenedor.appendChild(div);
-  });
+        div.appendChild(img);
+        div.appendChild(cantidadSpan);
+        div.appendChild(controlesDiv);
+        contenedor.appendChild(div);
+      });
 
-  calcularTotal();
-}
+      calcularTotal();
+    }
 
     // 🔹 FUNCIÓN PARA ENVIAR POR WHATSAPP (copiada de script_v3.js)
     function enviarPorWhatsApp() {
@@ -264,10 +264,10 @@ function actualizarVistaCarrito() {
         return;
       }
       const numero = '5491123935400';
-      
+
       let precioUnitario;
       if (cantidadTotal >= 500) {
-        precioUnitario = 250;
+        precioUnitario = 350;
       } else if (cantidadTotal >= 50) {
         precioUnitario = precioDescuento50;
       } else if (cantidadTotal >= 20) {
@@ -315,7 +315,7 @@ function actualizarVistaCarrito() {
     };
 
     // 🔹 INICIALIZAR AL CARGAR LA PÁGINA
-    window.addEventListener('DOMContentLoaded', function() {
+    window.addEventListener('DOMContentLoaded', function () {
       cargarCarrito();
       actualizarVistaCarrito();
     });
