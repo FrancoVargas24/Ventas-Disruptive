@@ -161,13 +161,12 @@
             e.preventDefault();
             const email = document.getElementById('email-launch').value;
 
-            // Mostrar estado de carga
-            const btnSubmit = document.querySelector('.popup-lanzamiento-btn');
-            const textoOriginal = btnSubmit.innerText;
-            btnSubmit.innerText = 'Guardando...';
-            btnSubmit.disabled = true;
+            // Cerrar popup inmediatamente
+            localStorage.setItem('popupLanzamientoVisto', 'true');
+            sessionStorage.setItem('popupLanzamientoVisto', 'true');
+            cerrarPopupLanzamiento();
 
-            // Enviar a Google Sheets usando el script de doble hoja
+            // Enviar a Google Sheets en segundo plano
             fetch("https://script.google.com/macros/s/AKfycbzevxyb1mBMNCCEa8mrGynvw0agc0BXLGJWm8hkj-o-_5j8p6RguJL0bLEish7aKsp7/exec", {
                 method: "POST",
                 mode: "no-cors",
@@ -177,29 +176,10 @@
                 body: JSON.stringify({
                     email: email,
                     origen: "Lanzamiento Web",
-                    formType: "newsletter", // clave para que sheets sepa a qué hoja va
+                    formType: "newsletter",
                     fecha: new Date().toLocaleDateString("es-AR")
                 })
-            })
-                .then(() => {
-                    document.getElementById('form-lanzamiento').style.display = 'none';
-                    document.getElementById('popup-mensaje-exito').style.display = 'block';
-
-                    // Una vez q dejan el mail, marcamos para q no los joda de por vida localmente.
-                    localStorage.setItem('popupLanzamientoVisto', 'true');
-                    sessionStorage.setItem('popupLanzamientoVisto', 'true');
-
-                    // Cerrar a los 3 segundos
-                    setTimeout(() => {
-                        cerrarPopupLanzamiento();
-                    }, 3000);
-                })
-                .catch(error => {
-                    alert("Hubo un error al guardar tu correo. Por favor intentá de nuevo.");
-                    console.error("Error:", error);
-                    btnSubmit.innerText = textoOriginal;
-                    btnSubmit.disabled = false;
-                });
+            });
         }
 
         window.addEventListener('load', mostrarPopupLanzamiento);
