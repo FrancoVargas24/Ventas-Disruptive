@@ -1,4 +1,71 @@
 
+// ==========================================
+// 🚀 MODO MANTENIMIENTO / PRÓXIMO LANZAMIENTO
+// ==========================================
+// Cambiar a `false` cuando sea el lanzamiento oficial para activar la web a todos.
+const MANTENIMIENTO_ACTIVO = true;
+
+(function checkModoMantenimientoGlobal() {
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    // Activar modo Admin / Previsualización con ?admin=1 o ?preview=1
+    if (urlParams.get('admin') === '1' || urlParams.get('admin') === 'disruptive' || urlParams.get('preview') === '1') {
+        localStorage.setItem('disruptiveAdminPreview', 'true');
+    }
+    
+    // Desactivar modo Admin con ?admin=0 o ?preview=off
+    if (urlParams.get('admin') === '0' || urlParams.get('preview') === 'off') {
+        localStorage.removeItem('disruptiveAdminPreview');
+    }
+
+    const esAdminPreview = localStorage.getItem('disruptiveAdminPreview') === 'true';
+
+    // Comprobar si es la portada
+    const path = window.location.pathname.toLowerCase();
+    const esIndex = path.endsWith('index.html') || path.endsWith('/') || path === '' || path.endsWith('ventas-disruptive') || path.endsWith('ventas-disruptive/');
+
+    if (MANTENIMIENTO_ACTIVO && !esAdminPreview) {
+        // Redirigir subpáginas a index.html para usuarios normales
+        if (!esIndex) {
+            window.location.href = 'index.html';
+            return;
+        }
+
+        // En portada, activar el overlay bloqueante inmediatamente al cargar el DOM
+        const activarOverlayBloqueo = () => {
+            const popup = document.getElementById('popup-lanzamiento');
+            if (popup) {
+                popup.classList.add('activo', 'modo-bloqueo');
+                document.body.classList.add('modo-bloqueo-body');
+                const btnClose = popup.querySelector('.popup-lanzamiento-close');
+                if (btnClose) btnClose.style.display = 'none';
+            }
+        };
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', activarOverlayBloqueo);
+        } else {
+            activarOverlayBloqueo();
+        }
+    }
+
+    // Mostrar un badge discreto si estás navegando como Admin
+    if (MANTENIMIENTO_ACTIVO && esAdminPreview) {
+        const mostrarBadgeAdmin = () => {
+            if (document.querySelector('.admin-preview-badge')) return;
+            const badge = document.createElement('div');
+            badge.className = 'admin-preview-badge';
+            badge.innerHTML = `🛠️ <span>Admin Preview</span> <a href="?admin=0" title="Ver como cliente normal">Salir</a>`;
+            document.body.appendChild(badge);
+        };
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', mostrarBadgeAdmin);
+        } else {
+            mostrarBadgeAdmin();
+        }
+    }
+})();
+
 // --- NAVBAR Y TIMELINE ---
 let lastScrollTop = 0;
 let lastScrollEnd = 100;

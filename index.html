@@ -36,7 +36,8 @@
     <div id="popup-lanzamiento" class="popup-lanzamiento-overlay">
         <div class="popup-lanzamiento-content contornito">
             <button class="popup-lanzamiento-close" onclick="cerrarPopupLanzamiento()">×</button>
-            <h2 style="color: #e99753; font-size: 2.2rem; margin-bottom: 10px;">¡Nueva web en camino!</h2>
+            <img src="iconos/LOGO + sombra.png" alt="Disruptive Stickers" class="popup-logo-header">
+            <h2 style="color: #e99753; font-size: 2.2rem; margin-bottom: 10px; font-family: 'Bebas Neue', sans-serif; letter-spacing: 1px;">¡Nueva web en camino!</h2>
             <p style="margin-top: 0; font-size: 1.1rem; color: #ddd; margin-bottom: 15px;">Dejanos tu mail para
                 enterarte el día del lanzamiento y recibir un cupón de descuento especial.</p>
             <form id="form-lanzamiento" onsubmit="enviarEmailLaunch(event)">
@@ -139,32 +140,58 @@
     </div>
 
     <script>
-        // Popup de Lanzamiento
+        // Popup de Lanzamiento & Modo Mantenimiento
         function mostrarPopupLanzamiento() {
-            // Mostrar si no se envió en esta sesión
+            const esAdminPreview = localStorage.getItem('disruptiveAdminPreview') === 'true';
+            if (typeof MANTENIMIENTO_ACTIVO !== 'undefined' && MANTENIMIENTO_ACTIVO && !esAdminPreview) {
+                const popup = document.getElementById('popup-lanzamiento');
+                if (popup) {
+                    popup.classList.add('activo', 'modo-bloqueo');
+                    document.body.classList.add('modo-bloqueo-body');
+                    const btnClose = popup.querySelector('.popup-lanzamiento-close');
+                    if (btnClose) btnClose.style.display = 'none';
+                }
+                return;
+            }
+
             if (!sessionStorage.getItem('popupLanzamientoVisto')) {
                 setTimeout(() => {
                     const popup = document.getElementById('popup-lanzamiento');
                     if (popup) popup.classList.add('activo');
-                }, 1500); // 1.5 seconds after loading
+                }, 1500);
             }
         }
 
         function cerrarPopupLanzamiento() {
+            const esAdminPreview = localStorage.getItem('disruptiveAdminPreview') === 'true';
+            if (typeof MANTENIMIENTO_ACTIVO !== 'undefined' && MANTENIMIENTO_ACTIVO && !esAdminPreview) {
+                return; // No se puede cerrar en modo mantenimiento
+            }
             const popup = document.getElementById('popup-lanzamiento');
             if (popup) popup.classList.remove('activo');
-            // Al cerrar lo marcamos como visto por el resto de la sesión
             sessionStorage.setItem('popupLanzamientoVisto', 'true');
         }
 
         function enviarEmailLaunch(e) {
             e.preventDefault();
             const email = document.getElementById('email-launch').value;
+            const form = document.getElementById('form-lanzamiento');
+            const mensajeExito = document.getElementById('popup-mensaje-exito');
 
-            // Cerrar popup inmediatamente
-            localStorage.setItem('popupLanzamientoVisto', 'true');
-            sessionStorage.setItem('popupLanzamientoVisto', 'true');
-            cerrarPopupLanzamiento();
+            const esAdminPreview = localStorage.getItem('disruptiveAdminPreview') === 'true';
+            const enMantenimiento = typeof MANTENIMIENTO_ACTIVO !== 'undefined' && MANTENIMIENTO_ACTIVO && !esAdminPreview;
+
+            if (enMantenimiento) {
+                if (form) form.style.display = 'none';
+                if (mensajeExito) {
+                    mensajeExito.style.display = 'block';
+                    mensajeExito.textContent = '¡Gracias! Te avisaremos el día del lanzamiento.';
+                }
+            } else {
+                localStorage.setItem('popupLanzamientoVisto', 'true');
+                sessionStorage.setItem('popupLanzamientoVisto', 'true');
+                cerrarPopupLanzamiento();
+            }
 
             // Enviar a Google Sheets en segundo plano
             fetch("https://script.google.com/macros/s/AKfycbwOvV4A3-6JUxtAGYyXLA6sflcBZ2d6-nbWEcfd_NMlUNRL_N0Qg9gcWDlPdQNhxDsSqg/exec", {

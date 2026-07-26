@@ -1182,7 +1182,7 @@ input[type="number"] {
     margin: 0;
 }
 
-/* Popup de Lanzamiento */
+/* Popup de Lanzamiento & Modo Mantenimiento */
 .popup-lanzamiento-overlay {
     position: fixed;
     top: 0;
@@ -1204,20 +1204,41 @@ input[type="number"] {
     pointer-events: auto;
 }
 
+/* Modo Bloqueo Completo (Mantenimiento antes del lanzamiento) */
+.popup-lanzamiento-overlay.modo-bloqueo {
+    background: rgba(10, 10, 12, 0.97) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    z-index: 999999 !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+body.modo-bloqueo-body {
+    overflow: hidden !important;
+    height: 100vh !important;
+}
+
 .popup-lanzamiento-content {
-    background: #1e1e1eba;
-    padding: 30px;
-    border-radius: 12px;
+    background: rgba(25, 25, 28, 0.95);
+    padding: 35px 25px;
+    border-radius: 16px;
     text-align: center;
-    max-width: 450px;
+    max-width: 460px;
     width: 90%;
     position: relative;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 30px rgba(233, 151, 83, 0.15);
     transform: translateY(-20px);
     transition: transform 0.3s ease;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(233, 151, 83, 0.3);
     color: white;
-    backdrop-filter: blur(10px);
+}
+
+.popup-logo-header {
+    width: 140px;
+    max-width: 60%;
+    margin: 0 auto 15px auto;
+    display: block;
 }
 
 .popup-lanzamiento-overlay.activo .popup-lanzamiento-content {
@@ -1226,9 +1247,9 @@ input[type="number"] {
 
 .popup-lanzamiento-close {
     position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 24px;
+    top: 12px;
+    right: 18px;
+    font-size: 26px;
     color: #ccc;
     cursor: pointer;
     background: transparent;
@@ -1240,8 +1261,8 @@ input[type="number"] {
 }
 
 .popup-lanzamiento-input {
-    width: 80%;
-    padding: 12px;
+    width: 85%;
+    padding: 14px;
     border-radius: 8px;
     border: 1px solid #444;
     background: #111;
@@ -1251,6 +1272,7 @@ input[type="number"] {
     font-family: inherit;
     text-align: center;
     display: block;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
 }
 
 .popup-lanzamiento-input:focus {
@@ -1264,14 +1286,42 @@ input[type="number"] {
     font-weight: bold;
     border: none;
     border-radius: 8px;
-    padding: 12px 24px;
+    padding: 14px 24px;
     font-size: 1.1rem;
     cursor: pointer;
-    transition: background 0.2s;
-    width: 80%;
+    transition: all 0.2s ease;
+    width: 85%;
     font-family: 'Montserrat', sans-serif;
 }
 
 .popup-lanzamiento-btn:hover {
     background: #d8803a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(233, 151, 83, 0.4);
+}
+
+/* Badge Admin Preview */
+.admin-preview-badge {
+    position: fixed;
+    bottom: 15px;
+    right: 15px;
+    background: #e99753;
+    color: #000;
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.85rem;
+    z-index: 1000000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: sans-serif;
+}
+.admin-preview-badge a {
+    color: #000;
+    text-decoration: underline;
+    font-size: 0.75rem;
+    margin-left: 5px;
+    opacity: 0.85;
 }
