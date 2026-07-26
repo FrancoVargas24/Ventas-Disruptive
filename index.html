@@ -15,8 +15,8 @@
     <meta property="og:url" content="https://tudominio.com">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/png" href="iconos/LOGO + sombra.png">
-    <link rel="stylesheet" href="css/estilos_v7.css?v=4">
-    <link rel="stylesheet" href="css/styles_v1.css?v=4">
+    <link rel="stylesheet" href="css/estilos_v7.css?v=5">
+    <link rel="stylesheet" href="css/styles_v1.css?v=5">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
@@ -24,7 +24,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://elfsightcdn.com/platform.js" async></script>
-    <script src="script_v4.js?v=4" defer></script>
+    <script src="script_v4.js?v=5" defer></script>
     <script src="categoria-loader.js" defer></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -35,7 +35,7 @@
     <!-- Popup de Lanzamiento -->
     <div id="popup-lanzamiento" class="popup-lanzamiento-overlay">
         <div class="popup-lanzamiento-content contornito">
-            <button class="popup-lanzamiento-close" onclick="cerrarPopupLanzamiento()">×</button>
+            <button class="popup-lanzamiento-close" id="btn-cerrar-popup" onclick="cerrarPopupLanzamiento()" style="display: none;">×</button>
             <img src="iconos/LOGO + sombra.png" alt="Disruptive Stickers" class="popup-logo-header" style="max-width: 120px; width: 120px; height: auto; display: block; margin: 0 auto 15px auto;">
             <h2 style="color: #e99753; font-size: 2.2rem; margin-bottom: 10px; font-family: 'Bebas Neue', sans-serif; letter-spacing: 1px;">¡Nueva web en camino!</h2>
             <p style="margin-top: 0; font-size: 1.1rem; color: #ddd; margin-bottom: 15px;">Dejanos tu mail para
@@ -157,7 +157,11 @@
             if (!sessionStorage.getItem('popupLanzamientoVisto')) {
                 setTimeout(() => {
                     const popup = document.getElementById('popup-lanzamiento');
-                    if (popup) popup.classList.add('activo');
+                    if (popup) {
+                        popup.classList.add('activo');
+                        const btnClose = popup.querySelector('.popup-lanzamiento-close');
+                        if (btnClose) btnClose.style.display = 'block';
+                    }
                 }, 1500);
             }
         }

@@ -1214,6 +1214,10 @@ input[type="number"] {
     pointer-events: auto !important;
 }
 
+.popup-lanzamiento-overlay.modo-bloqueo .popup-lanzamiento-close {
+    display: none !important;
+}
+
 body.modo-bloqueo-body {
     overflow: hidden !important;
     height: 100vh !important;
